@@ -5,7 +5,7 @@ while keeping porosity_percent below 5.0. Schema-aligned variable names.
 """
 import os
 import re
-from typing import List, Optional, Tuple
+from typing import Callable, List, Optional, Tuple
 
 from dotenv import load_dotenv
 
@@ -32,6 +32,34 @@ Respond with ONLY a single number: the next cooling_rate_K_per_min in K/min (e.g
 DEFAULT_COOLING_RATE = 15.0
 COOLDOWN_FALLBACK_RATE = 12.0  # fallback when LLM returns non-numeric
 MAX_PARSE_ATTEMPTS = 2
+
+
+def format_simulation_output(
+    history: List[HistoryEntry],
+    step_lines: Optional[List[str]] = None,
+) -> str:
+    """
+    Format simulation run history as a string suitable for chat display.
+    If step_lines is provided (e.g. from on_step), include them; else list history in one line per step.
+    Appends a short summary (best successful run if any).
+    """
+    if not history:
+        return "Simulation run: no iterations."
+    body = "\n".join(
+        step_lines
+        if step_lines
+        else [
+            f"  Iteration {i}: cooling_rate={rate} K/min -> yield_strength={y:.2f} MPa, success={ok}"
+            for i, (rate, y, ok) in enumerate(history, start=1)
+        ]
+    )
+    successful = [(r, y) for r, y, ok in history if ok]
+    if successful:
+        best = max(successful, key=lambda x: x[1])
+        summary = f"Best (successful): cooling_rate={best[0]} K/min -> yield_strength={best[1]:.2f} MPa."
+    else:
+        summary = "No successful runs (all had porosity > 5%)."
+    return "Simulation run:\n" + body + "\n" + summary
 
 
 def _parse_cooling_rate_from_response(raw: str) -> Optional[float]:
@@ -146,18 +174,43 @@ class SimulationAgent:
     def run_optimization_loop(
         self,
         initial_cooling_rate_K_per_min: float = DEFAULT_COOLING_RATE,
+        on_step: Optional[Callable[[int, float, float, bool], None]] = None,
     ) -> List[HistoryEntry]:
         """
         Run the loop: simulate -> log -> get LLM suggestion -> repeat for max_iterations.
+        If on_step is provided, call it after each run with (iteration_1based, cooling_rate_K_per_min, yield_strength_MPa, success).
         Returns the full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
         """
         self.history = []
         cooling_rate_K_per_min = initial_cooling_rate_K_per_min
 
-        for _ in range(self.max_iterations):
+        for i in range(self.max_iterations):
             yield_strength_MPa, success = self.run_simulation(cooling_rate_K_per_min)
             self.history.append((cooling_rate_K_per_min, yield_strength_MPa, success))
+            if on_step is not None:
+                on_step(i + 1, cooling_rate_K_per_min, yield_strength_MPa, success)
 
             cooling_rate_K_per_min = self.get_llm_suggestion()
 
         return self.history
+
+    def run_and_report(
+        self,
+        initial_cooling_rate_K_per_min: float = DEFAULT_COOLING_RATE,
+    ) -> Tuple[List[HistoryEntry], str]:
+        """
+        Run the optimization loop and return (history, output_string).
+        output_string is a human-readable log of each step and a summary, suitable for displaying in chat.
+        """
+        lines: List[str] = []
+
+        def on_step(iteration: int, rate: float, y_MPa: float, ok: bool) -> None:
+            lines.append(
+                f"  Iteration {iteration}: cooling_rate={rate} K/min -> yield_strength={y_MPa:.2f} MPa, success={ok}"
+            )
+
+        self.run_optimization_loop(
+            initial_cooling_rate_K_per_min=initial_cooling_rate_K_per_min,
+            on_step=on_step,
+        )
+        return self.history, format_simulation_output(self.history, step_lines=lines)

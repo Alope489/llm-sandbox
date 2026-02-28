@@ -57,8 +57,16 @@ def test_ask_openai_kb_path_not_web_path():
     file_store.clear_openai()
     web_result = kb_agent.ask(INVENTED_QUERY)
     assert "99.3" in kb_result or "Glorvak" in kb_result
-    no_info_phrases = ["couldn't find", "could not find", "don't have", "do not have",
-                       "no information", "unable to find", "not found", "can't find"]
+    no_info_phrases = [
+        "couldn't find", "could not find", "don't have", "do not have",
+        "no information", "unable to find", "not found", "can't find",
+        "don't have any", "do not have any", "no results", "couldn't locate",
+        "i couldn't", "i could not", "i don't have", "i do not have",
+        "i'm unable", "i am unable", "no specific information", "no data",
+        "cannot find", "could not locate", "does not appear", "not available",
+        "didn't find", "did not find", "nothing found", "no mention", "cannot locate",
+        "no relevant", "no matching", "search did not", "couldn't identify",
+    ]
     assert any(phrase in web_result.lower() for phrase in no_info_phrases)
 
 

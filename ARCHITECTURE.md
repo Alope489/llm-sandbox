@@ -34,7 +34,20 @@ Load from `.env` via `python-dotenv` (called in `src/wrapper.py` on import).
   - **Input**: Raw task description (e.g. material/simulation prompt).
   - **Output**: Parsed dict matching the material/simulation schema (top-level keys: `material_system`, `processing_conditions`, `simulation_parameters`, `computed_properties`, `uncertainty_estimates`).
   - **Provider**: Uses `LLM_PROVIDER` (same as wrapper). **OpenAI**: Structured Outputs via `response_format` and `json_schema`. **Anthropic**: Tool use (single tool with `input_schema`, optional `strict`). Reuses `OPENAI_MODEL`, `ANTHROPIC_MODEL`, `MAX_TOKENS`; no new env vars or dependencies.
-- **`src/linear/__init__.py`**: Exposes `extract` (e.g. `from src.linear import extract`).
+- **`src/linear/processor.py`**: LLM-based symbolic reasoning on extraction-shaped data. Uses `src.wrapper.complete` only (no direct provider calls).
+  - **Interface**: `process(data: dict, task: str) -> dict`
+  - **Input**: `data` = extraction dict (output of `extract(...)`); `task` = one of `schema_validation`, `constraint_verification`, `feature_extraction`, `normalization`, `risk_ranking`.
+  - **Output**: Task-specific result dict (e.g. schema_validation → `{"valid": bool, "issues": list[str]}`; constraint_verification → `{"plausible": bool, "warnings": list[str]}`; etc.).
+  - **Tasks**: Schema validation (percentage sums, missing fields, contradictions); constraint verification (temp vs melting, strain rate, model vs scale); feature extraction (alloy class, functional category, mechanism, dimensionality); normalization (composition to fractions, temp range to array, units); risk/sensitivity ranking (property and processing rankings).
+- **`src/linear/reasoning.py`**: LLM agent that produces a human-readable summary of pipeline execution. Aware of `src/linear/` structure (extractor, processor, task names and output shapes). Uses `src.wrapper.complete`.
+  - **Interface**: `summarize(original_input: str, extraction: dict, processing_results: dict) -> str`
+  - **Input**: Original task text, extraction dict, and a dict mapping task name → process result.
+  - **Output**: Concise human-readable summary of actions taken and results obtained (no raw JSON).
+- **`src/linear/orchestrator.py`**: Orchestrates the pipeline: passes input from extract → process (one or more tasks) → reasoning.
+  - **Interface**: `run(input_text: str, tasks: list[str] | None = None) -> dict`
+  - **Input**: Raw task description; optional list of processor task names (default: all TASKS).
+  - **Output**: `{"summary": str, "extraction": dict, "processing": dict}` — human-readable summary plus full extraction and per-task results.
+- **`src/linear/__init__.py`**: Exposes `extract`, `process`, `summarize`, `run`, and task constants (e.g. `from src.linear import extract, process, summarize, run, TASK_SCHEMA_VALIDATION`).
 
 ## Multi / Knowledge-Base
 
@@ -102,3 +115,32 @@ graph TD
 |---|---|
 | `OPENAI_VECTOR_STORE_ID` | Pre-existing OpenAI vector store ID (created at runtime if absent) |
 | `OPENAI_ASSISTANT_ID` | Pre-existing OpenAI assistant ID (created at runtime if absent) |
+
+## Simulation agent
+
+- **`src/multi/sim/`**: Toy nickel-based superalloy optimization (cooling rate → yield strength, porosity).
+- **`src/multi/sim/simulation.py`**: `run_material_simulation(cooling_rate_K_per_min, duration_hours, ...)` → `(yield_strength_MPa, success)`.
+- **`src/multi/sim/agent.py`**: `SimulationAgent` runs an optimization loop (simulate → LLM suggestion → repeat).
+  - **`run_optimization_loop(initial_cooling_rate_K_per_min=..., on_step=...)`**: Optional `on_step(iteration, rate, y_MPa, success)` callback for per-step reporting.
+  - **`run_and_report(initial_cooling_rate_K_per_min=...)`**: Returns `(history, output_string)`. Use `output_string` in chat so the user sees simulation output (each iteration + best result summary).
+  - **`format_simulation_output(history, step_lines=None)`**: Formats history as a string for display; exported from `src.multi.sim`.
+
+**Showing simulation output in chat**: Call `agent.run_and_report(...)` and display the second return value (e.g. `print(output)` or return it in a tool response).
+
+## Testing
+
+This is an **LLM agent pipeline**. Integration tests must use the **real LLM** (no mocks); they cannot and should not be tested without the LLM in the loop.
+
+- **Integration tests (E2E, real LLM)**: `tests/integration/`
+  - `tests/integration/linear/` — linear pipeline: extract → process → summarize → run with live API.
+  - `tests/integration/multi/` — knowledge base, file store, kb_agent, complete_with_knowledge with live API.
+  - `tests/integration/sim/` — simulation agent optimization loop with real LLM.
+  - Require `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY` in `.env`; skipped when none set.
+  - Run: `python -m pytest tests/integration/ -v`
+- **Unit tests (may mock LLM)**: `tests/test_*.py`
+  - Fast feedback during development; they do **not** replace integration tests.
+  - Run: `python -m pytest tests/ -v` (full suite includes both unit and integration).
+
+## Tooling and agents
+
+- **Integration testing agent**: `.cursor/skills/integration-testing/SKILL.md` — Runs pytest from project root. **Integration tests** = E2E tests in `tests/integration/` with real LLM; do not omit or mock the LLM for integration. Trigger: "run integration tests", "run tests", "verify the build", "make sure tests pass".
