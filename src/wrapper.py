@@ -26,7 +26,7 @@ def _complete_anthropic(messages: list[dict]) -> str:
     from anthropic import Anthropic
 
     return Anthropic().messages.create(
-        model=os.environ.get("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022"),
+        model=os.environ.get("ANTHROPIC_MODEL", "claude-3-5-sonnet-20240620"),
         max_tokens=int(os.environ.get("MAX_TOKENS", "1024")),
         system="\n".join(m["content"] for m in messages if m.get("role") == "system") or None,
         messages=[{"role": m["role"], "content": m["content"]} for m in messages if m.get("role") in ("user", "assistant")],
