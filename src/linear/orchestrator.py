@@ -1,4 +1,6 @@
 """Orchestrates the linear pipeline: extract → process (one or more tasks) → reasoning summary."""
+from __future__ import annotations
+
 from src.linear.extractor import extract
 from src.linear.processor import TASKS, process
 from src.linear.reasoning import summarize
