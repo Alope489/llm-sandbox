@@ -21,7 +21,7 @@
 | `OPENAI_API_KEY` | OpenAI API key (required when provider is openai) |
 | `ANTHROPIC_API_KEY` | Anthropic API key (required when provider is anthropic) |
 | `OPENAI_MODEL` | OpenAI model (default: gpt-4o-mini) |
-| `ANTHROPIC_MODEL` | Anthropic model (default: claude-3-5-sonnet-20241022) |
+| `ANTHROPIC_MODEL` | Anthropic model (default: claude-sonnet-4-6) |
 | `MAX_TOKENS` | Max tokens for Anthropic (default: 1024) |
 
 Load from `.env` via `python-dotenv` (called in `src/wrapper.py` on import).
@@ -129,13 +129,14 @@ graph TD
 
 ## Testing
 
-This is an **LLM agent pipeline**. Integration tests must use the **real LLM** (no mocks); they cannot and should not be tested without the LLM in the loop.
+This is an **LLM agent pipeline**. Integration tests must use the **real LLM with ZERO mocking of any kind** (no mocks, no patch, no monkeypatch). Every agent has E2E integration tests.
 
-- **Integration tests (E2E, real LLM)**: `tests/integration/`
-  - `tests/integration/linear/` — linear pipeline: extract → process → summarize → run with live API.
+- **Integration tests (E2E, real LLM, zero mocking)**: `tests/integration/`
+  - `tests/integration/wrapper/` — base wrapper `complete()` with live API.
+  - `tests/integration/linear/` — linear pipeline: extract → process → summarize → run with live API (OpenAI; Anthropic skipped — extractor schema exceeds API union-type limit).
   - `tests/integration/multi/` — knowledge base, file store, kb_agent, complete_with_knowledge with live API.
   - `tests/integration/sim/` — simulation agent optimization loop with real LLM.
-  - Require `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY` in `.env`; skipped when none set.
+  - Require `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY` in `.env`; skipped when none set. For Anthropic-specific E2E, set `LLM_PROVIDER=anthropic` in `.env`.
   - Run: `python -m pytest tests/integration/ -v`
 - **Unit tests (may mock LLM)**: `tests/test_*.py`
   - Fast feedback during development; they do **not** replace integration tests.

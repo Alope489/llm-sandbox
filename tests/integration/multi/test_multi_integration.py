@@ -1,13 +1,16 @@
-"""Detailed integration tests for the multi/knowledge-base pipeline: index, search, complete_with_knowledge, file_store, kb_agent.
-Tests use live API calls. Marked as integration + multi. Skip when required API key is missing."""
+"""E2E integration tests for the multi/knowledge-base pipeline: index, search, complete_with_knowledge, file_store, kb_agent.
+ZERO MOCKING: all tests use live APIs and real LLM only. Runs with both OpenAI and Anthropic where LLM is used."""
 import os
 import tempfile
 
 import pytest
 
-pytestmark = [
-    pytest.mark.integration,
-    pytest.mark.multi,
+pytestmark = [pytest.mark.integration, pytest.mark.multi]
+
+# Embeddings always use OpenAI. LLM can be OpenAI or Anthropic.
+PROVIDERS = [
+    pytest.param("openai", id="openai", marks=pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="OPENAI_API_KEY not set")),
+    pytest.param("anthropic", id="anthropic", marks=pytest.mark.skipif(not os.environ.get("ANTHROPIC_API_KEY"), reason="ANTHROPIC_API_KEY not set")),
 ]
 
 # ─── Knowledge base (index, search, complete_with_knowledge) ─────────────────
@@ -57,7 +60,12 @@ class TestKnowledgeBaseIntegration:
         clear()
         assert store_size() == 0
 
-    def test_integration_complete_with_knowledge_uses_retrieved_context(self):
+    @pytest.mark.parametrize("provider", PROVIDERS)
+    def test_integration_complete_with_knowledge_uses_retrieved_context(self, provider, monkeypatch):
+        """complete_with_knowledge uses retrieved context. Runs for OpenAI and Anthropic."""
+        monkeypatch.setenv("LLM_PROVIDER", provider)
+        if provider == "anthropic":
+            monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         from src.multi.knowledge_base import clear, index, store_size
         from src.multi import complete_with_knowledge
 
@@ -159,17 +167,17 @@ class TestKbAgentOpenAIIntegration:
 
 @pytest.mark.skipif(
     not os.environ.get("ANTHROPIC_API_KEY"),
-    reason="Set ANTHROPIC_API_KEY to run kb_agent Anthropic integration tests",
+    reason="Set ANTHROPIC_API_KEY to run kb_agent Anthropic E2E",
 )
 class TestKbAgentAnthropicIntegration:
-    """Anthropic kb_agent.ask: in-memory KB first, web fallback."""
+    """Anthropic kb_agent.ask: in-memory KB first, web fallback. Runs with real Anthropic API (provider set in-test)."""
 
     def test_integration_ask_with_kb_returns_kb_content(self, monkeypatch):
+        monkeypatch.setenv("LLM_PROVIDER", "anthropic")
+        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         from src.multi.knowledge_base import clear, index, store_size
         import src.multi.kb_agent as kb_agent
 
-        monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         clear()
         index(["The AnthroFact number is 7777."])
         assert store_size() > 0
@@ -178,11 +186,11 @@ class TestKbAgentAnthropicIntegration:
         assert "7777" in result
 
     def test_integration_ask_web_fallback_returns_answer(self, monkeypatch):
+        monkeypatch.setenv("LLM_PROVIDER", "anthropic")
+        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         from src.multi.knowledge_base import clear
         import src.multi.kb_agent as kb_agent
 
-        monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         clear()
         result = kb_agent.ask("What is the capital of Italy?")
         assert isinstance(result, str)
@@ -194,14 +202,15 @@ class TestKbAgentAnthropicIntegration:
 
 @pytest.mark.skipif(
     not os.environ.get("OPENAI_API_KEY") or not os.environ.get("ANTHROPIC_API_KEY"),
-    reason="Set OPENAI_API_KEY (embeddings) and ANTHROPIC_API_KEY to run Anthropic complete_with_knowledge",
+    reason="Set OPENAI_API_KEY (embeddings) and ANTHROPIC_API_KEY for complete_with_knowledge Anthropic E2E",
 )
 def test_integration_complete_with_knowledge_anthropic_uses_context(monkeypatch):
+    """complete_with_knowledge with Anthropic uses retrieved context. Runs with real Anthropic API."""
+    monkeypatch.setenv("LLM_PROVIDER", "anthropic")
+    monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
     from src.multi.knowledge_base import clear, index, store_size
     from src.multi import complete_with_knowledge
 
-    monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-    monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
     clear()
     index(["The shared secret is Banana42."])
     assert store_size() > 0

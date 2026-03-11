@@ -1,22 +1,24 @@
-"""E2E integration tests for the simulation agent. All tests use the real LLM (no mocks)."""
+"""E2E integration tests for the simulation agent. ZERO MOCKING: real LLM only. Runs with both OpenAI and Anthropic."""
 import os
 
 import pytest
 
 from src.multi.sim.agent import SimulationAgent
 
-pytestmark = [
-    pytest.mark.integration,
-    pytest.mark.sim,
-    pytest.mark.skipif(
-        not os.environ.get("OPENAI_API_KEY") and not os.environ.get("ANTHROPIC_API_KEY"),
-        reason="Set OPENAI_API_KEY or ANTHROPIC_API_KEY to run sim integration tests",
-    ),
+pytestmark = [pytest.mark.integration, pytest.mark.sim]
+
+PROVIDERS = [
+    pytest.param("openai", id="openai", marks=pytest.mark.skipif(not os.environ.get("OPENAI_API_KEY"), reason="OPENAI_API_KEY not set")),
+    pytest.param("anthropic", id="anthropic", marks=pytest.mark.skipif(not os.environ.get("ANTHROPIC_API_KEY"), reason="ANTHROPIC_API_KEY not set")),
 ]
 
 
-def test_sim_integration_run_and_report_real_llm():
-    """Run the simulation agent with the real LLM: real suggestions, real simulation, real output."""
+@pytest.mark.parametrize("provider", PROVIDERS)
+def test_sim_integration_run_and_report_real_llm(provider, monkeypatch):
+    """Run the simulation agent with the real LLM: real suggestions, real simulation, real output. Runs for OpenAI and Anthropic."""
+    monkeypatch.setenv("LLM_PROVIDER", provider)
+    if provider == "anthropic":
+        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
     agent = SimulationAgent(max_iterations=3)
     history, output = agent.run_and_report(initial_cooling_rate_K_per_min=15.0)
     assert len(history) == 3
@@ -30,8 +32,12 @@ def test_sim_integration_run_and_report_real_llm():
     assert "Best (successful):" in output or "No successful runs" in output
 
 
-def test_sim_integration_optimization_loop_callback_real_llm():
-    """Run optimization loop with on_step callback; real LLM drives suggestions."""
+@pytest.mark.parametrize("provider", PROVIDERS)
+def test_sim_integration_optimization_loop_callback_real_llm(provider, monkeypatch):
+    """Run optimization loop with on_step callback; real LLM drives suggestions. Runs for OpenAI and Anthropic."""
+    monkeypatch.setenv("LLM_PROVIDER", provider)
+    if provider == "anthropic":
+        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
     seen = []
 
     def on_step(iteration: int, rate: float, y_MPa: float, success: bool):

@@ -143,9 +143,9 @@ class SimulationAgent:
 
         user_content = self._format_history_for_prompt()
         response = Anthropic().messages.create(
-            model=os.environ.get("ANTHROPIC_MODEL", "claude-3-5-sonnet-20241022"),
+            model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
             max_tokens=int(os.environ.get("MAX_TOKENS", "128")),
-            system=SYSTEM_PROMPT,
+            system=[{"type": "text", "text": SYSTEM_PROMPT}],
             messages=[{"role": "user", "content": user_content}],
         )
         for block in response.content:
