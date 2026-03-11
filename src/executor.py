@@ -13,7 +13,7 @@ from typing import Any, Callable, Dict, Optional
 
 from src.multi.sim.agent import SimulationAgent
 import src.multi.kb_agent as kb_agent
-import processor
+from src.linear import orchestrator as linear
 
 
 ALLOWED_AGENTS = ("simulation", "kb", "processor")
@@ -143,36 +143,20 @@ def _execute_kb(params: Dict[str, Any], original_prompt: Optional[str]) -> str:
 
 
 def _execute_processor(params: Dict[str, Any], original_prompt: Optional[str]) -> Dict[str, Any]:
-    input_data = params.get("data")
-    if not isinstance(input_data, dict):
-        input_text = params.get("input_text") or original_prompt or ""
-        input_data = {"input_text": input_text}
-
+    input_text = params.get("input_text") or original_prompt or ""
     tasks = params.get("tasks")
     single_task = params.get("task")
     if single_task is not None:
         tasks = single_task
-
     if tasks is None:
-        task_list = list(processor.TASKS)
+        task_list = None
     elif isinstance(tasks, str):
         task_list = [tasks]
     elif isinstance(tasks, (list, tuple)):
-        task_list = [task for task in tasks if isinstance(task, str)]
+        task_list = [t for t in tasks if isinstance(t, str)] or None
     else:
-        task_list = []
-
-    if not task_list:
-        task_list = list(processor.TASKS)
-
-    if len(task_list) == 1:
-        task = task_list[0]
-        return {task: processor.process(input_data, task)}
-
-    results: Dict[str, Any] = {}
-    for task in task_list:
-        results[task] = processor.process(input_data, task)
-    return results
+        task_list = None
+    return linear.run(input_text, tasks=task_list)
 
 
 AGENT_REGISTRY: Dict[str, AgentRunner] = {
