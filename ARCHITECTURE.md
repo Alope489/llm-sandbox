@@ -127,6 +127,35 @@ graph TD
 
 **Showing simulation output in chat**: Call `agent.run_and_report(...)` and display the second return value (e.g. `print(output)` or return it in a tool response).
 
+## Coordinator and executor
+
+- **`src/coordinator.py`**: Routing agent that decides which downstream LLM agent to call.
+  - **Interface**:
+    - `route_prompt(prompt: str) -> dict`: Inspect a raw user prompt and return a decision dict of the form `{"agent": "simulation" | "kb" | "processor", "mode": "pass_through" | "structured", "params": {...}}`.
+    - `run(prompt: str) -> dict`: High-level entry point that calls `route_prompt` and then delegates to the executor to actually run the chosen agent.
+  - **Agents**:
+    - `simulation`: The material optimization loop implemented by `src/multi/sim/agent.py`.
+    - `kb`: The knowledge-base + web-search agent implemented by `src/multi/kb_agent.py`.
+    - `processor`: The structured materials/simulation analysis pipeline exposed via `src/linear/orchestrator.py`.
+  - **LLM provider**: Uses `src.wrapper.complete`, so provider selection and API keys come from `.env` (`LLM_PROVIDER`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, etc.).
+- **`src/executor.py`**: Executes a validated decision dict by calling the appropriate existing agent.
+  - **Interface**:
+    - `execute(decision: dict, original_prompt: str | None = None) -> dict`: Run the selected agent and return a normalized result dict.
+  - **Behavior**:
+    - `agent="simulation"`: Instantiate `SimulationAgent` and call `run_and_report(...)`; returns `{"history": [...], "output": str}` in the `result` field.
+    - `agent="kb"`: Call `kb_agent.ask(query)` where `query` comes from `params["query"]` or falls back to `original_prompt`; returns the answer string in `result`.
+    - `agent="processor"`: Call `linear.orchestrator.run(input_text, tasks=...)` where `input_text` is either `params["input_text"]` or `original_prompt`; returns the orchestrator dict (`summary`, `extraction`, `processing`) in `result`.
+
+```mermaid
+graph TD
+    userPrompt["UserPrompt"] --> coordinator["Coordinator (route_prompt/run)"]
+    coordinator --> decision["Decision(agent, mode, params)"]
+    decision --> executor["Executor (execute)"]
+    executor --> simAgent["SimulationAgent (multi/sim)"]
+    executor --> kbAgent["Kb agent (multi/kb_agent.ask)"]
+    executor --> linearOrch["Linear orchestrator (linear/orchestrator.run)"]
+```
+
 ## Testing
 
 This is an **LLM agent pipeline**. Integration tests must use the **real LLM with ZERO mocking of any kind** (no mocks, no patch, no monkeypatch). Every agent has E2E integration tests.

@@ -173,9 +173,5 @@ def query_openai(query: str) -> str:
         if msg.role == "assistant":
             for block in msg.content:
                 if hasattr(block, "text"):
-                    if any(
-                        getattr(a, "type", None) == "file_citation"
-                        for a in block.text.annotations
-                    ):
-                        return block.text.value
+                    return block.text.value
     return ""

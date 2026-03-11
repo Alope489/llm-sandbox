@@ -25,12 +25,9 @@ def _complete_openai(messages: list[dict]) -> str:
 def _complete_anthropic(messages: list[dict]) -> str:
     from anthropic import Anthropic
 
-    system_parts = [m["content"] for m in messages if m.get("role") == "system"]
-    create_kw: dict = {
-        "model": os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
-        "max_tokens": int(os.environ.get("MAX_TOKENS", "1024")),
-        "messages": [{"role": m["role"], "content": m["content"]} for m in messages if m.get("role") in ("user", "assistant")],
-    }
-    if system_parts:
-        create_kw["system"] = [{"type": "text", "text": "\n".join(system_parts)}]
-    return Anthropic().messages.create(**create_kw).content[0].text
+    return Anthropic().messages.create(
+        model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
+        max_tokens=int(os.environ.get("MAX_TOKENS", "1024")),
+        **({"system": [{"type": "text", "text": "\n".join(m["content"] for m in messages if m.get("role") == "system")}]} if any(m.get("role") == "system" for m in messages) else {}),
+        messages=[{"role": m["role"], "content": m["content"]} for m in messages if m.get("role") in ("user", "assistant")],
+    ).content[0].text
