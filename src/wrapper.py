@@ -1,33 +1,110 @@
-"""LLM wrapper: unified chat interface over OpenAI (default) or Anthropic."""
+"""Augmented LLM completion using knowledge-base retrieval results.
+
+This module provides a single public function, complete_with_knowledge, which
+injects relevant KB context into the message list before forwarding to the
+underlying LLM provider via complete().
+
+Provider-specific injection strategies
+---------------------------------------
+OpenAI  : A system message containing "Relevant context:" followed by labelled
+          chunk excerpts is prepended to the message list.
+Anthropic: Each retrieved chunk is prepended as a search_result content block
+           inside the first user message, conforming to Anthropic's content
+           block schema.
+
+Environment variables
+---------------------
+LLM_PROVIDER : "openai" (default) or "anthropic".
+"""
 import os
+import copy
+import importlib
+from typing import Callable
 
-from dotenv import load_dotenv
-
-load_dotenv()
+from knowledge_base import search
 
 
-def complete(messages: list[dict]) -> str:
+def _get_complete_callable() -> Callable[[list[dict]], str]:
+    """Resolve the base completion function lazily to avoid import cycles.
+
+    Importing complete at module load time can create a circular dependency when
+    other modules import wrapper while wrapper imports them back indirectly.
+    Resolve it only at call time.
+    """
+    candidates = ("src.wrapper",)
+    current_file = os.path.abspath(__file__)
+
+    for module_name in candidates:
+        try:
+            module = importlib.import_module(module_name)
+        except Exception:
+            continue
+        module_file = os.path.abspath(getattr(module, "__file__", "") or "")
+        # Guard against importing this same file back under an alias.
+        if module_file == current_file:
+            continue
+        complete = getattr(module, "complete", None)
+        if callable(complete):
+            return complete
+
+    raise ImportError(
+        "Could not resolve a base complete() implementation without creating "
+        "a circular import. Expected a callable complete() in src.wrapper."
+    )
+
+
+
+def complete_with_knowledge(messages: list[dict], query: str, top_k: int = 5) -> str:
+    """Augment messages with KB context and return the LLM's response.
+
+    Retrieves the top_k most relevant chunks for query from the knowledge base,
+    injects them into messages in the format appropriate for the active LLM
+    provider, then delegates to the base complete() implementation.
+
+    Args:
+        messages: A list of message dicts in the provider's chat format.
+                  For Anthropic, at least one dict must have role "user".
+        query: The natural-language question used to retrieve context chunks.
+        top_k: Maximum number of KB chunks to inject (default: 5).
+
+    Returns:
+        The LLM's response as a plain string.
+
+    Preconditions:
+        - The knowledge base must have been populated via index() before calling
+          this function; if it is empty, no context is injected.
+        - LLM_PROVIDER must be set to "openai" or "anthropic" (or absent, which
+          defaults to "openai").
+        - For Anthropic, messages must contain at least one message with
+          role "user" and a valid system message elsewhere in the list.
+        - OPENAI_API_KEY or ANTHROPIC_API_KEY must be set as required by the
+          active provider.
+
+    Postconditions:
+        - The original messages list passed by the caller is not mutated.
+        - The returned string is the text of the LLM's reply after context
+          injection; it may be empty if the LLM returns no content.
+    """
+    results = search(query, top_k)
     provider = os.environ.get("LLM_PROVIDER", "openai")
-    if provider == "anthropic":
-        return _complete_anthropic(messages)
-    return _complete_openai(messages)
-
-
-def _complete_openai(messages: list[dict]) -> str:
-    from openai import OpenAI
-
-    return OpenAI().chat.completions.create(
-        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-        messages=[{"role": m["role"], "content": m["content"]} for m in messages],
-    ).choices[0].message.content
-
-
-def _complete_anthropic(messages: list[dict]) -> str:
-    from anthropic import Anthropic
-
-    return Anthropic().messages.create(
-        model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
-        max_tokens=int(os.environ.get("MAX_TOKENS", "1024")),
-        **({"system": [{"type": "text", "text": "\n".join(m["content"] for m in messages if m.get("role") == "system")}]} if any(m.get("role") == "system" for m in messages) else {}),
-        messages=[{"role": m["role"], "content": m["content"]} for m in messages if m.get("role") in ("user", "assistant")],
-    ).content[0].text
+    augmented = copy.deepcopy(messages)
+    if provider == "openai":
+        context_lines = [f"[Source: {r['source']}] {r['content']}" for r in results]
+        context = "Relevant context:\n" + "\n".join(context_lines)
+        augmented.insert(0, {"role": "system", "content": context})
+    else:  # anthropic
+        for msg in augmented:
+            if msg["role"] == "user":
+                if isinstance(msg["content"], str):
+                    msg["content"] = [{"type": "text", "text": msg["content"]}]
+                for r in results:
+                    search_block = {
+                        "type": "search_result",
+                        "source": r["source"],
+                        "title": r["title"],
+                        "content": [{"type": "text", "text": r["content"]}],
+                    }
+                    msg["content"].insert(0, search_block)
+                break
+    complete = _get_complete_callable()
+    return complete(augmented)

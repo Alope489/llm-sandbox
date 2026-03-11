@@ -8,6 +8,7 @@ invoke the executor to fully run the downstream agent.
 from __future__ import annotations
 
 import json
+import os
 from typing import Any, Dict, Literal
 
 from src.wrapper import complete
@@ -15,6 +16,18 @@ from src.wrapper import complete
 
 AgentType = Literal["simulation", "kb", "processor"]
 ModeType = Literal["pass_through", "structured"]
+
+
+def _validate_runtime_environment() -> None:
+    provider = (os.environ.get("LLM_PROVIDER", "openai") or "openai").strip().lower()
+    if provider not in ("openai", "anthropic"):
+        raise RuntimeError(
+            "Invalid LLM_PROVIDER. Expected 'openai' or 'anthropic'."
+        )
+    if provider == "openai" and not os.environ.get("OPENAI_API_KEY"):
+        raise RuntimeError("Missing required environment variable: OPENAI_API_KEY")
+    if provider == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
+        raise RuntimeError("Missing required environment variable: ANTHROPIC_API_KEY")
 
 
 def _build_routing_messages(prompt: str) -> list[dict]:
@@ -42,6 +55,7 @@ Keep params minimal and only include keys the downstream agent can meaningfully 
 
 
 def _classify_with_llm(prompt: str) -> str:
+    _validate_runtime_environment()
     messages = _build_routing_messages(prompt)
     return complete(messages) or ""
 
