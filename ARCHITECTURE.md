@@ -171,6 +171,101 @@ This is an **LLM agent pipeline**. Integration tests must use the **real LLM wit
   - Fast feedback during development; they do **not** replace integration tests.
   - Run: `python -m pytest tests/ -v` (full suite includes both unit and integration).
 
+## Tools
+
+External computational tools that LLM pipelines can invoke are located under **`src/tools/`**. Each tool is self-contained: it includes its own Dockerfile, an in-container calculation script, and a host-side Python wrapper that the rest of the project imports.
+
+### `src/tools/elastic_constants_lammps/`
+
+Dockerised LAMMPS tool for computing the elastic constant tensor (C11, C12, C44) of FCC/BCC metals via EAM interatomic potentials.
+
+**Files**
+
+| File | Purpose |
+|---|---|
+| `Dockerfile` | Builds the container image from `condaforge/miniforge3:24.11.0-0`; installs LAMMPS `2024.08.29`, Python 3.12, numpy, and scipy from conda-forge; cleans caches to target ~1.2 GB final size. Tagged `elastic-lammps-tool:latest`. |
+| `elastic_tool.py` | In-container calculation script (see CLI and algorithm below). |
+| `host_wrapper.py` | Host-side Python module imported by LLM pipelines. Exports `compute_elastic_constants_tool`, `OPENAI_TOOL_SCHEMA`, and `ANTHROPIC_TOOL_SCHEMA`. Calls `docker run` via `subprocess.run` (no Docker SDK needed), captures JSON output from `elastic_tool.py`, and returns a result dict. |
+| `README.md` | Setup and usage instructions: how to build the image, populate potential files, and invoke the tool from Python or directly with Docker. |
+| `potentials/Al.eam.alloy` | Placeholder — replace with real Al EAM potential data (e.g. Mishin 1999). |
+| `potentials/Cu.eam.alloy` | Placeholder — replace with real Cu EAM potential data (e.g. Mishin 2001). |
+| `potentials/Ni.eam.alloy` | Placeholder — replace with real Ni EAM potential data (e.g. Mishin 1999). |
+
+**`elastic_tool.py` CLI**:
+
+```
+--composition    (required)  Element symbol: Al, Cu, Ni, Fe, W, Mo
+--potential      (optional)  Absolute path to EAM/alloy potential inside container (auto-resolved if omitted)
+--supercell_size (default 4) Unit cells per axis (4 → 256 atoms for FCC)
+```
+
+**`elastic_tool.py` algorithm** (Ghafarollahi & Buehler, AtomAgents):
+
+1. Look up crystal structure (FCC/BCC) and trial a₀ from a hardcoded element table.
+2. **Box relaxation** — FIRE minimiser with `fix box/relax iso 0.0` finds the potential's true equilibrium a₀ and records `lx_eq`.
+3. **Strain loop** — For ε ∈ {−0.01, −0.005, +0.005, +0.01}:
+   - Uniaxial e11 (`change_box x scale 1+ε`): extract P_xx → C11, P_yy → C12.
+   - Engineering shear e12 (`change_box xy final ε·lx_eq`): extract P_xy → C44.
+   - Atomic positions relaxed at fixed box after each deformation.
+4. **Linear regression** — `numpy.polyfit`; σ = −P (bar) × 1e-4 GPa/bar gives slope = elastic constant.
+
+**Output JSON**:
+
+```json
+{"composition": "Al", "C11": 114.3, "C12": 61.8, "C44": 31.6,
+ "runtime_seconds": 52.1, "status": "ok"}
+```
+
+**Build the image** (run from `src/tools/elastic_constants_lammps/`):
+
+```bash
+docker build -t elastic-lammps-tool:latest .
+```
+
+**Integration with LLM pipelines**:
+
+```python
+from src.tools.elastic_constants_lammps.host_wrapper import compute_elastic_constants_tool
+
+# Composition-only call — potential is resolved automatically
+results = compute_elastic_constants_tool("Al")
+# returns: {"composition": "Al", "C11": float, "C12": float, "C44": float,
+#           "runtime_seconds": float, "status": "ok"}
+```
+
+**Automatic potential mapping** (`_DEFAULT_POTENTIALS` in `host_wrapper.py`):
+
+Resolution order when `potential=None`:
+1. Look up the element symbol in `_DEFAULT_POTENTIALS` (Al, Cu, Ni, Fe, W, Mo are pre-mapped).
+2. Fall back to `/app/potentials/{composition}.eam.alloy` for unknown elements.
+3. An explicit `potential` argument always overrides the mapping.
+
+**Tool schemas**:
+
+`host_wrapper.py` exports `OPENAI_TOOL_SCHEMA` and `ANTHROPIC_TOOL_SCHEMA` for direct use with provider clients:
+
+```python
+from src.tools.elastic_constants_lammps.host_wrapper import OPENAI_TOOL_SCHEMA, ANTHROPIC_TOOL_SCHEMA
+
+# OpenAI
+client.chat.completions.create(model="gpt-4o", messages=[...], tools=[OPENAI_TOOL_SCHEMA])
+
+# Anthropic
+client.messages.create(model="claude-sonnet-4-6", messages=[...], tools=[ANTHROPIC_TOOL_SCHEMA])
+```
+
+**Environment variables** (optional overrides read by `host_wrapper.py`):
+
+| Variable | Purpose |
+|---|---|
+| `ELASTIC_IMAGE` | Docker image name (default: `elastic-lammps-tool:latest`) |
+
+**Tests**:
+- `tests/test_elastic_tool.py` — 11 unit tests covering element lookup, argparse, regression math, JSON schema, and error handling. No LAMMPS or Docker required.
+- `tests/test_host_wrapper.py` — 20 unit tests covering Docker command structure, automatic potential mapping, explicit override, error paths (timeout, FileNotFoundError, bad JSON, non-zero exit), env override, and schema structure. No Docker required.
+
+---
+
 ## Tooling and agents
 
 - **Integration testing agent**: `.cursor/skills/integration-testing/SKILL.md` — Runs pytest from project root. **Integration tests** = E2E tests in `tests/integration/` with real LLM; do not omit or mock the LLM for integration. Trigger: "run integration tests", "run tests", "verify the build", "make sure tests pass".
