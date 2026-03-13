@@ -46,11 +46,25 @@ EV_PER_ANG3_TO_GPA = 160.2174  # 1 eV/Å³ = 160.2174 GPa
 
 def get_energy_at_shear(gamma: float, composition: str, pot_path: str,
                          supercell_size: int) -> tuple[float, float]:
-    """Return (pe_eV, V0_ang3) for one shear strain value.
+    """Return potential energy and equilibrium volume for one shear strain state.
 
-    Fresh LAMMPS instance per call — no state reuse.
-    Box is relaxed at γ=0 first; shear is then applied via change_box xy;
-    energy is read after run 0 with NO atomic minimization.
+    Builds a fresh LAMMPS instance, relaxes the box at zero strain, applies
+    engineering shear ``gamma`` via ``change_box xy``, then reads energy after
+    ``run 0`` with no atomic minimization (correct for monatomic Bravais lattices).
+
+    Args:
+        gamma: Engineering shear strain γ (dimensionless). Zero gives the
+            undeformed reference state.
+        composition: Element symbol (must be a key in ``ELEMENTS``).
+        pot_path: Absolute path to the EAM/alloy or EAM/fs potential file.
+        supercell_size: Number of unit cells per axis.
+
+    Returns:
+        Tuple ``(pe_eV, V0_ang3)`` where ``pe_eV`` is the potential energy in
+        eV and ``V0_ang3`` is the equilibrium volume in Å³.
+
+    Postconditions:
+        - The LAMMPS instance is closed before returning.
     """
     from lammps import lammps  # type: ignore
 
@@ -99,7 +113,19 @@ def get_energy_at_shear(gamma: float, composition: str, pot_path: str,
 # ---------------------------------------------------------------------------
 
 def compute_c44_energy(composition: str) -> float:
-    """Compute C44 (GPa) via energy second-derivative for the given element."""
+    """Compute C44 (GPa) via the energy second-derivative method.
+
+    Fits a quadratic to ΔE vs γ over ``SHEAR_STRAINS`` and returns the
+    elastic constant from the leading coefficient:
+        C44 = 2 * a₂ / V₀ * EV_PER_ANG3_TO_GPA
+    where a₂ is the quadratic coefficient from ``numpy.polyfit``.
+
+    Args:
+        composition: Element symbol (must be a key in ``ELEMENTS``).
+
+    Returns:
+        C44 in GPa.
+    """
     energies = []
     v0 = None
     for gamma in SHEAR_STRAINS:

@@ -48,6 +48,19 @@ EXPECTED_C44 = {
 
 def _build_lammps(composition: str, pot_path: str, supercell_size: int,
                    orient_x=None, orient_y=None, orient_z=None):
+    """Instantiate and configure a LAMMPS object for the given composition.
+
+    Args:
+        composition: Element symbol (must be a key in ``ELEMENTS``).
+        pot_path: Absolute path to the EAM/alloy or EAM/fs potential file.
+        supercell_size: Number of unit cells per axis.
+        orient_x: Optional lattice orientation string for x-axis (e.g. ``"1 1 0"``).
+        orient_y: Optional lattice orientation string for y-axis.
+        orient_z: Optional lattice orientation string for z-axis.
+
+    Returns:
+        Configured ``lammps.lammps`` instance ready for box relaxation.
+    """
     from lammps import lammps  # type: ignore
 
     elem = ELEMENTS[composition]
@@ -76,6 +89,17 @@ def _build_lammps(composition: str, pot_path: str, supercell_size: int,
 
 
 def _relax_and_get_lx(lmp) -> float:
+    """Run CG box relaxation and return the equilibrium x box length.
+
+    Args:
+        lmp: Configured LAMMPS instance (atoms already created).
+
+    Returns:
+        Equilibrium box length lx in Angstroms after ISO pressure relaxation.
+
+    Postconditions:
+        - Box is converted to triclinic and at its minimum-energy geometry.
+    """
     lmp.commands_list([
         "min_style cg",
         "fix 1 all box/relax iso 0.0 vmax 0.001",

@@ -38,14 +38,10 @@ potentials/
     Al.eam.alloy   # e.g. Mishin et al. (1999), Phys. Rev. B 59, 3393
     Cu.eam.alloy   # e.g. Mishin et al. (2001), Phys. Rev. B 63, 224106
     Ni.eam.alloy   # e.g. Mishin et al. (1999), Acta Mater. 47, 2103
-    Fe.eam.alloy   # e.g. Mendelev et al. (2003), Philos. Mag. 83, 3977
-    W.eam.alloy    # e.g. Bonny et al. (2014), Modelling Simul. Mater. Sci. Eng. 22
+    Fe.eam.fs      # e.g. Mendelev et al. (2003), Philos. Mag. 83, 3977
+    W.eam.alloy    # e.g. Zhou, Johnson, Wadley (2004), Phys. Rev. B 69, 144113
     Mo.eam.alloy   # e.g. Zhou et al. (2004), Phys. Rev. B 69, 144113
 ```
-
-All files currently present are empty placeholders. Replace them with real
-data (e.g. from the [NIST Interatomic Potentials Repository](https://www.ctcms.nist.gov/potentials/))
-then rebuild the image.
 
 ---
 
@@ -56,7 +52,7 @@ then rebuild the image.
 | Al      | FCC       | 4.05         | `/app/potentials/Al.eam.alloy` |
 | Cu      | FCC       | 3.615        | `/app/potentials/Cu.eam.alloy` |
 | Ni      | FCC       | 3.52         | `/app/potentials/Ni.eam.alloy` |
-| Fe      | BCC       | 2.87         | `/app/potentials/Fe.eam.alloy` |
+| Fe      | BCC       | 2.87         | `/app/potentials/Fe.eam.fs`    |
 | W       | BCC       | 3.165        | `/app/potentials/W.eam.alloy`  |
 | Mo      | BCC       | 3.147        | `/app/potentials/Mo.eam.alloy` |
 
@@ -155,14 +151,23 @@ response = client.messages.create(
 
 ## Algorithm
 
-1. **Box relaxation** — FIRE minimiser with `fix box/relax iso 0.0` finds the
+1. **Box relaxation** — CG minimiser with `fix box/relax iso 0.0` finds the
    potential's equilibrium lattice parameter.
-2. **Strain loop** — For ε ∈ {−0.01, −0.005, +0.005, +0.01}:
+2. **Strain loop** — For ε ∈ {−0.01, −0.005, +0.005, +0.01} (fresh LAMMPS
+   instance per strain state):
    - Apply uniaxial strain e11 (`change_box x scale`) → extract P_xx, P_yy.
-   - Apply engineering shear e12 (`change_box xy final`) → extract P_xy.
    - Relax atomic positions at fixed box after each deformation.
-3. **Linear regression** — `numpy.polyfit` on stress vs strain; slope ×
-   (−1 bar→GPa) gives C11, C12, C44.
+   - C11 and C12 from linear regression of P_xx/P_yy vs ε (slope × −1 bar→GPa).
+3. **C44 via [110] rotation** — Build a second box with x‖[110], y‖[−110],
+   z‖[001]. Apply the same uniaxial x-strains, minimize atoms, read P_xx. Then:
+
+   ```
+   C44 = E_110 − (C11 + C12) / 2
+   ```
+
+   where E_110 is the slope of (−P_xx) vs ε in the rotated frame. This exploits
+   C′₁₁ = (C11+C12)/2 + C44 for cubic symmetry and avoids the off-diagonal
+   virial P_xy, which is unreliable for EAM potentials in this LAMMPS build.
 
 ---
 

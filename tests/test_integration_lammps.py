@@ -120,7 +120,7 @@ def test_elastic_Cu():
 
 @_skip_no_docker
 def test_elastic_Ni():
-    """Ni (FCC, Mishin 2004): C11≈249, C12≈154, C44≈123 GPa."""
+    """Ni (FCC, Mishin 1999): C11≈251, C12≈155, C44≈138 GPa."""
     result = compute_elastic_constants_tool(composition="Ni", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
