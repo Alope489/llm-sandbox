@@ -352,3 +352,80 @@ Accessible via `agent.timing` after `run_and_report()` or `run_optimization_loop
 ## Tooling and agents
 
 - **Integration testing agent**: `.cursor/skills/integration-testing/SKILL.md` — Runs pytest from project root. **Integration tests** = E2E tests in `tests/integration/` with real LLM; do not omit or mock the LLM for integration. Trigger: "run integration tests", "run tests", "verify the build", "make sure tests pass".
+
+---
+
+## EAM Potential Files
+
+**Location**: `src/tools/elastic_constants_lammps/potentials/`
+
+Six real EAM interatomic potential files downloaded from the NIST Interatomic Potentials Repository
+and committed as static reference data.  They are baked into the Docker image via `COPY potentials/`.
+
+| Canonical filename | Pair style | Paper |
+|--------------------|-----------|-------|
+| `Al.eam.alloy` | `eam/alloy` | Mishin et al. (1999), *PRB* 59, 3393 |
+| `Cu.eam.alloy` | `eam/alloy` | Mishin et al. (2001), *PRB* 63, 224106 |
+| `Ni.eam.alloy` | `eam/alloy` | Mishin et al. (1999), *PRB* 59, 3393 |
+| `Fe.eam.fs` | `eam/fs` | Mendelev et al. (2003), *Phil. Mag.* 83, 3977 |
+| `W.eam.alloy` | `eam/alloy` | Zhou, Johnson, Wadley (2004), *PRB* 69, 144113 |
+| `Mo.eam.alloy` | `eam/alloy` | Zhou, Johnson, Wadley (2004), *PRB* 69, 144113 |
+
+`elastic_tool.py` auto-detects `pair_style eam/fs` vs `eam/alloy` from the file extension.
+Full provenance (original NIST filenames, download URLs, download date) is in `potentials/SOURCES.md`.
+
+---
+
+## Level 3 Integration Tests — Real Docker + LAMMPS
+
+**File**: `tests/test_integration_lammps.py`
+
+These tests exercise the full stack: Python `host_wrapper.py` → Docker container → LAMMPS →
+JSON result.  They are **skipped automatically** when the Docker image is not built, so CI
+always passes without Docker.
+
+### Skip guard
+
+```python
+_skip_no_docker = pytest.mark.skipif(
+    not _docker_image_exists("elastic-lammps-tool:latest"),
+    reason="Docker image elastic-lammps-tool:latest not built",
+)
+```
+
+### Three-layer validation per element
+
+| Layer | What is checked |
+|-------|----------------|
+| 1 — Status/schema | `status == "ok"`, C11/C12/C44 are floats, `runtime_seconds > 0` |
+| 2 — Born stability | `C11 > C12 > 0`, `C11 - C12 > 0`, `C11 + 2*C12 > 0` (C44 excluded pending fix) |
+| 3 — EAM tight ranges | ±5% around known EAM-computed C11 and C12 values (C44 excluded pending fix) |
+
+### EAM-specific expected ranges (Layer 3)
+
+| Element | C11 (GPa) | C12 (GPa) |
+|---------|-----------|-----------|
+| Al (FCC, Mishin 1999) | 108–122 | 60–70 |
+| Cu (FCC, Mishin 2001) | 165–178 | 118–128 |
+| Ni (FCC, Mishin 1999) | 244–258 | 148–162 |
+| Fe (BCC, Mendelev 2003) | 231–245 | 138–150 |
+| W (BCC, Zhou 2004) | 516–536 | 195–208 |
+| Mo (BCC, Zhou 2004) | 451–474 | 162–172 |
+
+### How to run
+
+```bash
+# 1. Build the image (one-time, ~15 min)
+docker build -t elastic-lammps-tool:latest src/tools/elastic_constants_lammps/
+
+# 2. Run Level 3 tests
+py -m pytest tests/test_integration_lammps.py -v
+
+# 3. Run all tests including Level 3
+py -m pytest -v
+```
+
+### End-to-end pipeline test
+
+`test_sim_agent_prefetch_with_real_docker` — exercises `SimulationAgent._prefetch_tool_context()`
+with a real Docker-backed tool call and a real OpenAI API call. Requires `OPENAI_API_KEY`.

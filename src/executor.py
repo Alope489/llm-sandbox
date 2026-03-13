@@ -105,9 +105,9 @@ def _apply_mode(agent: str, mode: str, params: Dict[str, Any], original_prompt: 
     if mode == "structured":
         return params
     if agent == "kb":
-        return {"query": original_prompt or ""}
+        return {"query": original_prompt or params.get("query", "")}
     if agent == "processor":
-        return {"input_text": original_prompt or ""}
+        return {"input_text": original_prompt or params.get("input_text", "")}
     if agent == "simulation":
         return {}
     return params

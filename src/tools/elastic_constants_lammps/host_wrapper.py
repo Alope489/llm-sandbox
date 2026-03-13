@@ -40,7 +40,7 @@ _DEFAULT_POTENTIALS = {
     "Al": "/app/potentials/Al.eam.alloy",
     "Cu": "/app/potentials/Cu.eam.alloy",
     "Ni": "/app/potentials/Ni.eam.alloy",
-    "Fe": "/app/potentials/Fe.eam.alloy",
+    "Fe": "/app/potentials/Fe.eam.fs",
     "W":  "/app/potentials/W.eam.alloy",
     "Mo": "/app/potentials/Mo.eam.alloy",
 }

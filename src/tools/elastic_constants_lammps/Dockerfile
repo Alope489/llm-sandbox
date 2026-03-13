@@ -1,4 +1,4 @@
-FROM condaforge/miniforge3:24.11.0-0
+FROM condaforge/miniforge3:26.1.0-0
 
 # Install LAMMPS with Python interface from conda-forge in one layer,
 # then clean all conda caches to minimise final image size.
