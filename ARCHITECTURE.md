@@ -266,6 +266,89 @@ client.messages.create(model="claude-sonnet-4-6", messages=[...], tools=[ANTHROP
 
 ---
 
+## Tool Registry
+
+**Location**: `src/tool_registry.py`
+
+Central, extensible registry that maps tool names to callable Python functions and their provider-specific LLM schemas. All agents import from this single module — no agent needs to know the details of any tool.
+
+### Public API
+
+| Function | Purpose |
+|---|---|
+| `register(name, fn, openai_schema, anthropic_schema)` | Register a tool (called at module import time for built-in tools) |
+| `get_openai_schemas()` | Return all OpenAI function-calling schema dicts |
+| `get_anthropic_schemas()` | Return all Anthropic tool-use schema dicts |
+| `get_entries()` | Return all entries as `{name, fn, openai_schema, anthropic_schema}` dicts |
+| `call(name, kwargs)` | Execute a tool by name with given kwargs, return result dict |
+
+`compute_elastic_constants_tool` from `src/tools/elastic_constants_lammps/host_wrapper.py` is registered automatically at module import.
+
+**Extensibility**: adding a future tool requires a single `register()` call anywhere in the codebase — no changes to any agent or wrapper.
+
+### `complete_with_tools` in `src/wrapper.py`
+
+Tool-calling loop alongside the existing `complete()` function:
+
+```python
+MAX_TOOL_CALLS = 5
+
+def complete_with_tools(messages, provider=None) -> str:
+    ...
+```
+
+- **OpenAI**: sends `tools=get_openai_schemas()` to `chat.completions.create`, detects `tool_calls` on the response, executes each via `tool_registry.call`, appends `tool` role messages, loops.
+- **Anthropic**: sends `tools=get_anthropic_schemas()`, detects `tool_use` content blocks, appends `tool_result` user blocks, loops.
+- Logs each tool call: `[tool] <name> called — <elapsed>s — result status: <status>`.
+- Hard guard: exits after `MAX_TOOL_CALLS = 5` iterations regardless of LLM behavior.
+
+---
+
+## Simulation Agent — Tool-Augmented Mode
+
+**Location**: `src/multi/sim/agent.py`
+
+### Pre-computation phase (Option A)
+
+When `run_optimization_loop(use_tools=True)` or `run_and_report(use_tools=True)` is called:
+
+1. `_prefetch_tool_context()` sends `_PREFETCH_PROMPT` to the LLM via `complete_with_tools`. The prompt invites (but does not command) the LLM to call any tools it judges relevant.
+2. The LLM may call `compute_elastic_constants_tool` for constituent elements (Ni, Al, etc.) or return a plain text summary with no tool calls — its choice.
+3. The response is stored in `self._tool_context`.
+4. `_system_prompt()` appends `self._tool_context` to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
+5. Every subsequent `get_llm_suggestion()` call in the optimization loop uses this enriched system prompt.
+
+`use_tools` defaults to `False` — all existing callers and tests are unaffected.
+
+### `ask_with_tools(query: str) -> str`
+
+Public method for ad-hoc material science queries. Calls `complete_with_tools` directly; the LLM can invoke any registered tool at its discretion.
+
+### Per-iteration timing
+
+`self.timing: list[dict]` is populated after each `_call_openai` / `_call_anthropic` call during the optimization loop. Each entry:
+
+```python
+{
+    "iteration": int,           # 1-based
+    "elapsed_seconds": float,   # wall-clock time for the API call
+    "prompt_tokens": int,       # from response.usage
+    "completion_tokens": int,   # from response.usage
+    "tokens_per_second": float, # completion_tokens / elapsed_seconds
+}
+```
+
+Accessible via `agent.timing` after `run_and_report()` or `run_optimization_loop()` completes. The public return type of both methods is unchanged.
+
+### Tests
+
+- `tests/test_tool_registry.py` — 5 unit tests (register, schema shapes, call dispatch, elastic tool presence).
+- `tests/test_wrapper.py` — 5 unit tests for `complete_with_tools` (no-call path, single-loop OpenAI, single-loop Anthropic, MAX_TOOL_CALLS guard OpenAI, MAX_TOOL_CALLS guard Anthropic).
+- `tests/test_sim_agent.py` — 6 unit tests (prefetch called/skipped, context in system prompt, ask_with_tools, run_and_report passthrough, timing shape).
+- `tests/test_integration_tool_calling.py` — 2 Level 2 integration tests (real LLM API + mocked `tool_registry.call`). Assert the live LLM autonomously emits a tool call when asked a material science question. No Docker required.
+
+---
+
 ## Tooling and agents
 
 - **Integration testing agent**: `.cursor/skills/integration-testing/SKILL.md` — Runs pytest from project root. **Integration tests** = E2E tests in `tests/integration/` with real LLM; do not omit or mock the LLM for integration. Trigger: "run integration tests", "run tests", "verify the build", "make sure tests pass".

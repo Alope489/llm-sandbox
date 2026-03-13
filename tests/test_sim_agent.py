@@ -2,13 +2,16 @@
 
 All agent tests are end-to-end: they use the real LLM (no mocks). Skip when no API key.
 Format tests exercise the formatter only (no agent/LLM).
+Unit tests for Option A pre-computation and timing are mocked.
 """
 import os
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from src.multi.sim.agent import (
     SimulationAgent,
+    SYSTEM_PROMPT,
     format_simulation_output,
     HistoryEntry,
 )
@@ -100,3 +103,93 @@ def test_simulation_agent_integration_real_llm():
     assert "Iteration 1:" in output
     assert "Iteration 3:" in output
     assert "Best (successful):" in output or "No successful runs" in output
+
+
+# ---------------------------------------------------------------------------
+# Option A pre-computation + timing unit tests (all mocked)
+# ---------------------------------------------------------------------------
+
+@patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
+@patch("src.wrapper.complete_with_tools", return_value="Ni C11=247 GPa")
+def test_prefetch_called_when_use_tools_true(mock_cwt, mock_sim):
+    """run_optimization_loop with use_tools=True calls complete_with_tools once before the loop."""
+    with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
+        agent = SimulationAgent(max_iterations=1)
+        agent.run_optimization_loop(use_tools=True)
+    mock_cwt.assert_called_once()
+
+
+@patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
+@patch("src.wrapper.complete_with_tools")
+def test_prefetch_not_called_when_use_tools_false(mock_cwt, mock_sim):
+    """Default use_tools=False means complete_with_tools is never invoked — backward compatible."""
+    with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
+        agent = SimulationAgent(max_iterations=1)
+        agent.run_optimization_loop(use_tools=False)
+    mock_cwt.assert_not_called()
+
+
+def test_tool_context_injected_into_system_prompt():
+    """_system_prompt() returns SYSTEM_PROMPT unchanged when _tool_context is empty,
+    and appends the context string when set."""
+    agent = SimulationAgent()
+    assert agent._system_prompt() == SYSTEM_PROMPT
+
+    agent._tool_context = "Ni C11=247 GPa, C44=122 GPa"
+    result = agent._system_prompt()
+    assert SYSTEM_PROMPT in result
+    assert "Ni C11=247 GPa" in result
+    assert result != SYSTEM_PROMPT
+
+
+@patch("src.wrapper.complete_with_tools", return_value="C11=247 GPa for Ni")
+def test_ask_with_tools_returns_string(mock_cwt):
+    """ask_with_tools() returns the string produced by complete_with_tools."""
+    agent = SimulationAgent()
+    result = agent.ask_with_tools("What are elastic constants of Ni?")
+    assert isinstance(result, str)
+    assert result == "C11=247 GPa for Ni"
+    mock_cwt.assert_called_once()
+
+
+@patch("src.multi.sim.agent.SimulationAgent.run_optimization_loop")
+def test_run_and_report_passes_use_tools(mock_loop):
+    """run_and_report forwards use_tools=True to run_optimization_loop."""
+    mock_loop.return_value = []
+    agent = SimulationAgent()
+    agent.run_and_report(use_tools=True)
+    _, kwargs = mock_loop.call_args
+    assert kwargs.get("use_tools") is True
+
+
+@patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
+def test_timing_populated_after_run(mock_sim):
+    """self.timing has one entry per iteration with correct keys and types."""
+    mock_usage = MagicMock()
+    mock_usage.prompt_tokens = 50
+    mock_usage.completion_tokens = 5
+    mock_msg = MagicMock()
+    mock_msg.content = "15.0"
+    mock_msg.tool_calls = []
+    mock_msg.refusal = None
+    mock_choice = MagicMock()
+    mock_choice.message = mock_msg
+    mock_response = MagicMock()
+    mock_response.choices = [mock_choice]
+    mock_response.usage = mock_usage
+
+    with patch("openai.OpenAI") as mock_client_cls:
+        mock_client_cls.return_value.chat.completions.create.return_value = mock_response
+        agent = SimulationAgent(max_iterations=3)
+        agent.run_optimization_loop()
+
+    assert len(agent.timing) == 3
+    for entry in agent.timing:
+        assert "iteration" in entry
+        assert "elapsed_seconds" in entry
+        assert "prompt_tokens" in entry
+        assert "completion_tokens" in entry
+        assert "tokens_per_second" in entry
+        assert isinstance(entry["elapsed_seconds"], float)
+        assert isinstance(entry["prompt_tokens"], int)
+        assert isinstance(entry["completion_tokens"], int)

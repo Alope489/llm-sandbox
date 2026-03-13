@@ -189,33 +189,67 @@ def compute_elastic_constants_tool(
 # Tool schemas
 # ---------------------------------------------------------------------------
 
+_TOOL_DESCRIPTION = (
+    "Run a high-fidelity LAMMPS molecular dynamics simulation to compute the three "
+    "independent elastic constants C11, C12, and C44 (all in GPa) for a pure cubic "
+    "(FCC or BCC) metallic element using EAM interatomic potentials.\n\n"
+    "Physical meaning:\n"
+    "  C11 — longitudinal stiffness; resistance to uniaxial compression/extension along "
+    "a crystal axis. Higher C11 means a stiffer material.\n"
+    "  C12 — cross-stiffness; transverse stress induced by axial strain. Together with "
+    "C11 it determines bulk modulus: K = (C11 + 2*C12) / 3.\n"
+    "  C44 — shear stiffness; resistance to shear deformation. Higher C44 means more "
+    "resistance to slip and plastic deformation.\n\n"
+    "Call this tool when:\n"
+    "  - You need simulation-derived elastic moduli rather than approximate textbook values.\n"
+    "  - You want to reason about mechanical stiffness, anisotropy, or deformation "
+    "resistance of a constituent element in an alloy.\n"
+    "  - You need C11, C12, C44 to compute derived quantities such as bulk modulus K, "
+    "shear modulus G = C44, or Zener anisotropy A = 2*C44 / (C11 - C12).\n"
+    "  - The prompt mentions elastic constants, stiffness, moduli, or mechanical properties.\n\n"
+    "Supported elements with auto-mapped EAM potentials: Al (FCC), Cu (FCC), Ni (FCC), "
+    "Fe (BCC), W (BCC), Mo (BCC). Runtime: 30-120 seconds."
+)
+
+_COMPOSITION_DESCRIPTION = (
+    "Element symbol for the metal to simulate. "
+    "Supported with auto-mapped potentials: Al, Cu, Ni, Fe, W, Mo. "
+    "For other elements supply the 'potential' argument explicitly."
+)
+
+_POTENTIAL_DESCRIPTION = (
+    "Optional override: absolute path to an EAM/alloy potential file inside the container "
+    "(e.g. '/app/potentials/MyElement.eam.alloy'). "
+    "Leave unset to use the automatically mapped potential for the given element symbol. "
+    "Only supply this when using a custom or non-standard potential."
+)
+
+_SUPERCELL_DESCRIPTION = (
+    "Number of unit cells per axis for the simulation supercell. "
+    "Default 4 produces 256 atoms for FCC or 128 for BCC. "
+    "Increase to 6 or 8 for higher accuracy at the cost of longer runtime (up to 120 s). "
+    "Decrease to 3 for a quick smoke-test (~10 s) with lower accuracy."
+)
+
 OPENAI_TOOL_SCHEMA = {
     "type": "function",
     "function": {
         "name": "compute_elastic_constants_tool",
-        "description": (
-            "Compute elastic constants C11, C12, C44 (GPa) for a cubic FCC/BCC metal "
-            "using a LAMMPS EAM simulation (Ghafarollahi & Buehler method). "
-            "The potential file is selected automatically from the element symbol. "
-            "Runtime is 30–120 s depending on supercell size."
-        ),
+        "description": _TOOL_DESCRIPTION,
         "parameters": {
             "type": "object",
             "properties": {
                 "composition": {
                     "type": "string",
-                    "description": "Element symbol. Supported: Al, Cu, Ni, Fe, W, Mo.",
+                    "description": _COMPOSITION_DESCRIPTION,
                 },
                 "potential": {
                     "type": "string",
-                    "description": (
-                        "Optional override: EAM/alloy potential path inside the container. "
-                        "Auto-selected from the element symbol if omitted."
-                    ),
+                    "description": _POTENTIAL_DESCRIPTION,
                 },
                 "supercell_size": {
                     "type": "integer",
-                    "description": "Unit cells per axis. Default 4 (256 atoms for FCC).",
+                    "description": _SUPERCELL_DESCRIPTION,
                 },
             },
             "required": ["composition"],
@@ -225,29 +259,21 @@ OPENAI_TOOL_SCHEMA = {
 
 ANTHROPIC_TOOL_SCHEMA = {
     "name": "compute_elastic_constants_tool",
-    "description": (
-        "Compute elastic constants C11, C12, C44 (GPa) for a cubic FCC/BCC metal "
-        "using a LAMMPS EAM simulation (Ghafarollahi & Buehler method). "
-        "The potential file is selected automatically from the element symbol. "
-        "Runtime is 30–120 s depending on supercell size."
-    ),
+    "description": _TOOL_DESCRIPTION,
     "input_schema": {
         "type": "object",
         "properties": {
             "composition": {
                 "type": "string",
-                "description": "Element symbol. Supported: Al, Cu, Ni, Fe, W, Mo.",
+                "description": _COMPOSITION_DESCRIPTION,
             },
             "potential": {
                 "type": "string",
-                "description": (
-                    "Optional override: EAM/alloy potential path inside the container. "
-                    "Auto-selected from the element symbol if omitted."
-                ),
+                "description": _POTENTIAL_DESCRIPTION,
             },
             "supercell_size": {
                 "type": "integer",
-                "description": "Unit cells per axis. Default 4 (256 atoms for FCC).",
+                "description": _SUPERCELL_DESCRIPTION,
             },
         },
         "required": ["composition"],

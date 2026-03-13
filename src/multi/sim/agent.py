@@ -2,9 +2,23 @@
 Optimizer agent: uses an LLM (OpenAI or Anthropic) to suggest cooling_rate_K_per_min
 for the nickel-based superalloy material simulation. Goal: maximize yield_strength_MPa
 while keeping porosity_percent below 5.0. Schema-aligned variable names.
+
+Pre-computation phase (Option A)
+---------------------------------
+When run_and_report or run_optimization_loop is called with use_tools=True, a single
+pre-computation phase runs before the optimization loop. The LLM is offered all
+registered tools and asked (but not commanded) to gather any material properties it
+judges relevant. The result is stored in self._tool_context and injected into the
+system prompt for every subsequent cooling rate suggestion.
+
+Per-iteration timing
+--------------------
+self.timing is populated after each API call with elapsed_seconds, prompt_tokens,
+completion_tokens, and tokens_per_second for throughput analysis.
 """
 import os
 import re
+import time
 from typing import Callable, List, Optional, Tuple
 
 from dotenv import load_dotenv
@@ -28,6 +42,16 @@ SYSTEM_PROMPT = f"""You are a Materials Informatics Specialist optimizing heat t
 You will receive a history of previous attempts: each line gives cooling_rate_K_per_min, yield_strength_MPa, and success (True/False). Use this to suggest the next cooling_rate_K_per_min to try.
 
 Respond with ONLY a single number: the next cooling_rate_K_per_min in K/min (e.g. 15 or 12.5). No units, no explanation, no markdown, no other text. Typical range: about 5 to 50 K/min; going too high risks porosity > 5% and failure."""
+
+_PREFETCH_PROMPT = (
+    "We are about to run a heat treatment optimization for the following alloy:\n\n"
+    + MATERIAL_CONTEXT + "\n\n"
+    "Before optimization begins, you have access to simulation tools. "
+    "If you judge that any material properties (such as elastic constants) would help "
+    "inform better cooling rate suggestions, please use the available tools to gather them now. "
+    "If no tool data is needed, simply summarize what you already know. "
+    "Your response will be injected into the system prompt for the entire optimization run."
+)
 
 DEFAULT_COOLING_RATE = 15.0
 COOLDOWN_FALLBACK_RATE = 12.0  # fallback when LLM returns non-numeric
@@ -67,7 +91,6 @@ def _parse_cooling_rate_from_response(raw: str) -> Optional[float]:
     if not raw or not isinstance(raw, str):
         return None
     s = raw.strip()
-    # Allow optional units like "K/min" or "K/min." at the end
     match = re.search(r"[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?", s)
     if match:
         try:
@@ -81,6 +104,15 @@ class SimulationAgent:
     """
     Agent that runs the material simulation and uses an LLM to suggest the next
     cooling_rate_K_per_min. Maintains history and loops: simulate -> log -> get suggestion -> repeat.
+
+    Attributes:
+        provider: Active LLM provider ("openai" or "anthropic").
+        duration_hours: Simulation duration passed to run_material_simulation.
+        max_iterations: Number of optimization loop iterations.
+        history: List of (cooling_rate_K_per_min, yield_strength_MPa, success) tuples.
+        timing: List of per-iteration timing dicts populated after each API call.
+            Each dict has keys: iteration, elapsed_seconds, prompt_tokens,
+            completion_tokens, tokens_per_second.
     """
 
     def __init__(
@@ -93,6 +125,38 @@ class SimulationAgent:
         self.duration_hours = duration_hours
         self.max_iterations = max_iterations
         self.history: List[HistoryEntry] = []
+        self.timing: List[dict] = []
+        self._tool_context: str = ""
+
+    # ------------------------------------------------------------------
+    # Public: tool-augmented queries
+    # ------------------------------------------------------------------
+
+    def ask_with_tools(self, query: str) -> str:
+        """Ask a material science question using all registered tools.
+
+        The LLM may call any registered tool autonomously if it judges the
+        tool relevant to the query.
+
+        Args:
+            query: Natural-language question or task description.
+
+        Returns:
+            The LLM's final text response as a plain string.
+        """
+        from src.wrapper import complete_with_tools
+
+        return complete_with_tools(
+            [
+                {"role": "system", "content": MATERIAL_CONTEXT},
+                {"role": "user", "content": query},
+            ],
+            provider=self.provider,
+        )
+
+    # ------------------------------------------------------------------
+    # Public: optimization loop
+    # ------------------------------------------------------------------
 
     def get_llm_suggestion(self) -> float:
         """
@@ -109,7 +173,6 @@ class SimulationAgent:
         if value is not None:
             return max(0.1, min(100.0, value))
 
-        # Cooldown / error handling: LLM gave non-numeric text
         for _ in range(MAX_PARSE_ATTEMPTS - 1):
             if self.provider == "anthropic":
                 raw = self._call_anthropic()
@@ -120,47 +183,6 @@ class SimulationAgent:
                 return max(0.1, min(100.0, value))
 
         return COOLDOWN_FALLBACK_RATE
-
-    def _call_openai(self) -> str:
-        from openai import OpenAI
-
-        user_content = self._format_history_for_prompt()
-        response = OpenAI().chat.completions.create(
-            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_content},
-            ],
-            max_tokens=50,
-        )
-        msg = response.choices[0].message
-        if getattr(msg, "refusal", None):
-            return ""
-        return (msg.content or "").strip()
-
-    def _call_anthropic(self) -> str:
-        from anthropic import Anthropic
-
-        user_content = self._format_history_for_prompt()
-        response = Anthropic().messages.create(
-            model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
-            max_tokens=int(os.environ.get("MAX_TOKENS", "128")),
-            system=[{"type": "text", "text": SYSTEM_PROMPT}],
-            messages=[{"role": "user", "content": user_content}],
-        )
-        for block in response.content:
-            if getattr(block, "type", None) == "text":
-                return (getattr(block, "text", "") or "").strip()
-        return ""
-
-    def _format_history_for_prompt(self) -> str:
-        if not self.history:
-            return "No previous attempts. Suggest the first cooling_rate_K_per_min (one number only)."
-        lines = [
-            f"cooling_rate_K_per_min={rate}, yield_strength_MPa={y:.2f}, success={ok}"
-            for rate, y, ok in self.history
-        ]
-        return "Previous attempts:\n" + "\n".join(lines) + "\n\nNext cooling_rate_K_per_min (reply with one number only):"
 
     def run_simulation(self, cooling_rate_K_per_min: float) -> Tuple[float, bool]:
         """Run the material simulation for the given cooling_rate_K_per_min. Returns (yield_strength_MPa, success)."""
@@ -175,13 +197,29 @@ class SimulationAgent:
         self,
         initial_cooling_rate_K_per_min: float = DEFAULT_COOLING_RATE,
         on_step: Optional[Callable[[int, float, float, bool], None]] = None,
+        use_tools: bool = False,
     ) -> List[HistoryEntry]:
         """
         Run the loop: simulate -> log -> get LLM suggestion -> repeat for max_iterations.
-        If on_step is provided, call it after each run with (iteration_1based, cooling_rate_K_per_min, yield_strength_MPa, success).
-        Returns the full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
+
+        Args:
+            initial_cooling_rate_K_per_min: Starting cooling rate.
+            on_step: Optional callback invoked after each simulation step with
+                (iteration_1based, cooling_rate_K_per_min, yield_strength_MPa, success).
+            use_tools: When True, runs a pre-computation phase before the loop
+                where the LLM may call registered tools to gather material
+                properties. Results are injected into the system prompt.
+                Defaults to False to preserve backward compatibility.
+
+        Returns:
+            Full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
         """
         self.history = []
+        self.timing = []
+
+        if use_tools:
+            self._prefetch_tool_context()
+
         cooling_rate_K_per_min = initial_cooling_rate_K_per_min
 
         for i in range(self.max_iterations):
@@ -197,10 +235,18 @@ class SimulationAgent:
     def run_and_report(
         self,
         initial_cooling_rate_K_per_min: float = DEFAULT_COOLING_RATE,
+        use_tools: bool = False,
     ) -> Tuple[List[HistoryEntry], str]:
         """
         Run the optimization loop and return (history, output_string).
-        output_string is a human-readable log of each step and a summary, suitable for displaying in chat.
+
+        Args:
+            initial_cooling_rate_K_per_min: Starting cooling rate.
+            use_tools: Passed through to run_optimization_loop. When True,
+                enables the pre-computation tool-calling phase.
+
+        Returns:
+            Tuple of (history, human-readable log string).
         """
         lines: List[str] = []
 
@@ -212,5 +258,121 @@ class SimulationAgent:
         self.run_optimization_loop(
             initial_cooling_rate_K_per_min=initial_cooling_rate_K_per_min,
             on_step=on_step,
+            use_tools=use_tools,
         )
         return self.history, format_simulation_output(self.history, step_lines=lines)
+
+    # ------------------------------------------------------------------
+    # Private: pre-computation phase
+    # ------------------------------------------------------------------
+
+    def _prefetch_tool_context(self) -> str:
+        """Run the pre-computation tool-calling phase.
+
+        Sends _PREFETCH_PROMPT to the LLM with all registered tool schemas.
+        The LLM decides autonomously whether to call any tools. The resulting
+        text summary is stored in self._tool_context.
+
+        Returns:
+            The LLM's response text (also stored as self._tool_context).
+        """
+        from src.wrapper import complete_with_tools
+
+        self._tool_context = complete_with_tools(
+            [{"role": "user", "content": _PREFETCH_PROMPT}],
+            provider=self.provider,
+        )
+        return self._tool_context
+
+    def _system_prompt(self) -> str:
+        """Return the system prompt, appending tool context when available.
+
+        Returns:
+            Base SYSTEM_PROMPT, or SYSTEM_PROMPT with tool context appended.
+            Never mutates the module-level SYSTEM_PROMPT constant.
+        """
+        if not self._tool_context:
+            return SYSTEM_PROMPT
+        return SYSTEM_PROMPT + "\n\nMaterial properties gathered before this run:\n" + self._tool_context
+
+    # ------------------------------------------------------------------
+    # Private: provider calls
+    # ------------------------------------------------------------------
+
+    def _call_openai(self) -> str:
+        from openai import OpenAI
+
+        user_content = self._format_history_for_prompt()
+        t0 = time.perf_counter()
+        response = OpenAI().chat.completions.create(
+            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            messages=[
+                {"role": "system", "content": self._system_prompt()},
+                {"role": "user", "content": user_content},
+            ],
+            max_tokens=50,
+        )
+        elapsed = time.perf_counter() - t0
+        self._record_timing(
+            elapsed,
+            response.usage.prompt_tokens,
+            response.usage.completion_tokens,
+        )
+        msg = response.choices[0].message
+        if getattr(msg, "refusal", None):
+            return ""
+        return (msg.content or "").strip()
+
+    def _call_anthropic(self) -> str:
+        from anthropic import Anthropic
+
+        user_content = self._format_history_for_prompt()
+        t0 = time.perf_counter()
+        response = Anthropic().messages.create(
+            model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
+            max_tokens=int(os.environ.get("MAX_TOKENS", "128")),
+            system=[{"type": "text", "text": self._system_prompt()}],
+            messages=[{"role": "user", "content": user_content}],
+        )
+        elapsed = time.perf_counter() - t0
+        self._record_timing(
+            elapsed,
+            response.usage.input_tokens,
+            response.usage.output_tokens,
+        )
+        for block in response.content:
+            if getattr(block, "type", None) == "text":
+                return (getattr(block, "text", "") or "").strip()
+        return ""
+
+    def _format_history_for_prompt(self) -> str:
+        if not self.history:
+            return "No previous attempts. Suggest the first cooling_rate_K_per_min (one number only)."
+        lines = [
+            f"cooling_rate_K_per_min={rate}, yield_strength_MPa={y:.2f}, success={ok}"
+            for rate, y, ok in self.history
+        ]
+        return "Previous attempts:\n" + "\n".join(lines) + "\n\nNext cooling_rate_K_per_min (reply with one number only):"
+
+    def _record_timing(
+        self,
+        elapsed_seconds: float,
+        prompt_tokens: int,
+        completion_tokens: int,
+    ) -> None:
+        """Append a timing entry to self.timing.
+
+        Args:
+            elapsed_seconds: Wall-clock time for the API call.
+            prompt_tokens: Number of prompt/input tokens reported by the API.
+            completion_tokens: Number of completion/output tokens reported.
+        """
+        self.timing.append({
+            "iteration": len(self.timing) + 1,
+            "elapsed_seconds": round(elapsed_seconds, 3),
+            "prompt_tokens": prompt_tokens,
+            "completion_tokens": completion_tokens,
+            "tokens_per_second": round(
+                completion_tokens / elapsed_seconds if elapsed_seconds > 0 else 0.0, 2
+            ),
+        })
