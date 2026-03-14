@@ -20,5 +20,8 @@ COPY potentials/ /app/potentials/
 # Copy the in-container calculation script
 COPY elastic_tool.py /app/elastic_tool.py
 
+# Copy AtomAgents input scripts (verbatim originals, patched at runtime)
+COPY scripts/0_codes/ /app/scripts/
+
 # Default entry point runs the elastic tool script
 ENTRYPOINT ["python", "/app/elastic_tool.py"]

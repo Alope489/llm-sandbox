@@ -1,17 +1,22 @@
 """In-container LAMMPS script for computing elastic constants of FCC/BCC metals.
 
-Method:
-1. Box relaxation (CG minimiser + fix box/relax iso) to find equilibrium geometry.
-2. Strain loop over ε ∈ {-0.01, -0.005, +0.005, +0.01} — fresh LAMMPS instance
-   per strain state:
-   - Uniaxial e11 strain on standard [100] crystal → P_xx (→ C11), P_yy (→ C12).
-   - Uniaxial x-strain on [110]-rotated crystal → P_xx (→ E_110).
-     C44 = E_110 - (C11+C12)/2  (from cubic rotation: C'_11 = (C11+C12)/2 + C44).
-3. Linear regression (numpy.polyfit) on stress vs strain; slope × (-1 bar→GPa).
+Method (AtomAgents Voigt perturbation):
+1. Copy the five AtomAgents input scripts (in.elastic, displace.mod, init.mod,
+   potential.mod, compliance.py) verbatim from /app/scripts/ into a temporary
+   directory.
+2. Patch the copies minimally:
+   - init.mod: replace 4 Si-specific lines (lattice parameter, lattice type,
+     region geometry, atomic mass).
+   - potential.mod: replace 2 Si-specific lines (pair_style, pair_coeff).
+   - in.elastic: append 3 print statements so LAMMPS emits C11cubic, C12cubic,
+     C44cubic to log.lammps (these variables are already computed by in.elastic
+     but not printed in the original).
+3. Run ``lmp -in in.elastic`` via subprocess.
+4. Parse the 3 printed values from log.lammps.
 
-The [110] rotation method is used for C44 to avoid the off-diagonal virial (pxy)
-which is unreliable for EAM potentials in this LAMMPS build. Only diagonal
-stresses (pxx, pyy) are read throughout.
+LAMMPS performs all 6 finite-strain perturbations and all cubic averaging
+internally.  Python does no physics — it only patches input files and reads
+the final output lines.
 
 CLI
 ---
@@ -31,27 +36,61 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import re
+import shutil
+import subprocess
 import sys
+import tempfile
 import time
 
-import numpy as np
-
 # ---------------------------------------------------------------------------
-# Constants
+# Element data
 # ---------------------------------------------------------------------------
-
-BAR_TO_GPA = 1e-4
-
-STRAIN_VALUES = [-0.01, -0.005, 0.005, 0.01]
 
 ELEMENT_DATA = {
-    "Al": {"structure": "fcc", "a0": 4.05},
-    "Cu": {"structure": "fcc", "a0": 3.615},
-    "Ni": {"structure": "fcc", "a0": 3.52},
-    "Fe": {"structure": "bcc", "a0": 2.87},
-    "W":  {"structure": "bcc", "a0": 3.165},
-    "Mo": {"structure": "bcc", "a0": 3.147},
+    "Al": {"structure": "fcc", "a0": 4.05,  "mass": 26.982},
+    "Cu": {"structure": "fcc", "a0": 3.615, "mass": 63.546},
+    "Ni": {"structure": "fcc", "a0": 3.52,  "mass": 58.693},
+    "Fe": {"structure": "bcc", "a0": 2.87,  "mass": 55.845},
+    "W":  {"structure": "bcc", "a0": 3.165, "mass": 183.840},
+    "Mo": {"structure": "bcc", "a0": 3.147, "mass": 95.960},
 }
+
+# ---------------------------------------------------------------------------
+# AtomAgents patch targets — update here if scripts/0_codes/ files change
+# ---------------------------------------------------------------------------
+
+_LAMMPS_TIMEOUT_S = 600   # seconds before subprocess.run raises TimeoutExpired
+_GPa_PRECISION    = 4     # decimal places for returned GPa values
+_LOG_TAIL_LINES   = 50    # lines of log.lammps included in error messages
+
+_SCRIPT_NAMES = (
+    "in.elastic",
+    "displace.mod",
+    "init.mod",
+    "potential.mod",
+    "compliance.py",
+)
+
+# Each entry: (exact string in source file, replacement template for .format(**subs))
+_INIT_MOD_PATCHES: list[tuple[str, str]] = [
+    ("variable a equal 5.43",
+     "variable a equal {a0}"),
+    ("lattice         diamond $a",
+     "lattice {structure} $a"),
+    ("region\t\tbox prism 0 2.0 0 3.0 0 4.0 0.0 0.0 0.0",
+     "region box prism 0 {n} 0 {n} 0 {n} 0.0 0.0 0.0"),
+    ("mass 1 1.0e-20",
+     "mass 1 {mass}"),
+]
+
+_POTENTIAL_MOD_PATCHES: list[tuple[str, str]] = [
+    ("pair_style\tsw",
+     "pair_style {pair_style}"),
+    ("pair_coeff * * Si.sw Si",
+     "pair_coeff * * {pot_path} {composition}"),
+]
 
 # ---------------------------------------------------------------------------
 # Argparse
@@ -79,186 +118,203 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 
 # ---------------------------------------------------------------------------
-# LAMMPS helpers
+# AtomAgents script helpers
 # ---------------------------------------------------------------------------
 
-def _build_lammps(composition: str, pot_path: str, supercell_size: int):
-    """Instantiate and configure a LAMMPS object.
-
-    Preconditions:
-        - ``lammps`` Python package is importable (inside container).
-        - ``pot_path`` points to a valid EAM/alloy potential file.
+def _copy_scripts(tmpdir: str) -> None:
+    """Copy all 5 AtomAgents scripts verbatim from /app/scripts/ into tmpdir.
 
     Args:
-        composition: Element symbol.
-        pot_path: Path to the EAM/alloy potential file.
-        supercell_size: Number of unit cells per axis.
-
-    Returns:
-        Configured ``lammps.lammps`` instance.
+        tmpdir: Absolute path to the temporary working directory.
     """
-    from lammps import lammps  # type: ignore
-
-    elem = ELEMENT_DATA[composition]
-    structure = elem["structure"]
-    a0 = elem["a0"]
-    n = supercell_size
-
-    lmp = lammps(cmdargs=["-screen", "none", "-log", "none"])
-    lmp.commands_list([
-        "units metal",
-        "boundary p p p",
-        "atom_style atomic",
-        f"lattice {structure} {a0}",
-        f"region box block 0 {n} 0 {n} 0 {n}",
-        "create_box 1 box",
-        f"create_atoms 1 box",
-        f"pair_style {'eam/fs' if pot_path.endswith('.eam.fs') else 'eam/alloy'}",
-        f"pair_coeff * * {pot_path} {composition}",
-        "mass 1 1.0",
-        "neighbor 2.0 bin",
-        "neigh_modify every 1 delay 0 check yes",
-    ])
-    return lmp
+    for fname in _SCRIPT_NAMES:
+        shutil.copy(os.path.join("/app/scripts", fname),
+                    os.path.join(tmpdir, fname))
 
 
-def _relax_box(lmp) -> float:
-    """Run FIRE box relaxation and return equilibrium lx.
+def _patch_init_mod(tmpdir: str, composition: str, supercell_size: int) -> None:
+    """Patch the verbatim init.mod copy for the given element.
+
+    Iterates over _INIT_MOD_PATCHES. Each old string is asserted present
+    before replacement so drift from the original is caught immediately.
+    Only 4 Si-specific lines change; all other content is kept verbatim.
+
+    Note:
+        The region replacement forces a cubic block geometry. This is correct
+        for all FCC and BCC metals in ELEMENT_DATA but would need adjustment
+        for non-cubic crystal systems.
 
     Args:
-        lmp: Configured LAMMPS instance (atoms already created).
-
-    Returns:
-        Equilibrium box length lx_eq in Angstroms.
-
-    Postconditions:
-        - The LAMMPS box is at its equilibrium geometry.
-        - Atoms are at their minimum-energy positions.
-    """
-    lmp.commands_list([
-        "min_style cg",
-        "fix 1 all box/relax iso 0.0 vmax 0.001",
-        "minimize 1e-10 1e-10 10000 100000",
-        "unfix 1",
-        "change_box all triclinic",
-    ])
-    return lmp.get_thermo("lx")
-
-
-def _stress_for_strain(composition: str, pot_path: str, supercell_size: int,
-                       strain_type: str, strain_value: float) -> dict:
-    """Build a fresh LAMMPS instance, relax it, apply one strain, and return stresses.
-
-    Each call is fully self-contained: a new LAMMPS object is created, the box
-    is relaxed to equilibrium, exactly one strain state is applied, stresses are
-    read, and the instance is immediately closed.  No box restoration is needed
-    because the instance is discarded after a single measurement.
-
-    Using a fresh instance per strain state is the community-standard approach
-    (used in the original AtomAgents code and most published LAMMPS elastic
-    scripts) and avoids neighbour-list or triclinic-state corruption that
-    accumulates when a single instance is reused across multiple strain states.
-
-    For uniaxial e11 strain: atoms are relaxed (CG) after the box is scaled to
-    relieve transverse forces while keeping the applied axial strain.
-
-    For shear e12 strain: stresses are read directly after affine deformation
-    without atomic relaxation. For a monatomic Bravais lattice (FCC/BCC) all
-    atoms are equivalent so there are no internal degrees of freedom to relax;
-    minimisation would cause atomic shuffling and corrupt C44.
-
-    Args:
+        tmpdir: Absolute path to the temp working directory containing init.mod.
         composition: Element symbol (must be a key in ``ELEMENT_DATA``).
+        supercell_size: Number of unit cells per axis (n × n × n box).
+
+    Raises:
+        RuntimeError: If any expected original string is not found in init.mod,
+            indicating the file in scripts/0_codes/ has changed unexpectedly.
+    """
+    elem = ELEMENT_DATA[composition]
+    subs = {**elem, "n": supercell_size}
+    path = os.path.join(tmpdir, "init.mod")
+    with open(path) as f:
+        content = f.read()
+    for old, new_template in _INIT_MOD_PATCHES:
+        new = new_template.format(**subs)
+        if old not in content:
+            raise RuntimeError(
+                f"_patch_init_mod: expected string not found in init.mod: {old!r}\n"
+                "Check that scripts/0_codes/init.mod has not been modified."
+            )
+        content = content.replace(old, new)
+    with open(path, "w") as f:
+        f.write(content)
+
+
+def _patch_potential_files(tmpdir: str, composition: str, pot_path: str) -> None:
+    """Patch the verbatim potential.mod copy and produce potential.inp.
+
+    Iterates over _POTENTIAL_MOD_PATCHES. Each old string is asserted present
+    before replacement so drift from the original is caught immediately.
+    potential.inp is produced via shutil.copy from the already-patched
+    potential.mod, so both files are guaranteed identical and only one
+    write operation occurs.
+
+    Args:
+        tmpdir: Absolute path to the temp working directory containing potential.mod.
+        composition: Element symbol (e.g. ``"Al"``).
         pot_path: Absolute path to the EAM/alloy or EAM/fs potential file.
+
+    Raises:
+        RuntimeError: If any expected original string is not found in potential.mod,
+            indicating the file in scripts/0_codes/ has changed unexpectedly.
+    """
+    pair_style = "eam/fs" if pot_path.endswith(".eam.fs") else "eam/alloy"
+    subs = {"pair_style": pair_style, "pot_path": pot_path, "composition": composition}
+    path = os.path.join(tmpdir, "potential.mod")
+    with open(path) as f:
+        content = f.read()
+    for old, new_template in _POTENTIAL_MOD_PATCHES:
+        new = new_template.format(**subs)
+        if old not in content:
+            raise RuntimeError(
+                f"_patch_potential_files: expected string not found in potential.mod: {old!r}\n"
+                "Check that scripts/0_codes/potential.mod has not been modified."
+            )
+        content = content.replace(old, new)
+    with open(path, "w") as f:
+        f.write(content)
+    # shutil.copy instead of a second open/write — guarantees identical content
+    shutil.copy(path, os.path.join(tmpdir, "potential.inp"))
+
+
+def _patch_in_elastic(tmpdir: str) -> None:
+    """Append C11cubic/C12cubic/C44cubic print lines to the in.elastic copy.
+
+    in.elastic already computes C11cubic, C12cubic, C44cubic as LAMMPS
+    variables (lines 105-107) but never prints them. This append makes them
+    available in log.lammps for parsing. All existing content is kept verbatim.
+
+    Args:
+        tmpdir: Absolute path to the temp working directory containing in.elastic.
+    """
+    path = os.path.join(tmpdir, "in.elastic")
+    with open(path, "a") as f:
+        f.write('\nprint "C11cubic = ${C11cubic} ${cunits}"\n')
+        f.write('print "C12cubic = ${C12cubic} ${cunits}"\n')
+        f.write('print "C44cubic = ${C44cubic} ${cunits}"\n')
+
+
+def _patch_all(tmpdir: str, composition: str, pot_path: str,
+               supercell_size: int) -> None:
+    """Apply all patches to the tmpdir copies in the correct order.
+
+    Args:
+        tmpdir: Absolute path to the temp working directory.
+        composition: Element symbol (must be a key in ``ELEMENT_DATA``).
+        pot_path: Absolute path to the EAM potential file.
         supercell_size: Number of unit cells per axis.
-        strain_type: ``"e11"`` for uniaxial or ``"e12"`` for engineering shear.
-        strain_value: Dimensionless strain magnitude ε.
+    """
+    _patch_init_mod(tmpdir, composition, supercell_size)
+    _patch_potential_files(tmpdir, composition, pot_path)
+    _patch_in_elastic(tmpdir)
+
+
+def _run_lammps(tmpdir: str) -> None:
+    """Execute ``lmp -in in.elastic`` in tmpdir; raise RuntimeError on failure.
+
+    On non-zero exit, appends the last _LOG_TAIL_LINES lines of log.lammps
+    (if it exists) to the error message to aid debugging.
+
+    Args:
+        tmpdir: Absolute path to directory containing the patched input scripts.
+
+    Raises:
+        RuntimeError: If LAMMPS exits with a non-zero return code.
+    """
+    result = subprocess.run(
+        ["lmp", "-in", "in.elastic"],
+        cwd=tmpdir,
+        capture_output=True,
+        text=True,
+        timeout=_LAMMPS_TIMEOUT_S,
+    )
+    if result.returncode != 0:
+        log_tail = ""
+        log_path = os.path.join(tmpdir, "log.lammps")
+        if os.path.exists(log_path):
+            with open(log_path) as f:
+                lines = f.readlines()
+            log_tail = "".join(lines[-_LOG_TAIL_LINES:])
+        raise RuntimeError(
+            f"LAMMPS exited with code {result.returncode}.\n"
+            f"stderr: {result.stderr[:500]}\n"
+            f"log.lammps (last {_LOG_TAIL_LINES} lines):\n{log_tail}"
+        )
+
+
+def _parse_log_lammps(log_path: str) -> dict:
+    """Parse C11cubic, C12cubic, C44cubic from log.lammps.
+
+    Looks for lines printed by the 3 appended print statements:
+        C11cubic = <value> GPa
+        C12cubic = <value> GPa
+        C44cubic = <value> GPa
+
+    The regex anchors to the literal `` GPa`` suffix so a changed unit string
+    or a malformed number fails loudly rather than producing a silent garbage
+    value. Each parsed value is also bounds-checked against the physical range
+    (0, 2000) GPa — any real cubic metal falls well within this range.
+
+    Args:
+        log_path: Absolute path to the log.lammps file.
 
     Returns:
-        Dict with stress components (bar): ``pxx``, ``pyy``, ``pxy``.
+        Dict with keys ``C11``, ``C12``, ``C44`` (floats in GPa).
 
-    Postconditions:
-        - The LAMMPS instance is closed before returning.
+    Raises:
+        RuntimeError: If any value is not found in the log or outside (0, 2000) GPa.
     """
-    lmp = _build_lammps(composition, pot_path, supercell_size)
-    lx_eq = _relax_box(lmp)
-
-    if strain_type == "e11":
-        lmp.command(f"change_box all x scale {1.0 + strain_value} remap")
-        lmp.commands_list([
-            "min_style cg",
-            "minimize 1e-8 1e-8 5000 50000",
-        ])
-    else:
-        lmp.command(f"change_box all xy final {strain_value * lx_eq} remap")
-        lmp.command("run 0")
-
-    result = {
-        "pxx": lmp.get_thermo("pxx"),
-        "pyy": lmp.get_thermo("pyy"),
-        "pxy": lmp.get_thermo("pxy"),
+    with open(log_path) as f:
+        text = f.read()
+    vals = {}
+    for key in ("C11cubic", "C12cubic", "C44cubic"):
+        m = re.search(rf"{key} = ([\d.eE+\-]+) GPa", text)
+        if not m:
+            raise RuntimeError(
+                f"log.lammps: '{key}' not found — check LAMMPS run completed successfully"
+            )
+        val = float(m.group(1))
+        if not (0 < val < 2000):
+            raise RuntimeError(
+                f"log.lammps: {key}={val} GPa is outside physical range (0, 2000). "
+                "Check LAMMPS run for numerical instability or wrong potential."
+            )
+        vals[key] = val
+    return {
+        "C11": round(vals["C11cubic"], _GPa_PRECISION),
+        "C12": round(vals["C12cubic"], _GPa_PRECISION),
+        "C44": round(vals["C44cubic"], _GPa_PRECISION),
     }
-    lmp.close()
-    return result
-
-
-def _c44_stress_110(composition: str, pot_path: str, supercell_size: int,
-                    strain_value: float) -> float:
-    """Build a fresh LAMMPS instance with [110] orientation, apply x-strain, return pxx.
-
-    For a cubic crystal rotated so x‖[110], y‖[-110], z‖[001], the rotated
-    stiffness component C'_11 = (C11 + C12)/2 + C44.  A uniaxial x-strain ε
-    therefore gives pxx = -C'_11 * ε, so C44 = -pxx/ε - (C11 + C12)/2.
-
-    This approach reads only the diagonal stress pxx and never uses pxy,
-    avoiding the off-diagonal virial issue seen with the xy-shear method.
-
-    Args:
-        composition: Element symbol (must be a key in ``ELEMENT_DATA``).
-        pot_path: Absolute path to the EAM/alloy or EAM/fs potential file.
-        supercell_size: Number of unit cells per axis.
-        strain_value: Dimensionless uniaxial strain magnitude ε.
-
-    Returns:
-        pxx stress component in bar after x-strain in the [110] frame.
-
-    Postconditions:
-        - The LAMMPS instance is closed before returning.
-    """
-    from lammps import lammps  # type: ignore
-
-    elem = ELEMENT_DATA[composition]
-    n = supercell_size
-    lmp = lammps(cmdargs=["-screen", "none", "-log", "none"])
-    lmp.commands_list([
-        "units metal",
-        "boundary p p p",
-        "atom_style atomic",
-        f"lattice {elem['structure']} {elem['a0']}"
-        " orient x 1 1 0 orient y -1 1 0 orient z 0 0 1",
-        f"region box block 0 {n} 0 {n} 0 {n}",
-        "create_box 1 box",
-        "create_atoms 1 box",
-        f"pair_style {'eam/fs' if pot_path.endswith('.eam.fs') else 'eam/alloy'}",
-        f"pair_coeff * * {pot_path} {composition}",
-        "mass 1 1.0",
-        "neighbor 2.0 bin",
-        "neigh_modify every 1 delay 0 check yes",
-    ])
-    lmp.commands_list([
-        "min_style cg",
-        "fix 1 all box/relax iso 0.0 vmax 0.001",
-        "minimize 1e-10 1e-10 10000 100000",
-        "unfix 1",
-    ])
-    lmp.command(f"change_box all x scale {1.0 + strain_value} remap")
-    lmp.commands_list([
-        "min_style cg",
-        "minimize 1e-8 1e-8 5000 50000",
-    ])
-    pxx = lmp.get_thermo("pxx")
-    lmp.close()
-    return pxx
 
 
 # ---------------------------------------------------------------------------
@@ -267,13 +323,17 @@ def _c44_stress_110(composition: str, pot_path: str, supercell_size: int,
 
 def compute_elastic_constants(composition: str, pot_path: str,
                                supercell_size: int) -> dict:
-    """Compute C11, C12, C44 (GPa) for the given element via EAM LAMMPS.
+    """Compute C11, C12, C44 (GPa) for the given element via AtomAgents LAMMPS scripts.
 
-    Implements the Ghafarollahi & Buehler AtomAgents stress-strain method.
+    Copies the five AtomAgents input scripts verbatim into a temporary directory,
+    applies minimal targeted patches (lattice, potential, 3 print lines), runs
+    LAMMPS, and parses C11cubic/C12cubic/C44cubic from log.lammps. All physics
+    — the 6 finite-strain perturbations and the cubic averaging — is performed
+    entirely inside LAMMPS.
 
     Args:
         composition: Element symbol (must be in ``ELEMENT_DATA``).
-        pot_path: Absolute path to the EAM/alloy potential file.
+        pot_path: Absolute path to the EAM/alloy or EAM/fs potential file.
         supercell_size: Number of unit cells per axis.
 
     Returns:
@@ -281,40 +341,18 @@ def compute_elastic_constants(composition: str, pot_path: str,
 
     Raises:
         KeyError: If ``composition`` is not in ``ELEMENT_DATA``.
-        RuntimeError: If LAMMPS encounters an error.
-
-    Preconditions:
-        - ``composition`` is a key in ``ELEMENT_DATA``.
-        - ``pot_path`` is a valid, readable EAM/alloy potential file.
-
-    Postconditions:
-        - LAMMPS instance is closed/cleaned up.
-        - Returned values are in GPa.
+        RuntimeError: If LAMMPS exits non-zero or parsed values are unphysical.
     """
     if composition not in ELEMENT_DATA:
         raise KeyError(
             f"Unknown element '{composition}'. "
             f"Supported: {list(ELEMENT_DATA.keys())}"
         )
-
-    pxx_e11, pyy_e11, pxx_110 = [], [], []
-
-    for eps in STRAIN_VALUES:
-        s = _stress_for_strain(composition, pot_path, supercell_size, "e11", eps)
-        pxx_e11.append(s["pxx"])
-        pyy_e11.append(s["pyy"])
-
-        pxx_110.append(_c44_stress_110(composition, pot_path, supercell_size, eps))
-
-    strains = np.array(STRAIN_VALUES)
-    # σ = −P → elastic constant = slope of (−P) vs ε, converted bar → GPa
-    C11 = float(np.polyfit(strains, [-p for p in pxx_e11], 1)[0] * BAR_TO_GPA)
-    C12 = float(np.polyfit(strains, [-p for p in pyy_e11], 1)[0] * BAR_TO_GPA)
-    # C'_11 ([110] frame) = (C11+C12)/2 + C44  →  C44 = E_110 - (C11+C12)/2
-    E_110 = float(np.polyfit(strains, [-p for p in pxx_110], 1)[0] * BAR_TO_GPA)
-    C44 = E_110 - (C11 + C12) / 2
-
-    return {"C11": round(C11, 4), "C12": round(C12, 4), "C44": round(C44, 4)}
+    with tempfile.TemporaryDirectory() as tmpdir:
+        _copy_scripts(tmpdir)
+        _patch_all(tmpdir, composition, pot_path, supercell_size)
+        _run_lammps(tmpdir)
+        return _parse_log_lammps(os.path.join(tmpdir, "log.lammps"))
 
 
 # ---------------------------------------------------------------------------

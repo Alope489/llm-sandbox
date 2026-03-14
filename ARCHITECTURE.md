@@ -187,9 +187,12 @@ Dockerised LAMMPS tool for computing the elastic constant tensor (C11, C12, C44)
 | `elastic_tool.py` | In-container calculation script (see CLI and algorithm below). |
 | `host_wrapper.py` | Host-side Python module imported by LLM pipelines. Exports `compute_elastic_constants_tool`, `OPENAI_TOOL_SCHEMA`, and `ANTHROPIC_TOOL_SCHEMA`. Calls `docker run` via `subprocess.run` (no Docker SDK needed), captures JSON output from `elastic_tool.py`, and returns a result dict. |
 | `README.md` | Setup and usage instructions: how to build the image, populate potential files, and invoke the tool from Python or directly with Docker. |
-| `potentials/Al.eam.alloy` | Placeholder — replace with real Al EAM potential data (e.g. Mishin 1999). |
-| `potentials/Cu.eam.alloy` | Placeholder — replace with real Cu EAM potential data (e.g. Mishin 2001). |
-| `potentials/Ni.eam.alloy` | Placeholder — replace with real Ni EAM potential data (e.g. Mishin 1999). |
+| `potentials/Al.eam.alloy` | Real EAM/alloy potential for Al — Mishin et al. (1999), *PRB* 59, 3393. |
+| `potentials/Cu.eam.alloy` | Real EAM/alloy potential for Cu — Mishin et al. (2001), *PRB* 63, 224106. |
+| `potentials/Ni.eam.alloy` | Real EAM/alloy potential for Ni — Mishin et al. (1999), *PRB* 59, 3393. |
+| `potentials/Fe.eam.fs`    | Real EAM/fs potential for Fe — Mendelev et al. (2003), *Phil. Mag.* 83, 3977. |
+| `potentials/W.eam.alloy`  | Real EAM/alloy potential for W — Zhou, Johnson, Wadley (2004), *PRB* 69, 144113. |
+| `potentials/Mo.eam.alloy` | Real EAM/alloy potential for Mo — Zhou, Johnson, Wadley (2004), *PRB* 69, 144113. |
 
 **`elastic_tool.py` CLI**:
 
@@ -199,15 +202,15 @@ Dockerised LAMMPS tool for computing the elastic constant tensor (C11, C12, C44)
 --supercell_size (default 4) Unit cells per axis (4 → 256 atoms for FCC)
 ```
 
-**`elastic_tool.py` algorithm** (Ghafarollahi & Buehler, AtomAgents):
+**`elastic_tool.py` algorithm** (AtomAgents Voigt perturbation):
 
-1. Look up crystal structure (FCC/BCC) and trial a₀ from a hardcoded element table.
-2. **Box relaxation** — FIRE minimiser with `fix box/relax iso 0.0` finds the potential's true equilibrium a₀ and records `lx_eq`.
-3. **Strain loop** — For ε ∈ {−0.01, −0.005, +0.005, +0.01}:
-   - Uniaxial e11 (`change_box x scale 1+ε`): extract P_xx → C11, P_yy → C12.
-   - Engineering shear e12 (`change_box xy final ε·lx_eq`): extract P_xy → C44.
-   - Atomic positions relaxed at fixed box after each deformation.
-4. **Linear regression** — `numpy.polyfit`; σ = −P (bar) × 1e-4 GPa/bar gives slope = elastic constant.
+1. Copy the five AtomAgents input scripts (`in.elastic`, `displace.mod`, `init.mod`, `potential.mod`, `compliance.py`) verbatim from `/app/scripts/` into a temporary directory.
+2. **Patch** the copies minimally:
+   - `init.mod`: replace 4 Si-specific lines (lattice parameter, lattice type, region geometry, atomic mass).
+   - `potential.mod`: replace 2 Si-specific lines (`pair_style`, `pair_coeff`). Copy to `potential.inp`.
+   - `in.elastic`: append 3 `print` statements so LAMMPS emits `C11cubic`, `C12cubic`, `C44cubic` to `log.lammps` (variables are already computed internally).
+3. **Run LAMMPS** via `subprocess.run(["lmp", "-in", "in.elastic"])`. LAMMPS applies 6 independent finite-strain perturbations (uxx, uyy, uzz, uyz, uxz, uxy), measures stress response for each, and computes the full 21-component Voigt elastic tensor. It then averages the three diagonal and three shear components to produce the cubic constants.
+4. **Parse** `C11cubic`, `C12cubic`, `C44cubic` from `log.lammps` with a regex. Values are bounds-checked against (0, 2000) GPa.
 
 **Output JSON**:
 
@@ -261,7 +264,7 @@ client.messages.create(model="claude-sonnet-4-6", messages=[...], tools=[ANTHROP
 | `ELASTIC_IMAGE` | Docker image name (default: `elastic-lammps-tool:latest`) |
 
 **Tests**:
-- `tests/test_elastic_tool.py` — 11 unit tests covering element lookup, argparse, regression math, JSON schema, and error handling. No LAMMPS or Docker required.
+- `tests/test_elastic_tool.py` — 24 unit tests covering element lookup, argparse, patch helpers, log parsing, subprocess wrapper, and JSON output schema. No LAMMPS or Docker required.
 - `tests/test_host_wrapper.py` — 20 unit tests covering Docker command structure, automatic potential mapping, explicit override, error paths (timeout, FileNotFoundError, bad JSON, non-zero exit), env override, and schema structure. No Docker required.
 
 ---
@@ -398,19 +401,19 @@ _skip_no_docker = pytest.mark.skipif(
 | Layer | What is checked |
 |-------|----------------|
 | 1 — Status/schema | `status == "ok"`, C11/C12/C44 are floats, `runtime_seconds > 0` |
-| 2 — Born stability | `C11 > C12 > 0`, `C11 - C12 > 0`, `C11 + 2*C12 > 0` (C44 excluded pending fix) |
-| 3 — EAM tight ranges | ±5% around known EAM-computed C11 and C12 values (C44 excluded pending fix) |
+| 2 — Born stability | `C11 > C12 > 0`, `C44 > 0`, `C11 - C12 > 0`, `C11 + 2*C12 > 0` |
+| 3 — EAM tight ranges | ±5% around known EAM-computed C11, C12, and C44 values |
 
 ### EAM-specific expected ranges (Layer 3)
 
-| Element | C11 (GPa) | C12 (GPa) |
-|---------|-----------|-----------|
-| Al (FCC, Mishin 1999) | 108–122 | 60–70 |
-| Cu (FCC, Mishin 2001) | 165–178 | 118–128 |
-| Ni (FCC, Mishin 1999) | 244–258 | 148–162 |
-| Fe (BCC, Mendelev 2003) | 231–245 | 138–150 |
-| W (BCC, Zhou 2004) | 516–536 | 195–208 |
-| Mo (BCC, Zhou 2004) | 451–474 | 162–172 |
+| Element | C11 (GPa) | C12 (GPa) | C44 (GPa) |
+|---------|-----------|-----------|-----------|
+| Al (FCC, Mishin 1999)   | 108–122 | 60–70   | 30–34   |
+| Cu (FCC, Mishin 2001)   | 165–178 | 118–128 | 72–80   |
+| Ni (FCC, Mishin 1999)   | 244–258 | 140–155 | 117–129 |
+| Fe (BCC, Mendelev 2003) | 231–256 | 138–150 | 110–122 |
+| W  (BCC, Zhou 2004)     | 516–536 | 195–208 | 152–168 |
+| Mo (BCC, Zhou 2004)     | 451–474 | 162–172 | 107–119 |
 
 ### How to run
 

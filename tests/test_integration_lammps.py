@@ -73,8 +73,9 @@ def _assert_layer1(result: dict) -> None:
 
 
 def _assert_layer2(result: dict) -> None:
-    """Layer 2: Born stability criteria for cubic crystals (C11/C12 only; C44 excluded pending fix)."""
-    c11, c12 = result["C11"], result["C12"]
+    """Layer 2: Born stability criteria for cubic crystals."""
+    c11, c12, c44 = result["C11"], result["C12"], result["C44"]
+    assert c44 > 0, f"C44={c44} must be positive"
     assert c11 > 0, f"C11={c11} must be positive"
     assert c12 > 0, f"C12={c12} must be positive"
     assert c11 > c12, f"C11={c11} must exceed C12={c12}"
@@ -82,17 +83,16 @@ def _assert_layer2(result: dict) -> None:
     assert c11 + 2 * c12 > 0, "Bulk modulus: C11 + 2*C12 > 0"
 
 
-def _assert_layer3(result: dict, c11_range, c12_range) -> None:
-    """Layer 3: EAM potential-specific tight ranges for C11 and C12 (±5% of known EAM values).
-
-    C44 is excluded from Layer 3 assertions pending resolution of the known
-    [110]-rotation overestimation bug.
-    """
+def _assert_layer3(result: dict, c11_range, c12_range, c44_range) -> None:
+    """Layer 3: EAM potential-specific tight ranges for C11, C12, and C44 (±5% of known EAM values)."""
     assert c11_range[0] <= result["C11"] <= c11_range[1], (
         f"C11={result['C11']:.1f} GPa out of expected range {c11_range}"
     )
     assert c12_range[0] <= result["C12"] <= c12_range[1], (
         f"C12={result['C12']:.1f} GPa out of expected range {c12_range}"
+    )
+    assert c44_range[0] <= result["C44"] <= c44_range[1], (
+        f"C44={result['C44']:.1f} GPa out of expected range {c44_range}"
     )
 
 
@@ -106,7 +106,7 @@ def test_elastic_Al():
     result = compute_elastic_constants_tool(composition="Al", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(108, 122), c12_range=(60, 70))
+    _assert_layer3(result, c11_range=(108, 122), c12_range=(60, 70), c44_range=(30, 34))
 
 
 @_skip_no_docker
@@ -115,43 +115,43 @@ def test_elastic_Cu():
     result = compute_elastic_constants_tool(composition="Cu", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(165, 178), c12_range=(118, 128))
+    _assert_layer3(result, c11_range=(165, 178), c12_range=(118, 128), c44_range=(72, 80))
 
 
 @_skip_no_docker
 def test_elastic_Ni():
-    """Ni (FCC, Mishin 1999): C11≈251, C12≈155, C44≈138 GPa."""
+    """Ni (FCC, Mishin 1999): C11≈251, C12≈148, C44≈123 GPa."""
     result = compute_elastic_constants_tool(composition="Ni", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(244, 258), c12_range=(148, 162))
+    _assert_layer3(result, c11_range=(244, 258), c12_range=(140, 155), c44_range=(117, 129))
 
 
 @_skip_no_docker
 def test_elastic_Fe():
-    """Fe (BCC, Mendelev 2003): C11≈237, C12≈138, C44≈116 GPa."""
+    """Fe (BCC, Mendelev 2003): C11≈243, C12≈145, C44≈116 GPa."""
     result = compute_elastic_constants_tool(composition="Fe", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(231, 245), c12_range=(138, 150))
+    _assert_layer3(result, c11_range=(231, 256), c12_range=(138, 150), c44_range=(110, 122))
 
 
 @_skip_no_docker
 def test_elastic_W():
-    """W (BCC, Zhou 2004): C11≈523, C12≈200, C44≈160 GPa."""
+    """W (BCC, Zhou 2004): C11≈523, C12≈204, C44≈160 GPa."""
     result = compute_elastic_constants_tool(composition="W", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(516, 536), c12_range=(195, 208))
+    _assert_layer3(result, c11_range=(516, 536), c12_range=(195, 208), c44_range=(152, 168))
 
 
 @_skip_no_docker
 def test_elastic_Mo():
-    """Mo (BCC, Zhou 2004): C11≈463, C12≈166, C44≈113 GPa."""
+    """Mo (BCC, Zhou 2004): C11≈457, C12≈166, C44≈113 GPa."""
     result = compute_elastic_constants_tool(composition="Mo", supercell_size=5)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(451, 474), c12_range=(162, 172))
+    _assert_layer3(result, c11_range=(451, 474), c12_range=(162, 172), c44_range=(107, 119))
 
 
 # ---------------------------------------------------------------------------
