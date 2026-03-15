@@ -32,6 +32,7 @@ On error:
 {"composition": "Al", "C11": null, "C12": null, "C44": null,
  "runtime_seconds": null, "status": "error", "error": "<message>"}
 """
+
 from __future__ import annotations
 
 import argparse
@@ -49,11 +50,11 @@ import time
 # ---------------------------------------------------------------------------
 
 ELEMENT_DATA = {
-    "Al": {"structure": "fcc", "a0": 4.05,  "mass": 26.982},
+    "Al": {"structure": "fcc", "a0": 4.05, "mass": 26.982},
     "Cu": {"structure": "fcc", "a0": 3.615, "mass": 63.546},
-    "Ni": {"structure": "fcc", "a0": 3.52,  "mass": 58.693},
-    "Fe": {"structure": "bcc", "a0": 2.87,  "mass": 55.845},
-    "W":  {"structure": "bcc", "a0": 3.165, "mass": 183.840},
+    "Ni": {"structure": "fcc", "a0": 3.52, "mass": 58.693},
+    "Fe": {"structure": "bcc", "a0": 2.87, "mass": 55.845},
+    "W": {"structure": "bcc", "a0": 3.165, "mass": 183.840},
     "Mo": {"structure": "bcc", "a0": 3.147, "mass": 95.960},
 }
 
@@ -61,9 +62,9 @@ ELEMENT_DATA = {
 # AtomAgents patch targets — update here if scripts/0_codes/ files change
 # ---------------------------------------------------------------------------
 
-_LAMMPS_TIMEOUT_S = 600   # seconds before subprocess.run raises TimeoutExpired
-_GPa_PRECISION    = 4     # decimal places for returned GPa values
-_LOG_TAIL_LINES   = 50    # lines of log.lammps included in error messages
+_LAMMPS_TIMEOUT_S = 600  # seconds before subprocess.run raises TimeoutExpired
+_GPa_PRECISION = 4  # decimal places for returned GPa values
+_LOG_TAIL_LINES = 50  # lines of log.lammps included in error messages
 
 _SCRIPT_NAMES = (
     "in.elastic",
@@ -75,26 +76,24 @@ _SCRIPT_NAMES = (
 
 # Each entry: (exact string in source file, replacement template for .format(**subs))
 _INIT_MOD_PATCHES: list[tuple[str, str]] = [
-    ("variable a equal 5.43",
-     "variable a equal {a0}"),
-    ("lattice         diamond $a",
-     "lattice {structure} $a"),
-    ("region\t\tbox prism 0 2.0 0 3.0 0 4.0 0.0 0.0 0.0",
-     "region box prism 0 {n} 0 {n} 0 {n} 0.0 0.0 0.0"),
-    ("mass 1 1.0e-20",
-     "mass 1 {mass}"),
+    ("variable a equal 5.43", "variable a equal {a0}"),
+    ("lattice         diamond $a", "lattice {structure} $a"),
+    (
+        "region\t\tbox prism 0 2.0 0 3.0 0 4.0 0.0 0.0 0.0",
+        "region box prism 0 {n} 0 {n} 0 {n} 0.0 0.0 0.0",
+    ),
+    ("mass 1 1.0e-20", "mass 1 {mass}"),
 ]
 
 _POTENTIAL_MOD_PATCHES: list[tuple[str, str]] = [
-    ("pair_style\tsw",
-     "pair_style {pair_style}"),
-    ("pair_coeff * * Si.sw Si",
-     "pair_coeff * * {pot_path} {composition}"),
+    ("pair_style\tsw", "pair_style {pair_style}"),
+    ("pair_coeff * * Si.sw Si", "pair_coeff * * {pot_path} {composition}"),
 ]
 
 # ---------------------------------------------------------------------------
 # Argparse
 # ---------------------------------------------------------------------------
+
 
 def parse_args(argv=None) -> argparse.Namespace:
     """Parse command-line arguments.
@@ -108,18 +107,25 @@ def parse_args(argv=None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Compute elastic constants via LAMMPS EAM simulation."
     )
-    parser.add_argument("--composition", required=True,
-                        help="Element symbol (Al, Cu, Ni, Fe, W, Mo).")
-    parser.add_argument("--potential", required=True,
-                        help="Absolute path to EAM/alloy potential file.")
-    parser.add_argument("--supercell_size", type=int, default=4,
-                        help="Unit cells per axis (default: 4).")
+    parser.add_argument(
+        "--composition", required=True, help="Element symbol (Al, Cu, Ni, Fe, W, Mo)."
+    )
+    parser.add_argument(
+        "--potential", required=True, help="Absolute path to EAM/alloy potential file."
+    )
+    parser.add_argument(
+        "--supercell_size",
+        type=int,
+        default=4,
+        help="Unit cells per axis (default: 4).",
+    )
     return parser.parse_args(argv)
 
 
 # ---------------------------------------------------------------------------
 # AtomAgents script helpers
 # ---------------------------------------------------------------------------
+
 
 def _copy_scripts(tmpdir: str) -> None:
     """Copy all 5 AtomAgents scripts verbatim from /app/scripts/ into tmpdir.
@@ -128,8 +134,7 @@ def _copy_scripts(tmpdir: str) -> None:
         tmpdir: Absolute path to the temporary working directory.
     """
     for fname in _SCRIPT_NAMES:
-        shutil.copy(os.path.join("/app/scripts", fname),
-                    os.path.join(tmpdir, fname))
+        shutil.copy(os.path.join("/app/scripts", fname), os.path.join(tmpdir, fname))
 
 
 def _patch_init_mod(tmpdir: str, composition: str, supercell_size: int) -> None:
@@ -224,8 +229,9 @@ def _patch_in_elastic(tmpdir: str) -> None:
         f.write('print "C44cubic = ${C44cubic} ${cunits}"\n')
 
 
-def _patch_all(tmpdir: str, composition: str, pot_path: str,
-               supercell_size: int) -> None:
+def _patch_all(
+    tmpdir: str, composition: str, pot_path: str, supercell_size: int
+) -> None:
     """Apply all patches to the tmpdir copies in the correct order.
 
     Args:
@@ -321,8 +327,10 @@ def _parse_log_lammps(log_path: str) -> dict:
 # Main computation
 # ---------------------------------------------------------------------------
 
-def compute_elastic_constants(composition: str, pot_path: str,
-                               supercell_size: int) -> dict:
+
+def compute_elastic_constants(
+    composition: str, pot_path: str, supercell_size: int
+) -> dict:
     """Compute C11, C12, C44 (GPa) for the given element via AtomAgents LAMMPS scripts.
 
     Copies the five AtomAgents input scripts verbatim into a temporary directory,
@@ -345,8 +353,7 @@ def compute_elastic_constants(composition: str, pot_path: str,
     """
     if composition not in ELEMENT_DATA:
         raise KeyError(
-            f"Unknown element '{composition}'. "
-            f"Supported: {list(ELEMENT_DATA.keys())}"
+            f"Unknown element '{composition}'. Supported: {list(ELEMENT_DATA.keys())}"
         )
     with tempfile.TemporaryDirectory() as tmpdir:
         _copy_scripts(tmpdir)
@@ -358,6 +365,7 @@ def compute_elastic_constants(composition: str, pot_path: str,
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main(argv=None):
     """CLI entry point — parse args, run calculation, print JSON to stdout.
