@@ -4,7 +4,7 @@ FROM condaforge/miniforge3:26.1.0-0
 # then clean all conda caches to minimise final image size.
 RUN conda install -y -c conda-forge \
         "lammps=2024.08.29" \
-        python=3.12 \
+        python=3.14 \
         numpy \
         scipy \
     && conda clean -afy \

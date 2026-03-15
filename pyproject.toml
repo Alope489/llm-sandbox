@@ -1,0 +1,51 @@
+[project]
+name = "llm sandbox project"          
+version = "0.1.0"
+description = ""
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.ruff]
+target-version = "py314"
+line-length = 88
+indent-width = 4
+
+extend-exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "build",
+    "dist",
+    "*.ipynb",
+    "node_modules",
+]
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "I", "B", "UP", "SIM", "RUF", "DOC", "ANN", "S", "RET", "C4", "PL",
+]
+ignore = [
+    "E501",
+    "ANN101",
+    "S311",
+]
+fixable = ["ALL"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-bandit]
+hardcoded-password = true
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.6",
+]

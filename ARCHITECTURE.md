@@ -183,7 +183,7 @@ Dockerised LAMMPS tool for computing the elastic constant tensor (C11, C12, C44)
 
 | File | Purpose |
 |---|---|
-| `Dockerfile` | Builds the container image from `condaforge/miniforge3:24.11.0-0`; installs LAMMPS `2024.08.29`, Python 3.12, numpy, and scipy from conda-forge; cleans caches to target ~1.2 GB final size. Tagged `elastic-lammps-tool:latest`. |
+| `Dockerfile` | Builds the container image from `condaforge/miniforge3:26.1.0-0`; installs LAMMPS `2024.08.29`, Python 3.14, numpy, and scipy from conda-forge; cleans caches to target ~1.2 GB final size. Tagged `elastic-lammps-tool:latest`. |
 | `elastic_tool.py` | In-container calculation script (see CLI and algorithm below). |
 | `host_wrapper.py` | Host-side Python module imported by LLM pipelines. Exports `compute_elastic_constants_tool`, `OPENAI_TOOL_SCHEMA`, and `ANTHROPIC_TOOL_SCHEMA`. Calls `docker run` via `subprocess.run` (no Docker SDK needed), captures JSON output from `elastic_tool.py`, and returns a result dict. |
 | `README.md` | Setup and usage instructions: how to build the image, populate potential files, and invoke the tool from Python or directly with Docker. |
@@ -432,3 +432,38 @@ py -m pytest -v
 
 `test_sim_agent_prefetch_with_real_docker` — exercises `SimulationAgent._prefetch_tool_context()`
 with a real Docker-backed tool call and a real OpenAI API call. Requires `OPENAI_API_KEY`.
+
+---
+
+## Non-Functional Considerations
+
+### Python Version Lock
+
+The project is pinned to **Python 3.14** across all environments:
+
+| Artifact | Setting |
+|---|---|
+| `.python-version` | `3.14` — read by `pyenv`, `uv`, and CI tools |
+| `pyproject.toml` `requires-python` | `>=3.14` |
+| `pyproject.toml` `[tool.ruff] target-version` | `py314` |
+| `.venv` | Must be created with `python3.14 -m venv .venv` |
+| `Dockerfile` | `conda install python=3.14` |
+
+To rebuild the virtualenv after a clean clone or Python upgrade:
+
+```bash
+rm -rf .venv
+python3.14 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Docker / conda-forge Dependency
+
+The LAMMPS container installs `lammps=2024.08.29` from `conda-forge`. This package is a compiled C extension and must be pre-built by conda-forge for each Python version. If a future Python upgrade is planned, verify availability before changing `Dockerfile`:
+
+```bash
+conda search -c conda-forge "lammps[build=*py3XX*]"
+```
+
+Replace `3XX` with the target version (e.g. `314` for Python 3.14). If the build is absent, keep the Dockerfile on the last working Python version and add a `# TODO` comment — the rest of the project can be upgraded independently since `elastic_tool.py` and `host_wrapper.py` use stdlib only.
