@@ -457,7 +457,7 @@ end-to-end pipeline statistics for every LLM API call and tool execution in both
 |---|---|---|
 | `llm_call` | `log_llm_call()` | `input_tokens`, `output_tokens`, `provider_server_latency_ms`, `client_elapsed_ms`, `throughput_output_tokens_per_sec`, `call_start_ts`, `call_end_ts`, `status` |
 | `tool_execution` | `log_tool_execution()` | `tool_name`, `tool_execution_ms`, `tool_internal_runtime_ms` (optional), `call_start_ts`, `call_end_ts`, `status` |
-| `pipeline_outcome_and_stats` | `log_pipeline_outcome_and_stats()` | `total_duration_ms`, `start_ts`, `end_ts`, `total_input_tokens`, `total_output_tokens`, `llm_call_count`, `is_provider_server_latency_complete`, `calls_with_provider_server_latency`, `total_provider_server_latency_ms`, `status`, `is_partial_data` |
+| `pipeline_outcome_and_stats` | `log_pipeline_outcome_and_stats()` | `total_wall_clock_runtime_ms`, `start_ts`, `end_ts`, `total_input_tokens`, `total_output_tokens`, `llm_call_count`, `is_provider_server_latency_complete`, `calls_with_provider_server_latency`, `total_provider_server_latency_ms`, `status`, `is_partial_data` |
 
 ### Provider Server Latency Coverage
 

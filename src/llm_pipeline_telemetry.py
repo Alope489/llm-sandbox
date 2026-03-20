@@ -418,7 +418,7 @@ def log_tool_execution(
 def log_pipeline_outcome_and_stats(
     ctx: CallContext,
     *,
-    total_duration_ms: float,
+    total_wall_clock_runtime_ms: float,
     start_ts: datetime,
     end_ts: datetime,
     status: str,
@@ -450,7 +450,7 @@ def log_pipeline_outcome_and_stats(
 
     Args:
         ctx: The pipeline-level ``CallContext`` (the original, not a snapshot).
-        total_duration_ms: End-to-end wall-clock duration of the run in ms,
+        total_wall_clock_runtime_ms: End-to-end wall-clock duration of the run in ms,
             measured with ``time.perf_counter()``.
         start_ts: UTC-aware ``datetime`` captured before the first stage.
         end_ts: UTC-aware ``datetime`` captured after the last stage (or in the
@@ -476,7 +476,7 @@ def log_pipeline_outcome_and_stats(
         >>> ctx = CallContext(pipeline="linear")
         >>> log_pipeline_outcome_and_stats(
         ...     ctx,
-        ...     total_duration_ms=1200.0,
+        ...     total_wall_clock_runtime_ms=1200.0,
         ...     start_ts=datetime.now(timezone.utc),
         ...     end_ts=datetime.now(timezone.utc),
         ...     status="success",
@@ -512,7 +512,7 @@ def log_pipeline_outcome_and_stats(
         "run_id": ctx.run_id,
         "status": status,
         "is_partial_data": status == "error",
-        "total_duration_ms": round(total_duration_ms, 3),
+        "total_wall_clock_runtime_ms": round(total_wall_clock_runtime_ms, 3),
         "start_ts": start_ts.isoformat() if isinstance(start_ts, datetime) else start_ts,
         "end_ts": end_ts.isoformat() if isinstance(end_ts, datetime) else end_ts,
         "total_input_tokens": total_input_tokens,

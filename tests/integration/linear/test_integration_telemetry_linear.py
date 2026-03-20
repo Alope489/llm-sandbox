@@ -78,7 +78,7 @@ def test_linear_pipeline_telemetry_records_shape():
 
     elapsed_ms = (time.perf_counter() - t0) * 1000
     end_ts = datetime.now(timezone.utc)
-    log_pipeline_outcome_and_stats(ctx, total_duration_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
+    log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
 
     llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
     assert len(llm_records) >= 1, "Expected at least one llm_call record"
@@ -97,7 +97,7 @@ def test_linear_pipeline_telemetry_records_shape():
 
     pr = pipeline_records[0]
     assert pr["status"] == "success"
-    assert pr["total_duration_ms"] > 0
+    assert pr["total_wall_clock_runtime_ms"] > 0
     assert pr["total_input_tokens"] > 0
     assert pr["total_output_tokens"] > 0
     assert pr["llm_call_count"] == len(llm_records)
@@ -129,7 +129,7 @@ def test_linear_pipeline_all_records_share_run_id():
 
     elapsed_ms = (time.perf_counter() - t0) * 1000
     end_ts = datetime.now(timezone.utc)
-    log_pipeline_outcome_and_stats(ctx, total_duration_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
+    log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
 
     all_run_ids = {r.get("run_id") for r in ctx.records if "run_id" in r}
     assert all_run_ids == {ctx.run_id}, f"Found multiple run_ids: {all_run_ids}"

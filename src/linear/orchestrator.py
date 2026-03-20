@@ -80,7 +80,7 @@ def run(input_text: str, tasks: list[str] | None = None) -> dict:
         )
         log_pipeline_outcome_and_stats(
             ctx,
-            total_duration_ms=(time.perf_counter() - t0) * 1000,
+            total_wall_clock_runtime_ms=(time.perf_counter() - t0) * 1000,
             start_ts=start_ts,
             end_ts=datetime.now(timezone.utc),
             status="success",
@@ -89,7 +89,7 @@ def run(input_text: str, tasks: list[str] | None = None) -> dict:
     except Exception as exc:
         log_pipeline_outcome_and_stats(
             ctx,
-            total_duration_ms=(time.perf_counter() - t0) * 1000,
+            total_wall_clock_runtime_ms=(time.perf_counter() - t0) * 1000,
             start_ts=start_ts,
             end_ts=datetime.now(timezone.utc),
             status="error",

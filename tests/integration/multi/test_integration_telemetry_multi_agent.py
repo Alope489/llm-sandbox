@@ -51,7 +51,7 @@ def test_multi_agent_web_search_path_emits_records():
 
     elapsed_ms = (time.perf_counter() - t0) * 1000
     end_ts = datetime.now(timezone.utc)
-    log_pipeline_outcome_and_stats(ctx, total_duration_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
+    log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
 
     llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
     assert len(llm_records) >= 1
@@ -95,7 +95,7 @@ def test_multi_agent_sim_path_emits_records():
 
     elapsed_ms = (time.perf_counter() - t0) * 1000
     end_ts = datetime.now(timezone.utc)
-    log_pipeline_outcome_and_stats(ctx, total_duration_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
+    log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=elapsed_ms, start_ts=start_ts, end_ts=end_ts, status="success")
 
     llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
     assert len(llm_records) >= 1

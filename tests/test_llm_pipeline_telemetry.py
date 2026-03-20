@@ -8,7 +8,7 @@ Covers:
   propagation, provider_server_latency_ms fallback logic, field isolation.
 - log_tool_execution: field shape, optional tool_internal_runtime_ms, field
   isolation (no token fields).
-- log_pipeline_outcome_and_stats: token aggregation arithmetic, total_duration_ms
+- log_pipeline_outcome_and_stats: token aggregation arithmetic, total_wall_clock_runtime_ms
   accuracy, start_ts/end_ts presence, is_provider_server_latency_complete three
   coverage cases, zero-accumulated-records edge case, error-path fields.
 - JsonFormatter: output is valid JSON with expected keys.
@@ -338,7 +338,7 @@ class TestLogPipelineOutcomeAndStats:
         ctx = _make_ctx()
         self._populate_llm_records(ctx, 2, 500)
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=1200.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=1200.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["record_type"] == "pipeline_outcome_and_stats"
 
@@ -352,28 +352,28 @@ class TestLogPipelineOutcomeAndStats:
                          provider_server_latency_ms=None, client_elapsed_ms=100.0,
                          call_start_ts=ts, call_end_ts=ts)
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=500.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=500.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["total_input_tokens"] == 45
         assert r["total_output_tokens"] == 25
         assert r["llm_call_count"] == 3
 
-    def test_total_duration_ms_accuracy(self):
-        """total_duration_ms must be at least 15ms when pipeline sleeps 20ms."""
+    def test_total_wall_clock_runtime_ms_accuracy(self):
+        """total_wall_clock_runtime_ms must be at least 15ms when pipeline sleeps 20ms."""
         ctx = _make_ctx()
         t0 = time.perf_counter()
         time.sleep(0.020)
         elapsed_ms = (time.perf_counter() - t0) * 1000
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=elapsed_ms, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=elapsed_ms, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
-        assert r["total_duration_ms"] >= 15.0
+        assert r["total_wall_clock_runtime_ms"] >= 15.0
 
     def test_start_ts_and_end_ts_present(self):
         ctx = _make_ctx()
         start = datetime.now(timezone.utc)
         end = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=100.0, start_ts=start, end_ts=end, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=100.0, start_ts=start, end_ts=end, status="success")
         r = ctx.records[-1]
         assert "start_ts" in r
         assert "end_ts" in r
@@ -387,7 +387,7 @@ class TestLogPipelineOutcomeAndStats:
         ctx = _make_ctx()
         self._populate_llm_records(ctx, 3, 500)
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=300.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=300.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["is_provider_server_latency_complete"] is True
         assert r["calls_with_provider_server_latency"] == 3
@@ -398,7 +398,7 @@ class TestLogPipelineOutcomeAndStats:
         ctx = _make_ctx()
         self._populate_llm_records(ctx, 3, None)
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=300.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=300.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["is_provider_server_latency_complete"] is False
         assert r["calls_with_provider_server_latency"] == 0
@@ -417,7 +417,7 @@ class TestLogPipelineOutcomeAndStats:
                      provider_server_latency_ms=None, client_elapsed_ms=100.0,
                      call_start_ts=ts, call_end_ts=ts)
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=200.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=200.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["is_provider_server_latency_complete"] is False
         assert r["calls_with_provider_server_latency"] == 1
@@ -427,7 +427,7 @@ class TestLogPipelineOutcomeAndStats:
         """Zero llm_call records: counts are 0, complete=False, total_server=None."""
         ctx = _make_ctx()
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=10.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=10.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["llm_call_count"] == 0
         assert r["total_input_tokens"] == 0
@@ -438,7 +438,7 @@ class TestLogPipelineOutcomeAndStats:
     def test_error_status_sets_is_partial_data_true(self):
         ctx = _make_ctx()
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=0.0, start_ts=now, end_ts=now,
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=0.0, start_ts=now, end_ts=now,
                                        status="error", exception_type="ValueError",
                                        exception_message="something broke")
         r = ctx.records[-1]
@@ -450,7 +450,7 @@ class TestLogPipelineOutcomeAndStats:
     def test_success_status_no_exception_fields(self):
         ctx = _make_ctx()
         now = datetime.now(timezone.utc)
-        log_pipeline_outcome_and_stats(ctx, total_duration_ms=100.0, start_ts=now, end_ts=now, status="success")
+        log_pipeline_outcome_and_stats(ctx, total_wall_clock_runtime_ms=100.0, start_ts=now, end_ts=now, status="success")
         r = ctx.records[-1]
         assert r["is_partial_data"] is False
         assert "exception_type" not in r
