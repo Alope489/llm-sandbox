@@ -1,4 +1,4 @@
-"""Coordinator agent: route a raw prompt to simulation, KB, or processor agents.
+"""Coordinator agent: route a raw prompt to simulation, KB, processor, or materials agents.
 
 This module uses the unified LLM wrapper in src.wrapper to classify a prompt
 into one of three existing agents and to decide whether parameters should be
@@ -14,8 +14,15 @@ from typing import Any, Dict, Literal
 from src.wrapper import complete
 
 
-AgentType = Literal["simulation", "kb", "processor"]
+AgentType = Literal["simulation", "kb", "processor", "materials"]
 ModeType = Literal["pass_through", "structured"]
+_MATERIALS_KEYWORDS = (
+    "lattice",
+    "crystal",
+    "metal",
+    "alloy",
+    "materials project",
+)
 
 
 def _validate_runtime_environment() -> None:
@@ -33,17 +40,18 @@ def _validate_runtime_environment() -> None:
 def _build_routing_messages(prompt: str) -> list[dict]:
     system_content = """
 You are a routing controller for an LLM application.
-There are exactly three internal agents:
+There are exactly four internal agents:
 - simulation: runs a nickel-based superalloy optimization loop via a SimulationAgent.
 - kb: answers general questions using a knowledge-base agent with web-search fallback.
 - processor: runs a structured materials/simulation analysis pipeline (extraction + processing).
+- materials: runs a materials-science step via AtomAgent.
 
 Given the user's prompt, choose the most appropriate agent and whether the call should be:
 - pass_through: send the raw prompt as-is (or as a simple "query") to the agent.
 - structured: derive a small JSON params object tailored to that agent.
 
 Respond ONLY with a single JSON object, no explanations, matching this schema:
-{"agent": "simulation" | "kb" | "processor",
+{"agent": "simulation" | "kb" | "processor" | "materials",
  "mode": "pass_through" | "structured",
  "params": {}}
 Keep params minimal and only include keys the downstream agent can meaningfully use.
@@ -68,6 +76,19 @@ def _default_decision(prompt: str) -> Dict[str, Any]:
     }
 
 
+def _is_materials_prompt(prompt: str) -> bool:
+    lowered = (prompt or "").strip().lower()
+    return any(keyword in lowered for keyword in _MATERIALS_KEYWORDS)
+
+
+def _materials_decision(prompt: str) -> Dict[str, Any]:
+    return {
+        "agent": "materials",
+        "mode": "pass_through",
+        "params": {"prompt": prompt},
+    }
+
+
 def _parse_decision(raw: str, prompt: str) -> Dict[str, Any]:
     if not raw or not isinstance(raw, str):
         return _default_decision(prompt)
@@ -82,7 +103,7 @@ def _parse_decision(raw: str, prompt: str) -> Dict[str, Any]:
     agent = data.get("agent")
     mode = data.get("mode")
     params = data.get("params")
-    if agent not in ("simulation", "kb", "processor"):
+    if agent not in ("simulation", "kb", "processor", "materials"):
         agent = "kb"
     if mode not in ("pass_through", "structured"):
         mode = "pass_through"
@@ -92,10 +113,14 @@ def _parse_decision(raw: str, prompt: str) -> Dict[str, Any]:
         params["query"] = prompt
     if agent == "processor" and "input_text" not in params:
         params["input_text"] = prompt
+    if agent == "materials" and "prompt" not in params:
+        params["prompt"] = prompt
     return {"agent": agent, "mode": mode, "params": params}
 
 
 def route_prompt(prompt: str) -> Dict[str, Any]:
+    if _is_materials_prompt(prompt):
+        return _materials_decision(prompt)
     raw = _classify_with_llm(prompt)
     return _parse_decision(raw, prompt)
 

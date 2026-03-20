@@ -1,7 +1,7 @@
 """Executor: run the selected downstream agent based on a coordinator decision.
 
 This module receives a decision dict of the form:
-    {"agent": "simulation" | "kb" | "processor",
+    {"agent": "simulation" | "kb" | "processor" | "materials",
      "mode": "pass_through" | "structured",
      "params": {...}}
 and executes the appropriate downstream agent.
@@ -14,9 +14,11 @@ from typing import Any, Callable, Dict, Optional
 from src.multi.sim.agent import SimulationAgent
 import src.multi.kb_agent as kb_agent
 from src.linear import orchestrator as linear
+from src.linear.reasoning import summarize as summarize_reasoning
+from src.multi.reasoning import export_metrics, run_materials_step
 
 
-ALLOWED_AGENTS = ("simulation", "kb", "processor")
+ALLOWED_AGENTS = ("simulation", "kb", "processor", "materials")
 AgentRunner = Callable[[Dict[str, Any], Optional[str]], Any]
 
 
@@ -110,6 +112,8 @@ def _apply_mode(agent: str, mode: str, params: Dict[str, Any], original_prompt: 
         return {"input_text": original_prompt or params.get("input_text", "")}
     if agent == "simulation":
         return {}
+    if agent == "materials":
+        return {"prompt": original_prompt or params.get("prompt", "")}
     return params
 
 
@@ -159,10 +163,26 @@ def _execute_processor(params: Dict[str, Any], original_prompt: Optional[str]) -
     return linear.run(input_text, tasks=task_list)
 
 
+def _execute_materials(params: Dict[str, Any], original_prompt: Optional[str]) -> Dict[str, Any]:
+    prompt = params.get("prompt") or original_prompt or ""
+    step = run_materials_step(prompt)
+    report = export_metrics([step])
+    summary = summarize_reasoning(
+        original_input=prompt,
+        extraction={},
+        processing_results={},
+    )
+    return {
+        "report": report,
+        "summary": summary,
+    }
+
+
 AGENT_REGISTRY: Dict[str, AgentRunner] = {
     "simulation": _execute_simulation,
     "kb": _execute_kb,
     "processor": _execute_processor,
+    "materials": _execute_materials,
 }
 
 
