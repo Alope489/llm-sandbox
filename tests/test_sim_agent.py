@@ -2,7 +2,7 @@
 
 All agent tests are end-to-end: they use the real LLM (no mocks). Skip when no API key.
 Format tests exercise the formatter only (no agent/LLM).
-Unit tests for Option A pre-computation and timing are mocked.
+Unit tests for Option A pre-computation are mocked.
 """
 import os
 from unittest.mock import MagicMock, patch
@@ -106,7 +106,7 @@ def test_simulation_agent_integration_real_llm():
 
 
 # ---------------------------------------------------------------------------
-# Option A pre-computation + timing unit tests (all mocked)
+# Option A pre-computation unit tests (all mocked)
 # ---------------------------------------------------------------------------
 
 @patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
@@ -160,36 +160,3 @@ def test_run_and_report_passes_use_tools(mock_loop):
     agent.run_and_report(use_tools=True)
     _, kwargs = mock_loop.call_args
     assert kwargs.get("use_tools") is True
-
-
-@patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
-def test_timing_populated_after_run(mock_sim):
-    """self.timing has one entry per iteration with correct keys and types."""
-    mock_usage = MagicMock()
-    mock_usage.prompt_tokens = 50
-    mock_usage.completion_tokens = 5
-    mock_msg = MagicMock()
-    mock_msg.content = "15.0"
-    mock_msg.tool_calls = []
-    mock_msg.refusal = None
-    mock_choice = MagicMock()
-    mock_choice.message = mock_msg
-    mock_response = MagicMock()
-    mock_response.choices = [mock_choice]
-    mock_response.usage = mock_usage
-
-    with patch("openai.OpenAI") as mock_client_cls:
-        mock_client_cls.return_value.chat.completions.create.return_value = mock_response
-        agent = SimulationAgent(max_iterations=3)
-        agent.run_optimization_loop()
-
-    assert len(agent.timing) == 3
-    for entry in agent.timing:
-        assert "iteration" in entry
-        assert "elapsed_seconds" in entry
-        assert "prompt_tokens" in entry
-        assert "completion_tokens" in entry
-        assert "tokens_per_second" in entry
-        assert isinstance(entry["elapsed_seconds"], float)
-        assert isinstance(entry["prompt_tokens"], int)
-        assert isinstance(entry["completion_tokens"], int)

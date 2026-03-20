@@ -12,7 +12,6 @@ complete_with_tools(messages, provider) -> str
 """
 import json
 import os
-import time
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -129,10 +128,7 @@ def _tool_loop_openai(msgs: list[dict], registry) -> str:
         for tc in msg.tool_calls:
             tool_name = tc.function.name
             kwargs = json.loads(tc.function.arguments)
-            t0 = time.perf_counter()
             result = registry.call(tool_name, kwargs)
-            elapsed = time.perf_counter() - t0
-            print(f"[tool] {tool_name} called — {elapsed:.1f}s — result status: {result.get('status')}")
             msgs.append({
                 "role": "tool",
                 "tool_call_id": tc.id,
@@ -184,10 +180,7 @@ def _tool_loop_anthropic(msgs: list[dict], registry) -> str:
         for tb in tool_blocks:
             tool_name = tb.name
             kwargs_tool = tb.input if isinstance(tb.input, dict) else {}
-            t0 = time.perf_counter()
             result = registry.call(tool_name, kwargs_tool)
-            elapsed = time.perf_counter() - t0
-            print(f"[tool] {tool_name} called — {elapsed:.1f}s — result status: {result.get('status')}")
             tool_results.append({
                 "type": "tool_result",
                 "tool_use_id": tb.id,

@@ -302,7 +302,6 @@ def complete_with_tools(messages, provider=None) -> str:
 
 - **OpenAI**: sends `tools=get_openai_schemas()` to `chat.completions.create`, detects `tool_calls` on the response, executes each via `tool_registry.call`, appends `tool` role messages, loops.
 - **Anthropic**: sends `tools=get_anthropic_schemas()`, detects `tool_use` content blocks, appends `tool_result` user blocks, loops.
-- Logs each tool call: `[tool] <name> called — <elapsed>s — result status: <status>`.
 - Hard guard: exits after `MAX_TOOL_CALLS = 5` iterations regardless of LLM behavior.
 
 ---
@@ -327,27 +326,15 @@ When `run_optimization_loop(use_tools=True)` or `run_and_report(use_tools=True)`
 
 Public method for ad-hoc material science queries. Calls `complete_with_tools` directly; the LLM can invoke any registered tool at its discretion.
 
-### Per-iteration timing
+### Per-iteration LLM measurement instrumentation
 
-`self.timing: list[dict]` is populated after each `_call_openai` / `_call_anthropic` call during the optimization loop. Each entry:
-
-```python
-{
-    "iteration": int,           # 1-based
-    "elapsed_seconds": float,   # wall-clock time for the API call
-    "prompt_tokens": int,       # from response.usage
-    "completion_tokens": int,   # from response.usage
-    "tokens_per_second": float, # completion_tokens / elapsed_seconds
-}
-```
-
-Accessible via `agent.timing` after `run_and_report()` or `run_optimization_loop()` completes. The public return type of both methods is unchanged.
+Per-call latency (`elapsed_seconds`), token counts (`prompt_tokens`, `completion_tokens`), and derived throughput (`tokens_per_second`) were removed from `src/multi/sim/agent.py` and `src/wrapper.py`. The `self.timing` class variable and `_record_timing` helper have been deleted. A replacement observability approach is planned.
 
 ### Tests
 
 - `tests/test_tool_registry.py` — 5 unit tests (register, schema shapes, call dispatch, elastic tool presence).
 - `tests/test_wrapper.py` — 5 unit tests for `complete_with_tools` (no-call path, single-loop OpenAI, single-loop Anthropic, MAX_TOOL_CALLS guard OpenAI, MAX_TOOL_CALLS guard Anthropic).
-- `tests/test_sim_agent.py` — 6 unit tests (prefetch called/skipped, context in system prompt, ask_with_tools, run_and_report passthrough, timing shape).
+- `tests/test_sim_agent.py` — 5 unit tests (prefetch called/skipped, context in system prompt, ask_with_tools, run_and_report passthrough).
 - `tests/test_integration_tool_calling.py` — 2 Level 2 integration tests (real LLM API + mocked `tool_registry.call`). Assert the live LLM autonomously emits a tool call when asked a material science question. No Docker required.
 
 ---

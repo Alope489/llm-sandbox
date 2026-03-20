@@ -5,12 +5,19 @@ import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
+import pytest
+
 from dotenv import load_dotenv
 load_dotenv()
 
 import src.multi.kb_agent as kb_agent
 import src.multi.file_store as file_store
 from src.multi.knowledge_base import clear, index, store_size
+
+_skip_anthropic = pytest.mark.skipif(
+    not os.environ.get("ANTHROPIC_API_KEY"),
+    reason="Set ANTHROPIC_API_KEY to run Anthropic integration tests",
+)
 
 INVENTED_FACT = (
     "The Glorvak engine achieves 99.3% efficiency by cycling chromium ions "
@@ -72,6 +79,7 @@ def test_ask_openai_kb_path_not_web_path():
 
 # ── Anthropic ─────────────────────────────────────────────────────────────────
 
+@_skip_anthropic
 def test_ask_anthropic_found_in_store(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
@@ -84,6 +92,7 @@ def test_ask_anthropic_found_in_store(monkeypatch):
     assert "99.3" in result or "Glorvak" in result
 
 
+@_skip_anthropic
 def test_ask_anthropic_web_search_fallback(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
@@ -95,6 +104,7 @@ def test_ask_anthropic_web_search_fallback(monkeypatch):
     assert "Paris" in result
 
 
+@_skip_anthropic
 def test_ask_anthropic_kb_used_before_web(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")

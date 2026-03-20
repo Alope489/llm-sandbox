@@ -10,15 +10,9 @@ pre-computation phase runs before the optimization loop. The LLM is offered all
 registered tools and asked (but not commanded) to gather any material properties it
 judges relevant. The result is stored in self._tool_context and injected into the
 system prompt for every subsequent cooling rate suggestion.
-
-Per-iteration timing
---------------------
-self.timing is populated after each API call with elapsed_seconds, prompt_tokens,
-completion_tokens, and tokens_per_second for throughput analysis.
 """
 import os
 import re
-import time
 from typing import Callable, List, Optional, Tuple
 
 from dotenv import load_dotenv
@@ -110,9 +104,6 @@ class SimulationAgent:
         duration_hours: Simulation duration passed to run_material_simulation.
         max_iterations: Number of optimization loop iterations.
         history: List of (cooling_rate_K_per_min, yield_strength_MPa, success) tuples.
-        timing: List of per-iteration timing dicts populated after each API call.
-            Each dict has keys: iteration, elapsed_seconds, prompt_tokens,
-            completion_tokens, tokens_per_second.
     """
 
     def __init__(
@@ -125,7 +116,6 @@ class SimulationAgent:
         self.duration_hours = duration_hours
         self.max_iterations = max_iterations
         self.history: List[HistoryEntry] = []
-        self.timing: List[dict] = []
         self._tool_context: str = ""
 
     # ------------------------------------------------------------------
@@ -215,7 +205,6 @@ class SimulationAgent:
             Full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
         """
         self.history = []
-        self.timing = []
 
         if use_tools:
             self._prefetch_tool_context()
@@ -303,7 +292,6 @@ class SimulationAgent:
         from openai import OpenAI
 
         user_content = self._format_history_for_prompt()
-        t0 = time.perf_counter()
         response = OpenAI().chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
             messages=[
@@ -311,12 +299,6 @@ class SimulationAgent:
                 {"role": "user", "content": user_content},
             ],
             max_tokens=50,
-        )
-        elapsed = time.perf_counter() - t0
-        self._record_timing(
-            elapsed,
-            response.usage.prompt_tokens,
-            response.usage.completion_tokens,
         )
         msg = response.choices[0].message
         if getattr(msg, "refusal", None):
@@ -327,18 +309,11 @@ class SimulationAgent:
         from anthropic import Anthropic
 
         user_content = self._format_history_for_prompt()
-        t0 = time.perf_counter()
         response = Anthropic().messages.create(
             model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
             max_tokens=int(os.environ.get("MAX_TOKENS", "128")),
             system=[{"type": "text", "text": self._system_prompt()}],
             messages=[{"role": "user", "content": user_content}],
-        )
-        elapsed = time.perf_counter() - t0
-        self._record_timing(
-            elapsed,
-            response.usage.input_tokens,
-            response.usage.output_tokens,
         )
         for block in response.content:
             if getattr(block, "type", None) == "text":
@@ -353,26 +328,3 @@ class SimulationAgent:
             for rate, y, ok in self.history
         ]
         return "Previous attempts:\n" + "\n".join(lines) + "\n\nNext cooling_rate_K_per_min (reply with one number only):"
-
-    def _record_timing(
-        self,
-        elapsed_seconds: float,
-        prompt_tokens: int,
-        completion_tokens: int,
-    ) -> None:
-        """Append a timing entry to self.timing.
-
-        Args:
-            elapsed_seconds: Wall-clock time for the API call.
-            prompt_tokens: Number of prompt/input tokens reported by the API.
-            completion_tokens: Number of completion/output tokens reported.
-        """
-        self.timing.append({
-            "iteration": len(self.timing) + 1,
-            "elapsed_seconds": round(elapsed_seconds, 3),
-            "prompt_tokens": prompt_tokens,
-            "completion_tokens": completion_tokens,
-            "tokens_per_second": round(
-                completion_tokens / elapsed_seconds if elapsed_seconds > 0 else 0.0, 2
-            ),
-        })
