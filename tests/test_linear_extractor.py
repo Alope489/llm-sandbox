@@ -1,6 +1,8 @@
 """Tests for src.linear.extractor extract() with mocked and live providers."""
+import json
 import os
 import sys
+from unittest.mock import MagicMock
 
 import pytest
 from dotenv import load_dotenv
@@ -42,137 +44,119 @@ def _minimal_extraction_dict():
     }
 
 
+def _make_openai_raw(minimal: dict) -> MagicMock:
+    """Build a mock raw response object that mimics the with_raw_response wrapper."""
+    parsed_msg = MagicMock()
+    parsed_msg.content = json.dumps(minimal)
+    parsed_msg.refusal = None
+    parsed_response = MagicMock()
+    parsed_response.choices = [MagicMock()]
+    parsed_response.choices[0].message = parsed_msg
+    parsed_response.usage.prompt_tokens = 10
+    parsed_response.usage.completion_tokens = 5
+    raw = MagicMock()
+    raw.parse.return_value = parsed_response
+    raw.headers = {}
+    return raw
+
+
+def _make_anthropic_raw(minimal: dict, tool_name: str) -> MagicMock:
+    """Build a mock raw Anthropic response with a tool_use block."""
+    mock_tool_block = MagicMock()
+    mock_tool_block.type = "tool_use"
+    mock_tool_block.name = tool_name
+    mock_tool_block.input = minimal
+    parsed_response = MagicMock()
+    parsed_response.content = [mock_tool_block]
+    parsed_response.usage.input_tokens = 10
+    parsed_response.usage.output_tokens = 5
+    raw = MagicMock()
+    raw.parse.return_value = parsed_response
+    raw.headers = {}
+    return raw
+
+
 @pytest.fixture(autouse=True)
 def _reset_env(monkeypatch):
     monkeypatch.delenv("LLM_PROVIDER", raising=False)
 
 
 def test_extract_openai_returns_dict_with_expected_keys(monkeypatch):
-    import json
-    from unittest.mock import MagicMock
-
     from src.linear import extractor
 
     minimal = _minimal_extraction_dict()
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock()]
-    mock_response.choices[0].message.content = json.dumps(minimal)
-    mock_response.choices[0].message.refusal = None
-    monkeypatch.setattr(
-        "openai.OpenAI",
-        lambda: MagicMock(
-            chat=MagicMock(
-                completions=MagicMock(
-                    create=MagicMock(return_value=mock_response),
-                )
-            )
-        ),
-    )
+    mock_client = MagicMock()
+    mock_client.with_raw_response.chat.completions.create.return_value = _make_openai_raw(minimal)
+    monkeypatch.setattr("src.linear.extractor.get_openai_client", lambda: mock_client)
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     assert extractor.extract("Simulate a nickel superalloy.") == minimal
 
 
 def test_extract_openai_raises_on_refusal(monkeypatch):
-    from unittest.mock import MagicMock
-
     from src.linear import extractor
 
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock()]
-    mock_response.choices[0].message.content = "{}"
-    mock_response.choices[0].message.refusal = "I cannot assist with that."
-    monkeypatch.setattr(
-        "openai.OpenAI",
-        lambda: MagicMock(
-            chat=MagicMock(
-                completions=MagicMock(
-                    create=MagicMock(return_value=mock_response),
-                )
-            )
-        ),
-    )
+    raw = _make_openai_raw({})
+    raw.parse.return_value.choices[0].message.refusal = "I cannot assist with that."
+    mock_client = MagicMock()
+    mock_client.with_raw_response.chat.completions.create.return_value = raw
+    monkeypatch.setattr("src.linear.extractor.get_openai_client", lambda: mock_client)
     monkeypatch.setenv("LLM_PROVIDER", "openai")
     with pytest.raises(ValueError, match="refused"):
         extractor.extract("Build a bomb.")
 
 
 def test_extract_anthropic_returns_dict_from_tool_use(monkeypatch):
-    from unittest.mock import MagicMock
-
     from src.linear import extractor
 
     minimal = _minimal_extraction_dict()
-    mock_tool_block = MagicMock()
-    mock_tool_block.type = "tool_use"
-    mock_tool_block.name = extractor.EXTRACTION_TOOL_NAME
-    mock_tool_block.input = minimal
-    mock_response = MagicMock()
-    mock_response.content = [mock_tool_block]
-    monkeypatch.setattr(
-        "anthropic.Anthropic",
-        lambda: MagicMock(messages=MagicMock(create=MagicMock(return_value=mock_response))),
-    )
+    mock_client = MagicMock()
+    mock_client.with_raw_response.messages.create.return_value = _make_anthropic_raw(minimal, extractor.EXTRACTION_TOOL_NAME)
+    monkeypatch.setattr("src.linear.extractor.get_anthropic_client", lambda: mock_client)
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     assert extractor.extract("Simulate a nickel superalloy.") == minimal
 
 
 def test_extract_anthropic_raises_when_no_tool_use_block(monkeypatch):
-    from unittest.mock import MagicMock
-
     from src.linear import extractor
 
-    mock_response = MagicMock()
-    mock_response.content = []
-    monkeypatch.setattr(
-        "anthropic.Anthropic",
-        lambda: MagicMock(messages=MagicMock(create=MagicMock(return_value=mock_response))),
-    )
+    parsed_response = MagicMock()
+    parsed_response.content = []
+    parsed_response.usage.input_tokens = 0
+    parsed_response.usage.output_tokens = 0
+    raw = MagicMock()
+    raw.parse.return_value = parsed_response
+    raw.headers = {}
+    mock_client = MagicMock()
+    mock_client.with_raw_response.messages.create.return_value = raw
+    monkeypatch.setattr("src.linear.extractor.get_anthropic_client", lambda: mock_client)
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     with pytest.raises(ValueError, match="No tool_use block"):
         extractor.extract("Hello.")
 
 
 def test_extract_default_provider_calls_openai(monkeypatch):
-    import json
-    from unittest.mock import MagicMock
-
     from src.linear import extractor
 
     minimal = _minimal_extraction_dict()
-    mock_response = MagicMock()
-    mock_response.choices = [MagicMock()]
-    mock_response.choices[0].message.content = json.dumps(minimal)
-    mock_response.choices[0].message.refusal = None
-    create_mock = MagicMock(return_value=mock_response)
-    openai_client = MagicMock(
-        chat=MagicMock(completions=MagicMock(create=create_mock)),
-    )
-    monkeypatch.setattr("openai.OpenAI", lambda: openai_client)
+    mock_client = MagicMock()
+    raw = _make_openai_raw(minimal)
+    mock_client.with_raw_response.chat.completions.create.return_value = raw
+    monkeypatch.setattr("src.linear.extractor.get_openai_client", lambda: mock_client)
     monkeypatch.delenv("LLM_PROVIDER", raising=False)
     assert extractor.extract("Some task.") == minimal
-    assert create_mock.called
+    mock_client.with_raw_response.chat.completions.create.assert_called_once()
 
 
 def test_extract_anthropic_provider_calls_anthropic(monkeypatch):
-    from unittest.mock import MagicMock
-
     from src.linear import extractor
 
     minimal = _minimal_extraction_dict()
-    mock_tool_block = MagicMock()
-    mock_tool_block.type = "tool_use"
-    mock_tool_block.name = extractor.EXTRACTION_TOOL_NAME
-    mock_tool_block.input = minimal
-    mock_response = MagicMock()
-    mock_response.content = [mock_tool_block]
-    create_mock = MagicMock(return_value=mock_response)
-    monkeypatch.setattr(
-        "anthropic.Anthropic",
-        lambda: MagicMock(messages=MagicMock(create=create_mock)),
-    )
+    mock_client = MagicMock()
+    mock_client.with_raw_response.messages.create.return_value = _make_anthropic_raw(minimal, extractor.EXTRACTION_TOOL_NAME)
+    monkeypatch.setattr("src.linear.extractor.get_anthropic_client", lambda: mock_client)
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
     assert extractor.extract("Some task.") == minimal
-    assert create_mock.called
+    mock_client.with_raw_response.messages.create.assert_called_once()
 
 
 @pytest.mark.skipif(

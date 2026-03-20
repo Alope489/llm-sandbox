@@ -10,12 +10,36 @@ pre-computation phase runs before the optimization loop. The LLM is offered all
 registered tools and asked (but not commanded) to gather any material properties it
 judges relevant. The result is stored in self._tool_context and injected into the
 system prompt for every subsequent cooling rate suggestion.
+
+Telemetry instrumentation:
+    ``_call_openai``, ``_call_anthropic``, and ``get_llm_suggestion`` accept an
+    optional ``ctx`` (``CallContext``).  ``get_llm_suggestion`` stamps
+    ``agent="sim_agent"`` and ``span="sim_iter_<n>"`` per iteration.
+    ``run_optimization_loop`` accepts and threads ``ctx`` through the loop.
+
+Dependencies:
+    os, re, dataclasses, time, datetime, dotenv, src.llm_pipeline_telemetry.
+
+Pillar compliance:
+    - Pillar 1: Functional parity with pre-telemetry code.
+    - Pillar 4: No hardcoding; model / provider from env vars.
+    - Pillar 7: try/except with error-path telemetry records; GIL-safe appends.
 """
+import dataclasses
 import os
 import re
+import time
+from datetime import datetime, timezone
 from typing import Callable, List, Optional, Tuple
 
 from dotenv import load_dotenv
+
+from src.llm_pipeline_telemetry import (
+    CallContext,
+    get_anthropic_client,
+    get_openai_client,
+    log_llm_call,
+)
 
 load_dotenv()
 
@@ -148,16 +172,33 @@ class SimulationAgent:
     # Public: optimization loop
     # ------------------------------------------------------------------
 
-    def get_llm_suggestion(self) -> float:
+    def get_llm_suggestion(self, ctx: Optional[CallContext] = None) -> float:
         """
         Ask the LLM for the next cooling_rate_K_per_min given the current history.
         Returns a float. On non-numeric or empty response, uses a cooldown fallback
         after optional retries.
+
+        Args:
+            ctx: Optional ``CallContext``.  When provided, a snapshot is created with
+                ``agent="sim_agent"`` and ``span="sim_iter_<n>"``.
+
+        Returns:
+            Next cooling_rate_K_per_min as a float in [0.1, 100.0].
         """
+        call_ctx = (
+            dataclasses.replace(
+                ctx,
+                agent="sim_agent",
+                span=f"sim_iter_{len(self.history) + 1}",
+                iteration=len(self.history) + 1,
+            )
+            if ctx is not None
+            else None
+        )
         if self.provider == "anthropic":
-            raw = self._call_anthropic()
+            raw = self._call_anthropic(ctx=call_ctx)
         else:
-            raw = self._call_openai()
+            raw = self._call_openai(ctx=call_ctx)
 
         value = _parse_cooling_rate_from_response(raw)
         if value is not None:
@@ -165,9 +206,9 @@ class SimulationAgent:
 
         for _ in range(MAX_PARSE_ATTEMPTS - 1):
             if self.provider == "anthropic":
-                raw = self._call_anthropic()
+                raw = self._call_anthropic(ctx=call_ctx)
             else:
-                raw = self._call_openai()
+                raw = self._call_openai(ctx=call_ctx)
             value = _parse_cooling_rate_from_response(raw)
             if value is not None:
                 return max(0.1, min(100.0, value))
@@ -188,6 +229,7 @@ class SimulationAgent:
         initial_cooling_rate_K_per_min: float = DEFAULT_COOLING_RATE,
         on_step: Optional[Callable[[int, float, float, bool], None]] = None,
         use_tools: bool = False,
+        ctx: Optional[CallContext] = None,
     ) -> List[HistoryEntry]:
         """
         Run the loop: simulate -> log -> get LLM suggestion -> repeat for max_iterations.
@@ -200,6 +242,8 @@ class SimulationAgent:
                 where the LLM may call registered tools to gather material
                 properties. Results are injected into the system prompt.
                 Defaults to False to preserve backward compatibility.
+            ctx: Optional ``CallContext`` propagated from the caller.  When
+                provided, one ``llm_call`` record per iteration is appended.
 
         Returns:
             Full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
@@ -217,7 +261,7 @@ class SimulationAgent:
             if on_step is not None:
                 on_step(i + 1, cooling_rate_K_per_min, yield_strength_MPa, success)
 
-            cooling_rate_K_per_min = self.get_llm_suggestion()
+            cooling_rate_K_per_min = self.get_llm_suggestion(ctx=ctx)
 
         return self.history
 
@@ -225,6 +269,7 @@ class SimulationAgent:
         self,
         initial_cooling_rate_K_per_min: float = DEFAULT_COOLING_RATE,
         use_tools: bool = False,
+        ctx: Optional[CallContext] = None,
     ) -> Tuple[List[HistoryEntry], str]:
         """
         Run the optimization loop and return (history, output_string).
@@ -233,6 +278,7 @@ class SimulationAgent:
             initial_cooling_rate_K_per_min: Starting cooling rate.
             use_tools: Passed through to run_optimization_loop. When True,
                 enables the pre-computation tool-calling phase.
+            ctx: Optional ``CallContext`` propagated to the loop.
 
         Returns:
             Tuple of (history, human-readable log string).
@@ -248,6 +294,7 @@ class SimulationAgent:
             initial_cooling_rate_K_per_min=initial_cooling_rate_K_per_min,
             on_step=on_step,
             use_tools=use_tools,
+            ctx=ctx,
         )
         return self.history, format_simulation_output(self.history, step_lines=lines)
 
@@ -288,37 +335,136 @@ class SimulationAgent:
     # Private: provider calls
     # ------------------------------------------------------------------
 
-    def _call_openai(self) -> str:
-        from openai import OpenAI
+    def _call_openai(self, ctx: Optional[CallContext] = None) -> str:
+        """Call OpenAI to get a cooling rate suggestion with telemetry.
 
+        Args:
+            ctx: Optional ``CallContext`` snapshot (labels already stamped by
+                ``get_llm_suggestion``).
+
+        Returns:
+            Raw LLM response string.
+
+        Postconditions:
+            - If ctx is not None, exactly one ``llm_call`` record is appended.
+
+        Complexity:
+            O(1).
+        """
+        client = get_openai_client()
         user_content = self._format_history_for_prompt()
-        response = OpenAI().chat.completions.create(
-            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-            messages=[
-                {"role": "system", "content": self._system_prompt()},
-                {"role": "user", "content": user_content},
-            ],
-            max_tokens=50,
-        )
-        msg = response.choices[0].message
-        if getattr(msg, "refusal", None):
+        call_start_ts = datetime.now(timezone.utc)
+        t0 = time.perf_counter()
+        try:
+            raw = client.with_raw_response.chat.completions.create(
+                model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+                messages=[
+                    {"role": "system", "content": self._system_prompt()},
+                    {"role": "user", "content": user_content},
+                ],
+                max_tokens=50,
+            )
+            client_elapsed_ms = (time.perf_counter() - t0) * 1000
+            call_end_ts = datetime.now(timezone.utc)
+            if ctx is not None:
+                usage = raw.parse().usage
+                raw_ms = raw.headers.get("openai-processing-ms")
+                server_ms = int(raw_ms) if raw_ms and int(raw_ms) > 0 else None
+                log_llm_call(
+                    ctx,
+                    model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+                    input_tokens=usage.prompt_tokens,
+                    output_tokens=usage.completion_tokens,
+                    provider_server_latency_ms=server_ms,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="ok",
+                )
+            msg = raw.parse().choices[0].message
+            if getattr(msg, "refusal", None):
+                return ""
+            return (msg.content or "").strip()
+        except Exception:
+            client_elapsed_ms = (time.perf_counter() - t0) * 1000
+            call_end_ts = datetime.now(timezone.utc)
+            if ctx is not None:
+                log_llm_call(
+                    ctx,
+                    model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+                    input_tokens=0,
+                    output_tokens=0,
+                    provider_server_latency_ms=None,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="error",
+                )
+            raise
+
+    def _call_anthropic(self, ctx: Optional[CallContext] = None) -> str:
+        """Call Anthropic to get a cooling rate suggestion with telemetry.
+
+        Args:
+            ctx: Optional ``CallContext`` snapshot (labels already stamped by
+                ``get_llm_suggestion``).
+
+        Returns:
+            Raw LLM response string.
+
+        Postconditions:
+            - If ctx is not None, exactly one ``llm_call`` record is appended.
+            - ``provider_server_latency_ms`` is always ``None`` (Anthropic).
+
+        Complexity:
+            O(1).
+        """
+        client = get_anthropic_client()
+        user_content = self._format_history_for_prompt()
+        call_start_ts = datetime.now(timezone.utc)
+        t0 = time.perf_counter()
+        try:
+            raw = client.with_raw_response.messages.create(
+                model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
+                max_tokens=int(os.environ.get("MAX_TOKENS", "128")),
+                system=[{"type": "text", "text": self._system_prompt()}],
+                messages=[{"role": "user", "content": user_content}],
+            )
+            client_elapsed_ms = (time.perf_counter() - t0) * 1000
+            call_end_ts = datetime.now(timezone.utc)
+            if ctx is not None:
+                usage = raw.parse().usage
+                log_llm_call(
+                    ctx,
+                    model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
+                    input_tokens=usage.input_tokens,
+                    output_tokens=usage.output_tokens,
+                    provider_server_latency_ms=None,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="ok",
+                )
+            for block in raw.parse().content:
+                if getattr(block, "type", None) == "text":
+                    return (getattr(block, "text", "") or "").strip()
             return ""
-        return (msg.content or "").strip()
-
-    def _call_anthropic(self) -> str:
-        from anthropic import Anthropic
-
-        user_content = self._format_history_for_prompt()
-        response = Anthropic().messages.create(
-            model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
-            max_tokens=int(os.environ.get("MAX_TOKENS", "128")),
-            system=[{"type": "text", "text": self._system_prompt()}],
-            messages=[{"role": "user", "content": user_content}],
-        )
-        for block in response.content:
-            if getattr(block, "type", None) == "text":
-                return (getattr(block, "text", "") or "").strip()
-        return ""
+        except Exception:
+            client_elapsed_ms = (time.perf_counter() - t0) * 1000
+            call_end_ts = datetime.now(timezone.utc)
+            if ctx is not None:
+                log_llm_call(
+                    ctx,
+                    model=os.environ.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
+                    input_tokens=0,
+                    output_tokens=0,
+                    provider_server_latency_ms=None,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="error",
+                )
+            raise
 
     def _format_history_for_prompt(self) -> str:
         if not self.history:

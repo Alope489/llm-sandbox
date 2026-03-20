@@ -1,6 +1,22 @@
-"""LLM agent that produces a human-readable summary of linear pipeline actions and results."""
-import json
+"""LLM agent that produces a human-readable summary of linear pipeline actions and results.
 
+Telemetry instrumentation:
+    ``summarize`` accepts an optional ``ctx`` parameter (``CallContext``).  It
+    stamps ``agent="reasoning"`` and ``span="summarize"`` via
+    ``dataclasses.replace()`` before forwarding ``ctx`` to ``complete()``.
+
+Dependencies:
+    json, dataclasses, src.wrapper, src.llm_pipeline_telemetry.
+
+Pillar compliance:
+    - Pillar 4: No hardcoding; all labels are literal constants here.
+    - Pillar 7: All exceptions propagate from ``complete()`` to the caller.
+"""
+import dataclasses
+import json
+from typing import Optional
+
+from src.llm_pipeline_telemetry import CallContext
 from src.wrapper import complete
 
 LINEAR_STRUCTURE = """
@@ -15,12 +31,40 @@ The linear pipeline in src/linear/ has two stages:
 """
 
 
-def summarize(original_input: str, extraction: dict, processing_results: dict) -> str:
+def summarize(
+    original_input: str,
+    extraction: dict,
+    processing_results: dict,
+    ctx: Optional[CallContext] = None,
+) -> str:
     """Produce a human-readable summary of actions taken and results obtained.
-    original_input: raw task description passed to the pipeline.
-    extraction: output of extract().
-    processing_results: dict mapping task name -> output of process(data, task).
+
+    Args:
+        original_input: Raw task description passed to the pipeline.
+        extraction: Output of ``extract()``.
+        processing_results: Dict mapping task name -> output of
+            ``process(data, task)``.
+        ctx: Optional ``CallContext``.  When provided, a snapshot with
+            ``agent="reasoning"`` and ``span="summarize"`` is forwarded to
+            ``complete()``.
+
+    Returns:
+        A human-readable plain-text summary string.
+
+    Raises:
+        openai.APIError / anthropic.APIError: Propagated from ``complete()``.
+
+    Postconditions:
+        - If ctx is not None, exactly one ``llm_call`` record is appended.
+
+    Complexity:
+        O(1) — single LLM call.
     """
+    call_ctx = (
+        dataclasses.replace(ctx, agent="reasoning", span="summarize")
+        if ctx is not None
+        else None
+    )
     return complete(
         [
             {
@@ -45,5 +89,6 @@ def summarize(original_input: str, extraction: dict, processing_results: dict) -
                     indent=2,
                 ),
             },
-        ]
+        ],
+        ctx=call_ctx,
     )

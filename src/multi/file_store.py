@@ -11,20 +11,43 @@ Module-level state (OpenAI only)
 ---------------------------------
 _VECTOR_STORE_ID : str or None  -- ID of the active OpenAI vector store.
 _ASSISTANT_ID    : str or None  -- ID of the active OpenAI Assistant.
+_ASSISTANT_MODEL : str          -- Model name used when creating the assistant.
+
+Telemetry instrumentation:
+    ``query_openai`` accepts an optional ``ctx`` (``CallContext``) and emits a
+    ``llm_call`` record via ``log_llm_call``.  ``provider_server_latency_ms``
+    is always ``None`` because the Assistants ``create_and_poll`` helper
+    returns a ``Run`` object with no equivalent timing header.
 
 Environment variables
 ---------------------
 OPENAI_API_KEY : Required for OpenAI operations.
 OPENAI_MODEL   : Model used when creating the Assistant (default: gpt-4o-mini).
 LLM_PROVIDER   : "openai" (default) or "anthropic".
+
+Dependencies:
+    os, dataclasses, time, datetime, dotenv, src.llm_pipeline_telemetry.
+
+Pillar compliance:
+    - Pillar 4: No hardcoding; model from env vars via _ASSISTANT_MODEL.
+    - Pillar 7: try/except with error-path records; error records emitted
+      before re-raising.
 """
+import dataclasses
 import os
+import time
+from datetime import datetime, timezone
+from typing import Optional
+
 from dotenv import load_dotenv
+
+from src.llm_pipeline_telemetry import CallContext, get_openai_client, log_llm_call
 
 load_dotenv()
 
 _VECTOR_STORE_ID: str = None
 _ASSISTANT_ID: str = None
+_ASSISTANT_MODEL: str = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
 
 
 def clear_openai() -> None:
@@ -101,12 +124,12 @@ def _upload_openai(paths: list) -> None:
     Postconditions:
         - _VECTOR_STORE_ID is set to the ID of the active vector store.
         - _ASSISTANT_ID is set to the ID of the active assistant.
+        - _ASSISTANT_MODEL is set to the model used when creating the assistant.
         - All files in paths have been uploaded and indexed in the vector store.
         - All file streams opened during upload are closed.
     """
-    from openai import OpenAI
-    global _VECTOR_STORE_ID, _ASSISTANT_ID
-    client = OpenAI()
+    global _VECTOR_STORE_ID, _ASSISTANT_ID, _ASSISTANT_MODEL
+    client = get_openai_client()
     if _VECTOR_STORE_ID is None:
         _VECTOR_STORE_ID = client.vector_stores.create(name="kb").id
     file_streams = [open(p, "rb") for p in paths]
@@ -116,9 +139,10 @@ def _upload_openai(paths: list) -> None:
     )
     for f in file_streams:
         f.close()
+    _ASSISTANT_MODEL = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
     if _ASSISTANT_ID is None:
         _ASSISTANT_ID = client.beta.assistants.create(
-            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            model=_ASSISTANT_MODEL,
             tools=[{"type": "file_search"}],
             tool_resources={"file_search": {"vector_store_ids": [_VECTOR_STORE_ID]}},
         ).id
@@ -129,7 +153,7 @@ def _upload_openai(paths: list) -> None:
         )
 
 
-def query_openai(query: str) -> str:
+def query_openai(query: str, ctx: Optional[CallContext] = None) -> str:
     """Query the OpenAI Assistant and return its response if it cites a file.
 
     Creates a new thread with the query as the user message, runs the assistant,
@@ -139,6 +163,11 @@ def query_openai(query: str) -> str:
 
     Args:
         query: The natural-language question to ask the assistant.
+        ctx: Optional ``CallContext`` snapshot.  When provided, a ``llm_call``
+            record is appended using ``run.usage`` token counts.
+            ``provider_server_latency_ms`` is always ``None`` (the Assistants
+            API does not expose a server-timing equivalent).  Pass a snapshot
+            with ``agent="kb_agent"`` and ``span="kb_query"`` already set.
 
     Returns:
         The assistant's response text if at least one file_citation annotation
@@ -148,30 +177,92 @@ def query_openai(query: str) -> str:
     Preconditions:
         - OPENAI_API_KEY must be set in the environment.
         - _upload_openai() must have been called at least once so that
-          _ASSISTANT_ID is set; if it is None the function returns "" immediately.
+          _ASSISTANT_ID is set; if it is None the function returns "" immediately
+          without emitting any telemetry record.
 
     Postconditions:
         - A new thread is created and immediately discarded after the run.
         - _VECTOR_STORE_ID and _ASSISTANT_ID are not modified.
-        - The returned string is either empty or contains the full text of the
-          first assistant message block that carries file citations.
+        - If ctx is not None and an API call was made, exactly one ``llm_call``
+          record is appended (status="ok" on success, "error" on exception).
+        - No record is emitted when _ASSISTANT_ID is None (no API call made).
+
+    Complexity:
+        O(1).
     """
-    from openai import OpenAI
     if _ASSISTANT_ID is None:
         return ""
-    client = OpenAI()
-    thread_id = client.beta.threads.create(
-        messages=[{"role": "user", "content": query}]
-    ).id
-    run = client.beta.threads.runs.create_and_poll(
-        thread_id=thread_id,
-        assistant_id=_ASSISTANT_ID,
-    )
-    if run.status != "completed":
+    client = get_openai_client()
+    call_ctx = dataclasses.replace(ctx) if ctx is not None else None
+    call_start_ts = datetime.now(timezone.utc)
+    t0 = time.perf_counter()
+    try:
+        thread_id = client.beta.threads.create(
+            messages=[{"role": "user", "content": query}]
+        ).id
+        run = client.beta.threads.runs.create_and_poll(
+            thread_id=thread_id,
+            assistant_id=_ASSISTANT_ID,
+        )
+        client_elapsed_ms = (time.perf_counter() - t0) * 1000
+        call_end_ts = datetime.now(timezone.utc)
+        if run.status != "completed":
+            if call_ctx is not None:
+                log_llm_call(
+                    call_ctx,
+                    model=_ASSISTANT_MODEL,
+                    input_tokens=0,
+                    output_tokens=0,
+                    provider_server_latency_ms=None,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="error",
+                )
+            return ""
+        if call_ctx is not None and run.usage is not None:
+            log_llm_call(
+                call_ctx,
+                model=_ASSISTANT_MODEL,
+                input_tokens=run.usage.prompt_tokens,
+                output_tokens=run.usage.completion_tokens,
+                provider_server_latency_ms=None,
+                client_elapsed_ms=client_elapsed_ms,
+                call_start_ts=call_start_ts.isoformat(),
+                call_end_ts=call_end_ts.isoformat(),
+                status="ok",
+            )
+        elif call_ctx is not None:
+            log_llm_call(
+                call_ctx,
+                model=_ASSISTANT_MODEL,
+                input_tokens=0,
+                output_tokens=0,
+                provider_server_latency_ms=None,
+                client_elapsed_ms=client_elapsed_ms,
+                call_start_ts=call_start_ts.isoformat(),
+                call_end_ts=call_end_ts.isoformat(),
+                status="ok",
+            )
+        for msg in client.beta.threads.messages.list(thread_id=thread_id).data:
+            if msg.role == "assistant":
+                for block in msg.content:
+                    if hasattr(block, "text"):
+                        return block.text.value
         return ""
-    for msg in client.beta.threads.messages.list(thread_id=thread_id).data:
-        if msg.role == "assistant":
-            for block in msg.content:
-                if hasattr(block, "text"):
-                    return block.text.value
-    return ""
+    except Exception:
+        client_elapsed_ms = (time.perf_counter() - t0) * 1000
+        call_end_ts = datetime.now(timezone.utc)
+        if call_ctx is not None:
+            log_llm_call(
+                call_ctx,
+                model=_ASSISTANT_MODEL,
+                input_tokens=0,
+                output_tokens=0,
+                provider_server_latency_ms=None,
+                client_elapsed_ms=client_elapsed_ms,
+                call_start_ts=call_start_ts.isoformat(),
+                call_end_ts=call_end_ts.isoformat(),
+                status="error",
+            )
+        raise

@@ -113,3 +113,59 @@ def test_ask_anthropic_kb_used_before_web(monkeypatch):
     assert store_size() > 0
     result = kb_agent.ask(INVENTED_QUERY)
     assert "99.3" in result or "Glorvak" in result
+
+
+# ---------------------------------------------------------------------------
+# Telemetry ctx attribution tests (real API — skip when key absent)
+# ---------------------------------------------------------------------------
+
+import os as _os
+import dataclasses as _dc
+
+_skip_no_openai = pytest.mark.skipif(
+    not _os.environ.get("OPENAI_API_KEY"),
+    reason="OPENAI_API_KEY not set; skipping ctx attribution telemetry tests",
+)
+
+
+@_skip_no_openai
+def test_ask_openai_web_search_ctx_attribution():
+    """ask() with ctx on the web-search path emits llm_call records under run_id."""
+    from src.llm_pipeline_telemetry import CallContext
+
+    file_store.clear_openai()
+    ctx = CallContext(pipeline="multi_agent")
+    result = kb_agent.ask("What is the capital city of France?", ctx=ctx)
+    assert isinstance(result, str) and len(result) > 0
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) >= 1
+    for rec in llm_records:
+        assert rec["pipeline"] == "multi_agent"
+        assert rec["run_id"] == ctx.run_id
+        assert rec["input_tokens"] > 0
+        assert rec["output_tokens"] > 0
+        assert rec["client_elapsed_ms"] > 0
+        assert "call_start_ts" in rec
+        assert "call_end_ts" in rec
+
+
+@_skip_no_openai
+def test_ask_openai_kb_hit_ctx_attribution():
+    """ask() with ctx on the KB-hit path emits llm_call records under run_id."""
+    from src.llm_pipeline_telemetry import CallContext
+
+    file_store.clear_openai()
+    tmp = _write_tmp(INVENTED_FACT)
+    file_store.upload_files([tmp])
+    os.unlink(tmp)
+
+    ctx = CallContext(pipeline="multi_agent")
+    result = kb_agent.ask(INVENTED_QUERY, ctx=ctx)
+    assert isinstance(result, str) and len(result) > 0
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) >= 1
+    for rec in llm_records:
+        assert rec["pipeline"] == "multi_agent"
+        assert rec["run_id"] == ctx.run_id

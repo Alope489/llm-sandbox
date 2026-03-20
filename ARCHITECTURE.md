@@ -8,10 +8,12 @@
 ## LLM Wrapper
 
 - **`src/wrapper.py`**: Single module that exposes a unified chat interface and switches between LLM providers via environment variable.
-- **Interface**: `complete(messages: list[dict]) -> str`
-  - **Input**: List of message dicts with `role` (`"user"`, `"assistant"`, `"system"`) and `content` (string).
+- **Interface**: `complete(messages: list[dict], ctx=None, max_tokens=None) -> str`
+  - **Input**: List of message dicts with `role` (`"user"`, `"assistant"`, `"system"`) and `content` (string). Optional `ctx` (`CallContext`) for telemetry. Optional `max_tokens` to cap output tokens (OpenAI only).
   - **Output**: Assistant reply as a single string.
+- Also exposes: `complete_with_tools(messages, provider=None, ctx=None) -> str` for the tool-calling loop.
 - **Default provider**: OpenAI. Set `LLM_PROVIDER=anthropic` in `.env` to use Anthropic.
+- **Clients**: Uses process-level singleton clients from `src.llm_pipeline_telemetry` (`get_openai_client`, `get_anthropic_client`) — see [LLM Pipeline Telemetry](#llm-pipeline-telemetry).
 
 ## Environment variables
 
@@ -98,7 +100,7 @@ graph TD
     - `clear_openai() -> None`: Reset OpenAI module-level store/assistant IDs.
 
 - **`src/multi/kb_agent.py`**: Orchestration layer — KB first, web search fallback.
-  - **Interface**: `ask(query: str) -> str`
+  - **Interface**: `ask(query: str, ctx: Optional[CallContext] = None) -> str`
   - **Provider dispatch**:
 
 | `LLM_PROVIDER` | KB search | Fallback |
@@ -419,6 +421,107 @@ py -m pytest -v
 
 `test_sim_agent_prefetch_with_real_docker` — exercises `SimulationAgent._prefetch_tool_context()`
 with a real Docker-backed tool call and a real OpenAI API call. Requires `OPENAI_API_KEY`.
+
+---
+
+## LLM Pipeline Telemetry
+
+**Location**: `src/llm_pipeline_telemetry.py`
+
+Central telemetry module that captures token counts, latencies, wall-clock timestamps, and
+end-to-end pipeline statistics for every LLM API call and tool execution in both pipelines.
+
+### Design Decisions
+
+- **Process-level singleton clients** (`get_openai_client`, `get_anthropic_client`): Created
+  once per process via module-level globals; all instrumented files import and call these
+  instead of instantiating SDK clients locally. This ensures the `httpx.Client` TLS connection
+  pool is shared, so `client_elapsed_ms` on every call after the first warm call reflects only
+  the HTTP round-trip — no TCP/TLS handshake noise. Supports Pillar 6 (performance accuracy)
+  and Pillar 7 (consistent measurement).
+
+- **`CallContext` dataclass**: Created once at the pipeline entry point
+  (`orchestrator.run` / `coordinator.run`) and propagated via `dataclasses.replace()` snapshots.
+  Labels (`agent`, `span`, `iteration`) are never mutated on the shared instance — each call
+  site creates a snapshot with its own labels. The `records` list is intentionally shared across
+  all snapshots (shallow-copied by `dataclasses.replace`), so every log call from any snapshot
+  appends to the one list the entry point holds. Thread-safe via CPython's GIL (`list.append`
+  is atomic). Supports Pillar 5 (no data races), Pillar 7 (observable accumulation).
+
+- **`run_id`**: 32-char UUID hex string (128-bit entropy) generated once per pipeline run.
+  All records from a run carry the same `run_id` for easy correlation in log analysis.
+
+### Record Types
+
+| `record_type` | Emitted by | Key fields |
+|---|---|---|
+| `llm_call` | `log_llm_call()` | `input_tokens`, `output_tokens`, `provider_server_latency_ms`, `client_elapsed_ms`, `throughput_output_tokens_per_sec`, `call_start_ts`, `call_end_ts`, `status` |
+| `tool_execution` | `log_tool_execution()` | `tool_name`, `tool_execution_ms`, `tool_internal_runtime_ms` (optional), `call_start_ts`, `call_end_ts`, `status` |
+| `pipeline_outcome_and_stats` | `log_pipeline_outcome_and_stats()` | `total_duration_ms`, `start_ts`, `end_ts`, `total_input_tokens`, `total_output_tokens`, `llm_call_count`, `is_provider_server_latency_complete`, `calls_with_provider_server_latency`, `total_provider_server_latency_ms`, `status`, `is_partial_data` |
+
+### Provider Server Latency Coverage
+
+- `provider_server_latency_ms`: Set from the `openai-processing-ms` HTTP header for OpenAI
+  calls; `None` for Anthropic (Anthropic does not expose server-side timing).
+- `is_provider_server_latency_complete` in `pipeline_outcome_and_stats`: `True` only when
+  every `llm_call` record in the run has a valid (positive, non-null) `provider_server_latency_ms`.
+  Use this as an analysis filter: **exclude runs where it is `False`** from server-side
+  throughput/latency calculations. Anthropic-only runs will always have `False`.
+- `total_provider_server_latency_ms`: Sum of all server latencies, or `null` when incomplete.
+  Set to `null` to prevent accidental partial sums in analysis.
+
+### Throughput Denominator Logic
+
+`throughput_output_tokens_per_sec` in `llm_call` records uses:
+1. `provider_server_latency_ms` when it is a **positive non-zero integer** (provider gave us
+   real server timing).
+2. `client_elapsed_ms` as fallback (Anthropic, or when OpenAI header is absent).
+3. `0.0` when both are zero or absent — no `ZeroDivisionError` raised.
+
+### Data Flow
+
+```mermaid
+flowchart TD
+    LP["linear.orchestrator.run()"] -->|creates| CTX["CallContext(pipeline='linear')"]
+    MA["coordinator.run()"] -->|creates| CTX2["CallContext(pipeline='multi_agent')"]
+    CTX -->|replace()| SNAP1["snap(agent='extractor', span='extract')"]
+    CTX -->|replace()| SNAP2["snap(agent='processor', span='process.X')"]
+    SNAP1 -->|log_llm_call| REC["records list (shared)"]
+    SNAP2 -->|log_llm_call| REC
+    REC -->|aggregated by| STATS["log_pipeline_outcome_and_stats()"]
+    STATS -->|llm.telemetry logger| JSON["JsonFormatter → stderr/file"]
+```
+
+### Instrumented Modules
+
+| Module | Telemetry |
+|---|---|
+| `src/wrapper.py` | `_complete_openai`, `_complete_anthropic`, `_tool_loop_openai`, `_tool_loop_anthropic` |
+| `src/linear/extractor.py` | `_extract_openai`, `_extract_anthropic` |
+| `src/linear/processor.py` | ctx propagation to `complete()` |
+| `src/linear/reasoning.py` | ctx propagation to `complete()` |
+| `src/linear/orchestrator.py` | creates `CallContext`, `log_pipeline_outcome_and_stats` |
+| `src/multi/sim/agent.py` | `_call_openai`, `_call_anthropic` |
+| `src/multi/kb_agent.py` | `_ask_openai`, `_web_search_openai`, `_ask_anthropic`, `_web_search_anthropic` |
+| `src/multi/file_store.py` | `query_openai` (Assistants API, `run.usage`) |
+| `src/multi/knowledge_base.py` | `_embed` (embeddings; `output_tokens=0`) |
+| `src/coordinator.py` | creates `CallContext`, `log_pipeline_outcome_and_stats` |
+| `src/executor.py` | ctx propagation to all runners |
+
+### Tests
+
+- `tests/test_llm_pipeline_telemetry.py` — 44+ unit tests: `CallContext` invariants, singleton
+  identity, `log_llm_call` field shape and throughput arithmetic (parametrized), field isolation,
+  `log_tool_execution` shape, `log_pipeline_outcome_and_stats` token aggregation, server-latency
+  coverage (all three cases), zero-records edge case, error path, `JsonFormatter`, `_configure_logger`.
+- `tests/test_wrapper.py` — 3 new real-API tests (skip when key absent): OpenAI/Anthropic
+  `_complete_*` with ctx shape verification, ctx=None no-op.
+- `tests/test_sim_agent.py` — 1 new real-API test: ctx attribution across optimization loop.
+- `tests/test_multi_kb_agent.py` — 2 new real-API tests: ctx attribution on web-search and KB-hit paths.
+- `tests/test_multi_knowledge_base.py` — 1 new real-API test: `_embed` emits `llm_call` with `output_tokens=0`.
+- `tests/integration/linear/test_integration_telemetry_linear.py` — 3 E2E tests (real OpenAI): full linear pipeline telemetry wiring.
+- `tests/integration/multi/test_integration_telemetry_multi_agent.py` — 2 E2E tests: web-search and sim-agent telemetry paths.
+- `tests/integration/wrapper/test_integration_telemetry_tool_loop.py` — 2 E2E tests (real LLM + Docker): tool-loop paired records.
 
 ---
 

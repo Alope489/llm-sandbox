@@ -23,9 +23,9 @@ def test_run_returns_summary_extraction_processing(monkeypatch):
     from src.linear import orchestrator
 
     extraction = _minimal_extraction_dict()
-    monkeypatch.setattr(orchestrator, "extract", lambda t: extraction)
-    monkeypatch.setattr(orchestrator, "process", lambda d, task: {task: "result"})
-    monkeypatch.setattr(orchestrator, "summarize", lambda inp, ext, pr: "Human summary.")
+    monkeypatch.setattr(orchestrator, "extract", lambda t, ctx=None: extraction)
+    monkeypatch.setattr(orchestrator, "process", lambda d, task, ctx=None: {task: "result"})
+    monkeypatch.setattr(orchestrator, "summarize", lambda inp, ext, pr, ctx=None: "Human summary.")
     result = orchestrator.run("Simulate alloy.", tasks=["schema_validation"])
     assert "summary" in result
     assert "extraction" in result
@@ -41,13 +41,13 @@ def test_run_calls_extract_once_with_input(monkeypatch):
     extraction = _minimal_extraction_dict()
     extract_calls = []
 
-    def track_extract(t):
+    def track_extract(t, ctx=None):
         extract_calls.append(t)
         return extraction
 
     monkeypatch.setattr(orchestrator, "extract", track_extract)
-    monkeypatch.setattr(orchestrator, "process", lambda d, task: {})
-    monkeypatch.setattr(orchestrator, "summarize", lambda i, e, p: "")
+    monkeypatch.setattr(orchestrator, "process", lambda d, task, ctx=None: {})
+    monkeypatch.setattr(orchestrator, "summarize", lambda i, e, p, ctx=None: "")
     orchestrator.run("My input text", tasks=["schema_validation"])
     assert extract_calls == ["My input text"]
 
@@ -58,13 +58,13 @@ def test_run_calls_process_per_task_with_extraction(monkeypatch):
     extraction = _minimal_extraction_dict()
     process_calls = []
 
-    def track_process(data, task):
+    def track_process(data, task, ctx=None):
         process_calls.append((data, task))
         return {"task": task}
 
-    monkeypatch.setattr(orchestrator, "extract", lambda t: extraction)
+    monkeypatch.setattr(orchestrator, "extract", lambda t, ctx=None: extraction)
     monkeypatch.setattr(orchestrator, "process", track_process)
-    monkeypatch.setattr(orchestrator, "summarize", lambda i, e, p: "")
+    monkeypatch.setattr(orchestrator, "summarize", lambda i, e, p, ctx=None: "")
     orchestrator.run("x", tasks=["schema_validation", "constraint_verification"])
     assert len(process_calls) == 2
     assert process_calls[0] == (extraction, "schema_validation")
@@ -77,12 +77,12 @@ def test_run_calls_summarize_with_input_extraction_and_processing(monkeypatch):
     extraction = _minimal_extraction_dict()
     summarize_args = []
 
-    def track_summarize(orig, ext, proc):
+    def track_summarize(orig, ext, proc, ctx=None):
         summarize_args.append((orig, ext, proc))
         return "Summary"
 
-    monkeypatch.setattr(orchestrator, "extract", lambda t: extraction)
-    monkeypatch.setattr(orchestrator, "process", lambda d, task: {"key": task})
+    monkeypatch.setattr(orchestrator, "extract", lambda t, ctx=None: extraction)
+    monkeypatch.setattr(orchestrator, "process", lambda d, task, ctx=None: {"key": task})
     monkeypatch.setattr(orchestrator, "summarize", track_summarize)
     orchestrator.run("Input", tasks=["normalization"])
     assert len(summarize_args) == 1
@@ -98,13 +98,13 @@ def test_run_with_no_tasks_uses_all_tasks(monkeypatch):
     extraction = _minimal_extraction_dict()
     process_calls = []
 
-    def track_process(data, task):
+    def track_process(data, task, ctx=None):
         process_calls.append(task)
         return {}
 
-    monkeypatch.setattr(orchestrator, "extract", lambda t: extraction)
+    monkeypatch.setattr(orchestrator, "extract", lambda t, ctx=None: extraction)
     monkeypatch.setattr(orchestrator, "process", track_process)
-    monkeypatch.setattr(orchestrator, "summarize", lambda i, e, p: "")
+    monkeypatch.setattr(orchestrator, "summarize", lambda i, e, p, ctx=None: "")
     orchestrator.run("x", tasks=None)
     assert len(process_calls) == len(TASKS)
     for t in TASKS:

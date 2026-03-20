@@ -22,7 +22,7 @@ def _minimal_extraction_dict():
 def test_summarize_returns_string(monkeypatch):
     from src.linear import reasoning
 
-    monkeypatch.setattr(reasoning, "complete", lambda msgs: "Summary: extraction and two tasks run.")
+    monkeypatch.setattr(reasoning, "complete", lambda msgs, ctx=None, max_tokens=None: "Summary: extraction and two tasks run.")
     result = reasoning.summarize(
         "Simulate Ni alloy.",
         _minimal_extraction_dict(),
@@ -37,7 +37,7 @@ def test_summarize_passes_input_extraction_and_processing_to_complete(monkeypatc
 
     seen = []
 
-    def capture(msgs):
+    def capture(msgs, ctx=None, max_tokens=None):
         seen.append(msgs)
         return "Done."
 
@@ -58,7 +58,7 @@ def test_summarize_system_prompt_describes_linear_structure(monkeypatch):
 
     seen = []
 
-    def capture(msgs):
+    def capture(msgs, ctx=None, max_tokens=None):
         seen.append(msgs)
         return "Done."
 

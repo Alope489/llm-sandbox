@@ -5,19 +5,35 @@ This module receives a decision dict of the form:
      "mode": "pass_through" | "structured",
      "params": {...}}
 and executes the appropriate downstream agent.
+
+Telemetry instrumentation:
+    ``execute`` accepts an optional ``ctx`` (``CallContext``) and threads it
+    to each private runner.  Each runner produces its own
+    ``dataclasses.replace()`` snapshot with the appropriate ``agent`` label
+    before forwarding.  The shared ``ctx`` is never mutated at this layer.
+
+Dependencies:
+    dataclasses, os, src.multi.sim.agent, src.multi.kb_agent,
+    src.linear.orchestrator, src.llm_pipeline_telemetry.
+
+Pillar compliance:
+    - Pillar 4: No hardcoding; agent names are module-level constants.
+    - Pillar 7: All exceptions are caught and returned as error dicts.
 """
 from __future__ import annotations
 
+import dataclasses
 import os
 from typing import Any, Callable, Dict, Optional
 
 from src.multi.sim.agent import SimulationAgent
 import src.multi.kb_agent as kb_agent
 from src.linear import orchestrator as linear
+from src.llm_pipeline_telemetry import CallContext
 
 
 ALLOWED_AGENTS = ("simulation", "kb", "processor")
-AgentRunner = Callable[[Dict[str, Any], Optional[str]], Any]
+AgentRunner = Callable[[Dict[str, Any], Optional[str], Optional[CallContext]], Any]
 
 
 def _validate_runtime_environment(agent: str, params: Dict[str, Any]) -> None:
@@ -113,7 +129,11 @@ def _apply_mode(agent: str, mode: str, params: Dict[str, Any], original_prompt: 
     return params
 
 
-def _execute_simulation(params: Dict[str, Any], original_prompt: Optional[str] = None) -> Dict[str, Any]:
+def _execute_simulation(
+    params: Dict[str, Any],
+    original_prompt: Optional[str] = None,
+    ctx: Optional[CallContext] = None,
+) -> Dict[str, Any]:
     del original_prompt
     safe_params = _sanitize_simulation_params(params)
     provider = safe_params.get("provider")
@@ -129,20 +149,36 @@ def _execute_simulation(params: Dict[str, Any], original_prompt: Optional[str] =
             max_iterations=max_iterations if max_iterations is not None else 10,
         )
 
+    sim_ctx = (
+        dataclasses.replace(ctx, agent="sim_agent")
+        if ctx is not None
+        else None
+    )
     initial_rate = safe_params.get("initial_cooling_rate_K_per_min")
     if initial_rate is None:
-        history, output = agent.run_and_report()
+        history, output = agent.run_and_report(ctx=sim_ctx)
     else:
-        history, output = agent.run_and_report(initial_cooling_rate_K_per_min=initial_rate)
+        history, output = agent.run_and_report(
+            initial_cooling_rate_K_per_min=initial_rate, ctx=sim_ctx
+        )
     return {"history": history, "output": output}
 
 
-def _execute_kb(params: Dict[str, Any], original_prompt: Optional[str]) -> str:
+def _execute_kb(
+    params: Dict[str, Any],
+    original_prompt: Optional[str] = None,
+    ctx: Optional[CallContext] = None,
+) -> str:
     query = params.get("query") or original_prompt or ""
-    return kb_agent.ask(query)
+    return kb_agent.ask(query, ctx=ctx)
 
 
-def _execute_processor(params: Dict[str, Any], original_prompt: Optional[str]) -> Dict[str, Any]:
+def _execute_processor(
+    params: Dict[str, Any],
+    original_prompt: Optional[str] = None,
+    ctx: Optional[CallContext] = None,
+) -> Dict[str, Any]:
+    del ctx  # processor path forks into a separate linear run with its own context
     input_text = params.get("input_text") or original_prompt or ""
     tasks = params.get("tasks")
     single_task = params.get("task")
@@ -166,7 +202,32 @@ AGENT_REGISTRY: Dict[str, AgentRunner] = {
 }
 
 
-def execute(decision: Dict[str, Any], original_prompt: Optional[str] = None) -> Dict[str, Any]:
+def execute(
+    decision: Dict[str, Any],
+    original_prompt: Optional[str] = None,
+    ctx: Optional[CallContext] = None,
+) -> Dict[str, Any]:
+    """Execute the downstream agent specified by *decision*.
+
+    Args:
+        decision: Routing decision dict with ``agent``, ``mode``, and
+            ``params`` keys.
+        original_prompt: The raw user prompt forwarded to agents that need it.
+        ctx: Optional ``CallContext`` propagated from ``coordinator.run``.
+            Each runner creates a ``dataclasses.replace()`` snapshot with its
+            own ``agent`` label before forwarding.
+
+    Returns:
+        ``{"agent": ..., "mode": ..., "result": ...}`` on success, or
+        ``{"agent": ..., "mode": ..., "error": {...}}`` on failure.
+
+    Postconditions:
+        - The shared ``ctx`` is never mutated.
+        - On exception, the error is captured in the return dict (not raised).
+
+    Complexity:
+        O(1) for dispatch; downstream agent complexity varies.
+    """
     agent = decision.get("agent", "kb")
     mode = decision.get("mode", "pass_through")
     params = decision.get("params") or {}
@@ -179,7 +240,7 @@ def execute(decision: Dict[str, Any], original_prompt: Optional[str] = None) -> 
     try:
         effective_params = _apply_mode(agent, mode, params, original_prompt)
         _validate_runtime_environment(agent, effective_params)
-        result = AGENT_REGISTRY[agent](effective_params, original_prompt)
+        result = AGENT_REGISTRY[agent](effective_params, original_prompt, ctx)
         return {"agent": agent, "mode": mode, "result": result}
     except Exception as exc:
         return {

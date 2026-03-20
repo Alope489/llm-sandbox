@@ -43,7 +43,7 @@ def test_chunk_overlap_is_applied():
     assert chunks[2]["content"][:2] == chunks[1]["content"][-2:]
 
 def test_search_returns_top_k_sorted_by_score(monkeypatch):
-    def mock_embed(texts):
+    def mock_embed(texts, ctx=None):
         if texts == ["query"]:
             return [[1.0, 0.0]]
         vec_map = {"text1": [1.0, 0.0], "text2": [0.5, 0.5], "text3": [0.0, 1.0]}
@@ -57,14 +57,14 @@ def test_search_returns_top_k_sorted_by_score(monkeypatch):
     assert results[0]["score"] > results[1]["score"]
 
 def test_search_result_schema(monkeypatch):
-    monkeypatch.setattr(knowledge_base, "_embed", lambda texts: [[0.0] * 1536 for _ in texts])
+    monkeypatch.setattr(knowledge_base, "_embed", lambda texts, ctx=None: [[0.0] * 1536 for _ in texts])
     knowledge_base.index(["sample text"])
     results = knowledge_base.search("query")
     for r in results:
         assert set(r.keys()) == {"content", "source", "title", "score"}
 
 def test_clear_resets_store(monkeypatch):
-    monkeypatch.setattr(knowledge_base, "_embed", lambda texts: [[0.0] * 1536 for _ in texts])
+    monkeypatch.setattr(knowledge_base, "_embed", lambda texts, ctx=None: [[0.0] * 1536 for _ in texts])
     knowledge_base.index(["text"])
     assert knowledge_base.store_size() > 0
     knowledge_base.clear()
@@ -89,3 +89,32 @@ def test_integration_index_and_search():
     assert results[0]["source"] == "inline"
     knowledge_base.clear()
     assert knowledge_base.store_size() == 0
+
+
+@pytest.mark.skipif(
+    not os.environ.get("OPENAI_API_KEY"),
+    reason="No OpenAI API key set; set OPENAI_API_KEY to run telemetry integration test",
+)
+def test_embed_emits_llm_call_record_with_ctx():
+    """Real _embed call: emits llm_call record with output_tokens=0 and correct fields."""
+    import dataclasses
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="multi_agent")
+    snap = dataclasses.replace(ctx, agent="knowledge_base", span="embed")
+    knowledge_base.clear()
+    embeddings = knowledge_base._embed(["test document for embedding"], ctx=snap)
+    assert len(embeddings) == 1
+    assert len(embeddings[0]) > 0
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) >= 1
+    rec = llm_records[0]
+    assert rec["record_type"] == "llm_call"
+    assert rec["output_tokens"] == 0
+    assert rec["input_tokens"] > 0
+    assert rec["client_elapsed_ms"] > 0
+    assert rec["provider_server_latency_ms"] is None
+    assert "call_start_ts" in rec
+    assert "call_end_ts" in rec
+    knowledge_base.clear()

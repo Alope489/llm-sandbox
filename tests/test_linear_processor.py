@@ -56,7 +56,7 @@ def test_process_schema_validation_returns_valid_and_issues(monkeypatch):
     monkeypatch.setattr(
         processor,
         "complete",
-        lambda msgs: json.dumps({"valid": False, "issues": ["Composition sums to 80%, not 100%"]}),
+        lambda msgs, ctx=None, max_tokens=None: json.dumps({"valid": False, "issues": ["Composition sums to 80%, not 100%"]}),
     )
     result = processor.process(_minimal_extraction_dict(), processor.TASK_SCHEMA_VALIDATION)
     assert "valid" in result
@@ -71,7 +71,7 @@ def test_process_schema_validation_passes_data_in_messages(monkeypatch):
 
     seen = []
 
-    def capture(m):
+    def capture(m, ctx=None, max_tokens=None):
         seen.append(m)
         return json.dumps({"valid": True, "issues": []})
 
@@ -89,7 +89,7 @@ def test_process_constraint_verification_returns_plausible_and_warnings(monkeypa
     monkeypatch.setattr(
         processor,
         "complete",
-        lambda msgs: json.dumps({"plausible": True, "warnings": []}),
+        lambda msgs, ctx=None, max_tokens=None: json.dumps({"plausible": True, "warnings": []}),
     )
     result = processor.process(_minimal_extraction_dict(), processor.TASK_CONSTRAINT_VERIFICATION)
     assert "plausible" in result
@@ -103,7 +103,7 @@ def test_process_constraint_verification_passes_data_in_messages(monkeypatch):
 
     seen = []
 
-    def capture(m):
+    def capture(m, ctx=None, max_tokens=None):
         seen.append(m)
         return json.dumps({"plausible": True, "warnings": []})
 
@@ -121,7 +121,7 @@ def test_process_feature_extraction_returns_expected_keys(monkeypatch):
     monkeypatch.setattr(
         processor,
         "complete",
-        lambda msgs: json.dumps({
+        lambda msgs, ctx=None, max_tokens=None: json.dumps({
             "alloy_class": "superalloy",
             "functional_category": "structural",
             "dominant_mechanism": "dislocation",
@@ -140,7 +140,7 @@ def test_process_feature_extraction_passes_data_in_messages(monkeypatch):
 
     seen = []
 
-    def capture(m):
+    def capture(m, ctx=None, max_tokens=None):
         seen.append(m)
         return json.dumps({
             "alloy_class": "superalloy",
@@ -162,7 +162,7 @@ def test_process_normalization_returns_dict_with_top_level_keys(monkeypatch):
     monkeypatch.setattr(
         processor,
         "complete",
-        lambda msgs: json.dumps({
+        lambda msgs, ctx=None, max_tokens=None: json.dumps({
             "material_system": {"material_name": "Ni-based superalloy", "composition": [{"element": "Ni", "fraction": 0.6}, {"element": "Cr", "fraction": 0.2}]},
             "processing_conditions": {},
             "simulation_parameters": {"temperatures_K": [500, 700, 900, 1100, 1300]},
@@ -184,7 +184,7 @@ def test_process_normalization_passes_data_in_messages(monkeypatch):
 
     seen = []
 
-    def capture(m):
+    def capture(m, ctx=None, max_tokens=None):
         seen.append(m)
         return json.dumps({
             "material_system": _minimal_extraction_dict()["material_system"],
@@ -207,7 +207,7 @@ def test_process_risk_ranking_returns_rankings(monkeypatch):
     monkeypatch.setattr(
         processor,
         "complete",
-        lambda msgs: json.dumps({
+        lambda msgs, ctx=None, max_tokens=None: json.dumps({
             "property_ranking": ["yield_strength_MPa", "thermal_conductivity_W_per_mK"],
             "processing_ranking": ["heat_treatment", "synthesis_method"],
         }),
@@ -224,7 +224,7 @@ def test_process_risk_ranking_passes_data_in_messages(monkeypatch):
 
     seen = []
 
-    def capture(m):
+    def capture(m, ctx=None, max_tokens=None):
         seen.append(m)
         return json.dumps({"property_ranking": [], "processing_ranking": []})
 
@@ -241,7 +241,7 @@ def test_process_parses_json_inside_markdown_fence(monkeypatch):
     monkeypatch.setattr(
         processor,
         "complete",
-        lambda msgs: "```json\n{\"valid\": true, \"issues\": []}\n```",
+        lambda msgs, ctx=None, max_tokens=None: "```json\n{\"valid\": true, \"issues\": []}\n```",
     )
     result = processor.process(_minimal_extraction_dict(), processor.TASK_SCHEMA_VALIDATION)
     assert result["valid"] is True

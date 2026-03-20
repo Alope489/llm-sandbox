@@ -160,3 +160,38 @@ def test_run_and_report_passes_use_tools(mock_loop):
     agent.run_and_report(use_tools=True)
     _, kwargs = mock_loop.call_args
     assert kwargs.get("use_tools") is True
+
+
+# ---------------------------------------------------------------------------
+# Telemetry ctx attribution tests (real API — skip when key absent)
+# ---------------------------------------------------------------------------
+
+import os as _os
+import dataclasses as _dc
+
+_skip_no_llm = pytest.mark.skipif(
+    not _os.environ.get("OPENAI_API_KEY") and not _os.environ.get("ANTHROPIC_API_KEY"),
+    reason="Set OPENAI_API_KEY or ANTHROPIC_API_KEY to run ctx attribution tests",
+)
+
+
+@_skip_no_llm
+def test_run_optimization_loop_ctx_attribution():
+    """ctx records from a 1-iteration loop carry the correct pipeline and run_id."""
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="multi_agent")
+    agent = SimulationAgent(max_iterations=1)
+    agent.run_optimization_loop(initial_cooling_rate_K_per_min=15.0, ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) >= 1
+    for rec in llm_records:
+        assert rec["pipeline"] == "multi_agent"
+        assert rec["run_id"] == ctx.run_id
+        assert rec["agent"] == "sim_agent"
+        assert rec["input_tokens"] > 0
+        assert rec["output_tokens"] > 0
+        assert rec["client_elapsed_ms"] > 0
+        assert "call_start_ts" in rec
+        assert "call_end_ts" in rec

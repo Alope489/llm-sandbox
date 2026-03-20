@@ -4,13 +4,33 @@ This module uses the unified LLM wrapper in src.wrapper to classify a prompt
 into one of three existing agents and to decide whether parameters should be
 structured or passed through. It returns a small decision dict and can also
 invoke the executor to fully run the downstream agent.
+
+Telemetry instrumentation:
+    ``run`` creates a ``CallContext(pipeline="multi_agent")`` at entry and
+    wraps all pipeline stages in a ``try/except`` block.
+    ``log_pipeline_outcome_and_stats`` is **always** called — with
+    ``status="success"`` when both stages complete or ``status="error"`` (plus
+    exception details) when either raises.  This ensures every multi-agent
+    pipeline run emits exactly one summary record.
+
+Dependencies:
+    dataclasses, time, datetime, json, os, src.wrapper,
+    src.llm_pipeline_telemetry.
+
+Pillar compliance:
+    - Pillar 1: Functional parity with pre-telemetry code.
+    - Pillar 7: Always-emit pattern in try/except; re-raises on error.
 """
 from __future__ import annotations
 
+import dataclasses
 import json
 import os
-from typing import Any, Dict, Literal
+import time
+from datetime import datetime, timezone
+from typing import Any, Dict, Literal, Optional
 
+from src.llm_pipeline_telemetry import CallContext, log_pipeline_outcome_and_stats
 from src.wrapper import complete
 
 
@@ -19,6 +39,11 @@ ModeType = Literal["pass_through", "structured"]
 
 
 def _validate_runtime_environment() -> None:
+    """Validate that the runtime environment is properly configured.
+
+    Raises:
+        RuntimeError: If LLM_PROVIDER is invalid or the required API key is absent.
+    """
     provider = (os.environ.get("LLM_PROVIDER", "openai") or "openai").strip().lower()
     if provider not in ("openai", "anthropic"):
         raise RuntimeError(
@@ -54,10 +79,19 @@ Keep params minimal and only include keys the downstream agent can meaningfully 
     ]
 
 
-def _classify_with_llm(prompt: str) -> str:
+def _classify_with_llm(prompt: str, ctx: Optional[CallContext] = None) -> str:
+    """Classify the prompt using the LLM and return the raw JSON string.
+
+    Args:
+        prompt: Raw user prompt.
+        ctx: Optional ``CallContext`` snapshot for telemetry attribution.
+
+    Returns:
+        Raw LLM response string (expected to be a JSON object).
+    """
     _validate_runtime_environment()
     messages = _build_routing_messages(prompt)
-    return complete(messages) or ""
+    return complete(messages, ctx=ctx) or ""
 
 
 def _default_decision(prompt: str) -> Dict[str, Any]:
@@ -96,13 +130,66 @@ def _parse_decision(raw: str, prompt: str) -> Dict[str, Any]:
 
 
 def route_prompt(prompt: str) -> Dict[str, Any]:
+    """Classify prompt and return a routing decision dict.
+
+    Args:
+        prompt: Raw user prompt.
+
+    Returns:
+        Decision dict with ``agent``, ``mode``, and ``params`` keys.
+    """
     raw = _classify_with_llm(prompt)
     return _parse_decision(raw, prompt)
 
 
 def run(prompt: str) -> Dict[str, Any]:
+    """Route the prompt and execute the selected downstream agent.
+
+    Always emits a ``pipeline_outcome_and_stats`` record — on both success and
+    failure.  On failure the exception is re-raised after the record is emitted.
+
+    Args:
+        prompt: Raw user prompt.
+
+    Returns:
+        Result dict from ``executor.execute`` on success.
+
+    Raises:
+        Any exception from ``_classify_with_llm`` or ``execute`` is re-raised
+        after the error record is emitted.
+
+    Postconditions:
+        - Exactly one ``pipeline_outcome_and_stats`` record is emitted.
+
+    Complexity:
+        O(1) for routing; downstream agent complexity varies.
+    """
     from src.executor import execute
 
-    decision = route_prompt(prompt)
-    return execute(decision, original_prompt=prompt)
-
+    ctx = CallContext(pipeline="multi_agent")
+    start_ts = datetime.now(timezone.utc)
+    t0 = time.perf_counter()
+    try:
+        routing_ctx = dataclasses.replace(ctx, agent="coordinator", span="routing")
+        raw = _classify_with_llm(prompt, ctx=routing_ctx)
+        decision = _parse_decision(raw, prompt)
+        result = execute(decision, original_prompt=prompt, ctx=ctx)
+        log_pipeline_outcome_and_stats(
+            ctx,
+            total_duration_ms=(time.perf_counter() - t0) * 1000,
+            start_ts=start_ts,
+            end_ts=datetime.now(timezone.utc),
+            status="success",
+        )
+        return result
+    except Exception as exc:
+        log_pipeline_outcome_and_stats(
+            ctx,
+            total_duration_ms=(time.perf_counter() - t0) * 1000,
+            start_ts=start_ts,
+            end_ts=datetime.now(timezone.utc),
+            status="error",
+            exception_type=type(exc).__name__,
+            exception_message=str(exc),
+        )
+        raise

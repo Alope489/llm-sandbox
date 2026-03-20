@@ -13,7 +13,7 @@ def test_execute_simulation_routes_to_simulation_agent(monkeypatch):
                 "max_iterations": max_iterations,
             }
 
-        def run_and_report(self, initial_cooling_rate_K_per_min=15.0):
+        def run_and_report(self, initial_cooling_rate_K_per_min=15.0, ctx=None):
             calls["run"] = {"initial_cooling_rate_K_per_min": initial_cooling_rate_K_per_min}
             return ["history"], "output"
 
@@ -40,7 +40,7 @@ def test_execute_simulation_routes_to_simulation_agent(monkeypatch):
 def test_execute_kb_routes_to_kb_agent(monkeypatch):
     seen = {}
 
-    def fake_ask(query: str) -> str:
+    def fake_ask(query: str, ctx=None) -> str:
         seen["query"] = query
         return "ANSWER:" + query
 
@@ -82,7 +82,7 @@ def test_execute_processor_routes_to_linear_orchestrator(monkeypatch):
 def test_execute_unknown_agent_falls_back_to_kb(monkeypatch):
     seen = {}
 
-    def fake_ask(query: str) -> str:
+    def fake_ask(query: str, ctx=None) -> str:
         seen["query"] = query
         return "fallback:" + query
 
