@@ -9,6 +9,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from tests.telemetry_helpers import assert_openai_server_latency
+
 from src.multi.sim.agent import (
     SimulationAgent,
     SYSTEM_PROMPT,
@@ -195,3 +197,4 @@ def test_run_optimization_loop_ctx_attribution():
         assert rec["client_elapsed_ms"] > 0
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
+        assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int

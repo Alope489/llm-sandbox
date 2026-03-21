@@ -6,6 +6,7 @@ complete_with_tools() path and verify that:
 - All records carry the correct pipeline run_id.
 - tool_execution records have tool_execution_ms > 0.
 - call_start_ts / call_end_ts are present on every record.
+- provider_server_latency_ms is a positive int on every llm_call record.
 
 Skip when OPENAI_API_KEY is not set or when Docker is unavailable.
 """
@@ -16,6 +17,8 @@ import subprocess
 import sys
 
 import pytest
+
+from tests.telemetry_helpers import assert_openai_server_latency
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
@@ -73,6 +76,7 @@ def test_tool_loop_emits_llm_call_and_tool_execution_records():
         assert rec["client_elapsed_ms"] > 0
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
+        assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
     for rec in tool_records:
         assert rec["pipeline"] == "multi_agent"

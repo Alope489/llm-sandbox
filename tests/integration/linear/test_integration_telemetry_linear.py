@@ -7,7 +7,8 @@ extract → process → reason → orchestrator chain and verifies that:
 - pipeline_outcome_and_stats is emitted with status="success".
 - Total tokens and duration are positive.
 - call_start_ts / call_end_ts are present on every llm_call record.
-- is_provider_server_latency_complete reflects real header coverage.
+- is_provider_server_latency_complete is True for this pure-OpenAI pipeline.
+- provider_server_latency_ms is a positive int on every llm_call record.
 
 Skip when OPENAI_API_KEY is not set (Anthropic is excluded here because the
 linear extractor schema exceeds Anthropic's union-type limit).
@@ -18,6 +19,8 @@ import os
 import sys
 
 import pytest
+
+from tests.telemetry_helpers import assert_openai_server_latency
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
@@ -91,6 +94,7 @@ def test_linear_pipeline_telemetry_records_shape():
         assert rec["client_elapsed_ms"] > 0
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
+        assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
     pr = pipeline_records[0]
     assert pr["status"] == "success"
@@ -98,7 +102,8 @@ def test_linear_pipeline_telemetry_records_shape():
     assert pr["total_input_tokens"] > 0
     assert pr["total_output_tokens"] > 0
     assert pr["llm_call_count"] == len(llm_records)
-    assert isinstance(pr["is_provider_server_latency_complete"], bool)
+    # Pure-OpenAI linear pipeline must always achieve complete server-latency coverage
+    assert pr["is_provider_server_latency_complete"] is True
     assert "start_ts" in pr
     assert "end_ts" in pr
 

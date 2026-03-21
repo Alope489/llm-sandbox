@@ -8,6 +8,8 @@ from unittest.mock import MagicMock, patch, patch as patch_obj
 
 import pytest
 
+from tests.telemetry_helpers import assert_openai_server_latency
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
@@ -119,8 +121,16 @@ def test_complete_with_tools_no_call_path(mock_ant_schemas, mock_oai_schemas):
     from src.wrapper import complete_with_tools
     import src.llm_pipeline_telemetry as telem
 
+    def _wrap_openai(resp):
+        raw = MagicMock()
+        raw.parse.return_value = resp
+        raw.headers = {"openai-processing-ms": "42"}
+        return raw
+
     mock_client = MagicMock()
-    mock_client.chat.completions.create.return_value = _openai_text_response("Direct answer")
+    mock_client.with_raw_response.chat.completions.create.return_value = _wrap_openai(
+        _openai_text_response("Direct answer")
+    )
     with patch("src.wrapper.get_openai_client", return_value=mock_client):
         with patch("src.tool_registry.call") as mock_call:
             result = complete_with_tools(
@@ -136,13 +146,19 @@ def test_complete_with_tools_openai_single_loop(mock_schemas):
     from src.wrapper import complete_with_tools
     import src.llm_pipeline_telemetry as telem
 
+    def _wrap_openai(resp):
+        raw = MagicMock()
+        raw.parse.return_value = resp
+        raw.headers = {"openai-processing-ms": "55"}
+        return raw
+
     call_seq = [
-        _openai_tool_call_response("compute_elastic_constants_tool", {"composition": "Ni"}),
-        _openai_text_response("C11=247 GPa"),
+        _wrap_openai(_openai_tool_call_response("compute_elastic_constants_tool", {"composition": "Ni"})),
+        _wrap_openai(_openai_text_response("C11=247 GPa")),
     ]
 
     mock_client = MagicMock()
-    mock_client.chat.completions.create.side_effect = call_seq
+    mock_client.with_raw_response.chat.completions.create.side_effect = call_seq
     with patch("src.wrapper.get_openai_client", return_value=mock_client):
         with patch("src.tool_registry.call", return_value=_TOOL_RESULT) as mock_call:
             result = complete_with_tools(
@@ -191,8 +207,14 @@ def test_complete_with_tools_max_tool_calls_guard_openai(mock_schemas):
     from src.wrapper import complete_with_tools
     import src.llm_pipeline_telemetry as telem
 
+    def _wrap_openai(resp):
+        raw = MagicMock()
+        raw.parse.return_value = resp
+        raw.headers = {"openai-processing-ms": "30"}
+        return raw
+
     mock_client = MagicMock()
-    mock_client.chat.completions.create.return_value = (
+    mock_client.with_raw_response.chat.completions.create.return_value = _wrap_openai(
         _openai_tool_call_response("compute_elastic_constants_tool", {"composition": "Al"})
     )
     with patch("src.wrapper.get_openai_client", return_value=mock_client):
@@ -266,8 +288,7 @@ def test_complete_openai_with_ctx_emits_llm_call_record():
     assert rec["status"] == "ok"
     assert "call_start_ts" in rec
     assert "call_end_ts" in rec
-    psm = rec["provider_server_latency_ms"]
-    assert psm is None or (isinstance(psm, int) and psm > 0)
+    assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
 
 @_skip_no_openai

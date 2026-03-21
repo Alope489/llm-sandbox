@@ -310,6 +310,10 @@ def _tool_loop_openai(
 ) -> str:
     """OpenAI tool-calling loop with per-iteration telemetry.
 
+    Uses ``client.with_raw_response.chat.completions.create`` to capture the
+    ``openai-processing-ms`` response header for ``provider_server_latency_ms``
+    on every ``llm_call`` telemetry record emitted.
+
     Args:
         msgs: Conversation message list; mutated in place during the loop.
         registry: The tool registry module providing ``get_openai_schemas``
@@ -324,6 +328,8 @@ def _tool_loop_openai(
         - At most MAX_TOOL_CALLS iterations.
         - If ctx is provided, the final ``llm_call`` record after MAX_TOOL_CALLS
           has ``status="partial"``.
+        - ``provider_server_latency_ms`` is populated from the
+          ``openai-processing-ms`` header on every successful iteration.
 
     Complexity:
         O(MAX_TOOL_CALLS).
@@ -341,7 +347,7 @@ def _tool_loop_openai(
         )
         call_start_ts = datetime.now(timezone.utc)
         t0 = time.perf_counter()
-        response = client.chat.completions.create(
+        raw = client.with_raw_response.chat.completions.create(
             model=model,
             messages=msgs,
             tools=tools,
@@ -349,6 +355,9 @@ def _tool_loop_openai(
         )
         client_elapsed_ms = (time.perf_counter() - t0) * 1000
         call_end_ts = datetime.now(timezone.utc)
+        response = raw.parse()
+        raw_ms = raw.headers.get("openai-processing-ms")
+        server_ms = int(raw_ms) if raw_ms and int(raw_ms) > 0 else None
 
         choice = response.choices[0]
         msg = choice.message
@@ -360,7 +369,7 @@ def _tool_loop_openai(
                     model=model,
                     input_tokens=response.usage.prompt_tokens,
                     output_tokens=response.usage.completion_tokens,
-                    provider_server_latency_ms=None,
+                    provider_server_latency_ms=server_ms,
                     client_elapsed_ms=client_elapsed_ms,
                     call_start_ts=call_start_ts.isoformat(),
                     call_end_ts=call_end_ts.isoformat(),
@@ -374,7 +383,7 @@ def _tool_loop_openai(
                 model=model,
                 input_tokens=response.usage.prompt_tokens,
                 output_tokens=response.usage.completion_tokens,
-                provider_server_latency_ms=None,
+                provider_server_latency_ms=server_ms,
                 client_elapsed_ms=client_elapsed_ms,
                 call_start_ts=call_start_ts.isoformat(),
                 call_end_ts=call_end_ts.isoformat(),

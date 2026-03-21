@@ -6,6 +6,7 @@ ZERO MOCKING: uses the real OpenAI API to exercise the coordinator → executor
 - pipeline_outcome_and_stats is emitted with status="success".
 - Total tokens and duration are positive.
 - call_start_ts / call_end_ts are present on every llm_call record.
+- provider_server_latency_ms is a positive int on every llm_call record.
 
 Skip when OPENAI_API_KEY is not set.
 """
@@ -15,6 +16,8 @@ import os
 import sys
 
 import pytest
+
+from tests.telemetry_helpers import assert_openai_server_latency
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
@@ -61,6 +64,7 @@ def test_multi_agent_web_search_path_emits_records():
         assert rec["client_elapsed_ms"] > 0
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
+        assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
     pipeline_records = [r for r in ctx.records if r.get("record_type") == "pipeline_outcome_and_stats"]
     assert len(pipeline_records) == 1
@@ -100,6 +104,7 @@ def test_multi_agent_sim_path_emits_records():
         assert rec["pipeline"] == "multi_agent"
         assert rec["run_id"] == ctx.run_id
         assert rec["agent"] == "sim_agent"
+        assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
     pipeline_records = [r for r in ctx.records if r.get("record_type") == "pipeline_outcome_and_stats"]
     assert len(pipeline_records) == 1

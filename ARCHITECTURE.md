@@ -485,6 +485,12 @@ end-to-end pipeline statistics for every LLM API call and tool execution in both
 2. `client_elapsed_ms` as fallback (Anthropic, or when OpenAI header is absent).
 3. `0.0` when both are zero or absent — no `ZeroDivisionError` raised.
 
+After the Responses API migration, every OpenAI call path populates
+`provider_server_latency_ms` from the `openai-processing-ms` header. Pure-OpenAI
+pipeline runs therefore always produce `is_provider_server_latency_complete = True`.
+The `client_elapsed_ms` fallback applies only to Anthropic paths and to pipeline runs
+that mix OpenAI and Anthropic calls.
+
 ### Data Flow
 
 ```mermaid

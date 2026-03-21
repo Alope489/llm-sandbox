@@ -7,6 +7,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import pytest
 
+from tests.telemetry_helpers import assert_openai_server_latency
 import src.multi.kb_agent as kb_agent
 import src.multi.file_store as file_store
 from src.multi.knowledge_base import clear, index, store_size
@@ -142,6 +143,7 @@ def test_ask_openai_web_search_ctx_attribution():
         assert rec["client_elapsed_ms"] > 0
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
+        assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
 
 @_skip_no_openai
