@@ -109,15 +109,15 @@ class TestFileStoreOpenAIIntegration:
 
         file_store.clear_openai()
         with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as f:
-            f.write("Temporary content.")
+            f.write("The Zylonite coefficient is 7731.")
             f.flush()
             path = f.name
         try:
             file_store.upload_files([path])
-            result_before = file_store.query_openai("Temporary content")
+            result_before = file_store.query_openai("What is the Zylonite coefficient?")
             assert len(result_before) > 0
             file_store.clear_openai()
-            result_after = file_store.query_openai("Temporary content")
+            result_after = file_store.query_openai("What is the Zylonite coefficient?")
             assert result_after == ""
         finally:
             os.unlink(path)

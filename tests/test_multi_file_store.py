@@ -22,15 +22,13 @@ def _write_tmp(content: str) -> str:
 
 # ── OpenAI ────────────────────────────────────────────────────────────────────
 
-def test_upload_openai_creates_store_and_assistant():
+def test_upload_openai_creates_vector_store():
     file_store.clear_openai()
     assert file_store._VECTOR_STORE_ID is None
-    assert file_store._ASSISTANT_ID is None
     tmp = _write_tmp(FACT)
     file_store.upload_files([tmp])
     os.unlink(tmp)
     assert file_store._VECTOR_STORE_ID is not None
-    assert file_store._ASSISTANT_ID is not None
 
 
 def test_query_openai_returns_response_when_file_uploaded():

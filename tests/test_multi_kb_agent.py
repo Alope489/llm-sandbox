@@ -163,3 +163,6 @@ def test_ask_openai_kb_hit_ctx_attribution():
     for rec in llm_records:
         assert rec["pipeline"] == "multi_agent"
         assert rec["run_id"] == ctx.run_id
+        # OpenAI Responses API always returns openai-processing-ms — must be a valid positive int
+        assert isinstance(rec["provider_server_latency_ms"], int)
+        assert rec["provider_server_latency_ms"] > 0

@@ -92,12 +92,12 @@ graph TD
 ## KB Agent
 
 - **`src/multi/file_store.py`**: Provider-aware file storage layer.
-  - **OpenAI**: Creates and manages an OpenAI vector store (`client.vector_stores`) and an Assistants API assistant (`client.beta.assistants`) with `file_search` enabled. Files are uploaded via `vector_stores.file_batches.upload_and_poll`. Queries run as assistant threads; `file_citation` annotations signal a successful retrieval.
+  - **OpenAI**: Creates and manages an OpenAI vector store (`client.vector_stores`). Files are uploaded via `vector_stores.file_batches.upload_and_poll`. Queries use the Responses API (`client.responses.create`) with the `file_search` tool attached to the vector store. `file_citation` annotations in the response signal a grounded retrieval; responses without citations return `""` to trigger the web-search fallback (anti-hallucination contract). `provider_server_latency_ms` is now populated from the `openai-processing-ms` response header on every KB-query record, making KB-query pipeline runs eligible for `is_provider_server_latency_complete = True`.
   - **Anthropic**: Delegates directly to `knowledge_base.index()` (in-memory vector store).
   - **Interface**:
     - `upload_files(paths: list[str]) -> None`: Route file upload to the active provider.
-    - `query_openai(query: str) -> str`: Query the OpenAI assistant; returns response text if citations found, `""` otherwise.
-    - `clear_openai() -> None`: Reset OpenAI module-level store/assistant IDs.
+    - `query_openai(query: str) -> str`: Query the OpenAI vector store via the Responses API; returns response text if at least one `file_citation` annotation is present, `""` otherwise.
+    - `clear_openai() -> None`: Reset the OpenAI module-level vector store ID.
 
 - **`src/multi/kb_agent.py`**: Orchestration layer — KB first, web search fallback.
   - **Interface**: `ask(query: str, ctx: Optional[CallContext] = None) -> str`
@@ -116,7 +116,6 @@ graph TD
 | Variable | Purpose |
 |---|---|
 | `OPENAI_VECTOR_STORE_ID` | Pre-existing OpenAI vector store ID (created at runtime if absent) |
-| `OPENAI_ASSISTANT_ID` | Pre-existing OpenAI assistant ID (created at runtime if absent) |
 
 ## Simulation agent
 
@@ -511,7 +510,7 @@ flowchart TD
 | `src/linear/orchestrator.py` | creates `CallContext`, `log_pipeline_outcome_and_stats` |
 | `src/multi/sim/agent.py` | `_call_openai`, `_call_anthropic` |
 | `src/multi/kb_agent.py` | `_ask_openai`, `_web_search_openai`, `_ask_anthropic`, `_web_search_anthropic` |
-| `src/multi/file_store.py` | `query_openai` (Assistants API, `run.usage`) |
+| `src/multi/file_store.py` | `query_openai` (Responses API, `response.usage`; `provider_server_latency_ms` from `openai-processing-ms` header) |
 | `src/multi/knowledge_base.py` | `_embed` (embeddings; `output_tokens=0`) |
 | `src/coordinator.py` | creates `CallContext`, `log_pipeline_outcome_and_stats` |
 | `src/executor.py` | ctx propagation to all runners |
