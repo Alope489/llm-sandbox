@@ -5,10 +5,8 @@ import sys
 from unittest.mock import MagicMock
 
 import pytest
-from dotenv import load_dotenv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-load_dotenv()
 
 
 def _minimal_extraction_dict():

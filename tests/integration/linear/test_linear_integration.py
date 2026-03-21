@@ -56,8 +56,6 @@ REQUIRED_EXTRACTION_KEYS = (
 
 def _set_provider_env(provider: str, monkeypatch) -> None:
     monkeypatch.setenv("LLM_PROVIDER", provider)
-    if provider == "anthropic":
-        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
 
 
 @pytest.mark.parametrize("provider", PROVIDERS_LINEAR)

@@ -6,10 +6,6 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from dotenv import load_dotenv
-
-load_dotenv(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
-
 # Skip integration tests when no LLM API key is set (linear and multi both need at least one).
 def _has_llm_key():
     return bool(os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"))

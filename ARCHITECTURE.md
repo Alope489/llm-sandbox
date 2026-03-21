@@ -26,7 +26,7 @@
 | `ANTHROPIC_MODEL` | Anthropic model (default: claude-sonnet-4-6) |
 | `MAX_TOKENS` | Max tokens for Anthropic (default: 1024) |
 
-Load from `.env` via `python-dotenv` (called in `src/wrapper.py` on import).
+Loaded from `.env` via `python-dotenv`. For tests, `tests/conftest.py` calls `load_dotenv` at collection time so all tests can run in isolation without pre-sourcing the shell. In production code, each `src/` module that needs env vars also calls `load_dotenv()` on import as a fallback.
 
 ## Linear pipeline
 
@@ -168,10 +168,18 @@ This is an **LLM agent pipeline**. Integration tests must use the **real LLM wit
   - `tests/integration/multi/` — knowledge base, file store, kb_agent, complete_with_knowledge with live API.
   - `tests/integration/sim/` — simulation agent optimization loop with real LLM.
   - Require `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY` in `.env`; skipped when none set. For Anthropic-specific E2E, set `LLM_PROVIDER=anthropic` in `.env`.
-  - Run: `python -m pytest tests/integration/ -v`
+  - Run: `uv run pytest tests/integration/ -v`
 - **Unit tests (may mock LLM)**: `tests/test_*.py`
   - Fast feedback during development; they do **not** replace integration tests.
-  - Run: `python -m pytest tests/ -v` (full suite includes both unit and integration).
+  - Run: `uv run pytest tests/ -v` (full suite includes both unit and integration).
+
+### Environment loading and test isolation
+
+API keys and model names are loaded from `.env` by `tests/conftest.py` (project root conftest, loaded by pytest before any test collection). This means every test — unit or integration — can be run in isolation without manually sourcing the shell:
+
+    uv run pytest tests/test_wrapper.py::test_complete_anthropic_with_ctx_emits_llm_call_record -v
+
+No `set -a && source .env && set +a` preamble is needed. Tests that require keys use `pytest.mark.skipif(not os.environ.get("...KEY..."))` guards; these evaluate correctly because the conftest fires before collection.
 
 ## Tools
 

@@ -5,9 +5,6 @@ import tempfile
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from dotenv import load_dotenv
-load_dotenv()
-
 import src.multi.file_store as file_store
 from src.multi.knowledge_base import clear, search, store_size
 

@@ -14,9 +14,6 @@ import os
 from unittest.mock import patch
 
 import pytest
-from dotenv import load_dotenv
-
-load_dotenv()
 
 _skip_openai = pytest.mark.skipif(
     not os.environ.get("OPENAI_API_KEY"),
@@ -62,7 +59,6 @@ def test_openai_llm_calls_elastic_tool_for_material_query(mock_call):
 
 
 @_skip_anthropic
-@patch.dict(os.environ, {"ANTHROPIC_MODEL": "claude-sonnet-4-6"})
 @patch("src.tool_registry.call", return_value=_MOCK_RESULT)
 def test_anthropic_llm_calls_elastic_tool_for_material_query(mock_call):
     """Real Anthropic API: LLM must autonomously invoke the elastic constants tool.

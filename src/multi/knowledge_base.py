@@ -283,8 +283,7 @@ def search(query: str, top_k: int = 5) -> list[dict]:
     vectors = np.array([e["vector"] for e in _STORE])
     dots = np.dot(vectors, q_vec)
     norms = np.linalg.norm(vectors, axis=1) * np.linalg.norm(q_vec)
-    scores = np.divide(dots, norms, where=norms != 0)
-    scores[norms == 0] = 0
+    scores = np.divide(dots, norms, out=np.zeros_like(dots), where=norms != 0)
     indices = np.argsort(-scores)[:top_k]
     results = []
     for idx in indices:

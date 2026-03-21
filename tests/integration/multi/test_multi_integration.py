@@ -64,8 +64,6 @@ class TestKnowledgeBaseIntegration:
     def test_integration_complete_with_knowledge_uses_retrieved_context(self, provider, monkeypatch):
         """complete_with_knowledge uses retrieved context. Runs for OpenAI and Anthropic."""
         monkeypatch.setenv("LLM_PROVIDER", provider)
-        if provider == "anthropic":
-            monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         from src.multi.knowledge_base import clear, index, store_size
         from src.multi import complete_with_knowledge
 
@@ -174,7 +172,6 @@ class TestKbAgentAnthropicIntegration:
 
     def test_integration_ask_with_kb_returns_kb_content(self, monkeypatch):
         monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         from src.multi.knowledge_base import clear, index, store_size
         import src.multi.kb_agent as kb_agent
 
@@ -187,7 +184,6 @@ class TestKbAgentAnthropicIntegration:
 
     def test_integration_ask_web_fallback_returns_answer(self, monkeypatch):
         monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-        monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
         from src.multi.knowledge_base import clear
         import src.multi.kb_agent as kb_agent
 
@@ -207,7 +203,6 @@ class TestKbAgentAnthropicIntegration:
 def test_integration_complete_with_knowledge_anthropic_uses_context(monkeypatch):
     """complete_with_knowledge with Anthropic uses retrieved context. Runs with real Anthropic API."""
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-    monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
     from src.multi.knowledge_base import clear, index, store_size
     from src.multi import complete_with_knowledge
 

@@ -93,7 +93,6 @@ def test_integration_complete_with_knowledge_openai():
 )
 def test_integration_complete_with_knowledge_anthropic(monkeypatch):
     monkeypatch.setenv("LLM_PROVIDER", "anthropic")
-    monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
     from src.multi.knowledge_base import clear, index, store_size
     clear()
     index(["The secret number is 42."])
