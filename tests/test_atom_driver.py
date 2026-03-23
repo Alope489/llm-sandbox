@@ -4,6 +4,11 @@ from src.multi.materials.atom_driver import AtomAgentDriver
 
 
 def test_run_materials_sim_returns_output_and_latency(monkeypatch):
+    """Driver returns subprocess output and latency with env-based credentials."""
+    monkeypatch.setenv("OPENAI_API_KEY", "openai-test-key")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "anthropic-test-key")
+    monkeypatch.setenv("ANTHROPIC_MODEL", "claude-sonnet-4-6")
+
     driver = AtomAgentDriver()
     observed = {}
 
@@ -14,6 +19,8 @@ def test_run_materials_sim_returns_output_and_latency(monkeypatch):
         observed["check"] = check
         observed["env_has_openai"] = "OPENAI_API_KEY" in env
         observed["env_has_chroma"] = "CHROMA_OPENAI_API_KEY" in env
+        observed["anthropic_key"] = env.get("ANTHROPIC_API_KEY")
+        observed["anthropic_model"] = env.get("ANTHROPIC_MODEL")
         return subprocess.CompletedProcess(cmd, 0, stdout="ok", stderr="")
 
     times = iter([100.0, 100.25])
@@ -29,5 +36,7 @@ def test_run_materials_sim_returns_output_and_latency(monkeypatch):
     assert observed["check"] is False
     assert observed["env_has_openai"] is True
     assert observed["env_has_chroma"] is True
+    assert observed["anthropic_key"] == "anthropic-test-key"
+    assert observed["anthropic_model"] == "claude-sonnet-4-6"
     assert observed["cmd"][1].endswith("AtomAgents.py")
     assert observed["cmd"][2:] == ["--prompt", "Bulk Nickel"]
