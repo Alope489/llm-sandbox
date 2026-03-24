@@ -158,7 +158,7 @@ def _execute_simulation(
     - ``"mock_sim_mode"`` (default): instantiates ``SimulationAgent`` and
       calls ``run_and_report``, returning a full optimization history.
     - ``"real_sim_mode"``: instantiates ``SimulationAgent`` and calls
-      ``_prefetch_tool_context`` only, returning the pre-computation
+      ``perform_real_simulation`` only, returning the pre-computation
       summary without running the optimization loop.
 
     The two paths are mutually exclusive — exactly one is taken per call.
@@ -215,7 +215,8 @@ def _execute_simulation(
         )
 
     if sim_mode == SIM_MODE_REAL:
-        prefetch_result = agent._prefetch_tool_context()
+        prefetch_result = agent.perform_real_simulation()
+        # Here we return the result from a real simulation
         return {"prefetch_output": prefetch_result}
     elif sim_mode == SIM_MODE_MOCK:
         initial_rate = safe_params.get("initial_cooling_rate_K_per_min")

@@ -118,7 +118,7 @@ def test_prefetch_called_when_use_tools_true(mock_cwt, mock_sim):
 
     The pre-computation phase was removed from the loop body; use_tools is now
     a no-op deprecated parameter.  The call that previously triggered
-    _prefetch_tool_context must now come from outside (via executor dispatch).
+    perform_real_simulation must now come from outside (via executor dispatch).
     """
     with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
         agent = SimulationAgent(max_iterations=1)
@@ -137,14 +137,14 @@ def test_prefetch_not_called_when_use_tools_false(mock_cwt, mock_sim):
 
 
 @patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
-@patch("src.multi.sim.agent.SimulationAgent._prefetch_tool_context")
+@patch("src.multi.sim.agent.SimulationAgent.perform_real_simulation")
 def test_run_optimization_loop_never_calls_prefetch(mock_prefetch, mock_sim):
-    """_prefetch_tool_context is never invoked by run_optimization_loop regardless of use_tools.
+    """perform_real_simulation is never invoked by run_optimization_loop regardless of use_tools.
 
     Pre-conditions:
         - run_optimization_loop is called with both use_tools=True and use_tools=False.
     Post-conditions:
-        - _prefetch_tool_context is never called by the loop in either case.
+        - perform_real_simulation is never called by the loop in either case.
     """
     with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
         agent = SimulationAgent(max_iterations=1)

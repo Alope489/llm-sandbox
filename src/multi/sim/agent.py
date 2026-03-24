@@ -249,7 +249,7 @@ class SimulationAgent:
             Full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
 
         Postconditions:
-            - ``_prefetch_tool_context`` is never called by this method.
+            - ``perform_real_simulation`` is never called by this method.
             - ``self.history`` is reset at entry and contains exactly
               ``max_iterations`` entries on return.
 
@@ -309,11 +309,11 @@ class SimulationAgent:
         return self.history, format_simulation_output(self.history, step_lines=lines)
 
     # ------------------------------------------------------------------
-    # Private: pre-computation phase
+    # Public: real simulation execution
     # ------------------------------------------------------------------
 
-    def _prefetch_tool_context(self) -> str:
-        """Run the pre-computation tool-calling phase.
+    def perform_real_simulation(self) -> str:
+        """Run the real simulation via the tool-calling pre-computation phase.
 
         Sends _PREFETCH_PROMPT to the LLM with all registered tool schemas.
         The LLM decides autonomously whether to call any tools. The resulting

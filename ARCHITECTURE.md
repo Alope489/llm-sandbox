@@ -146,7 +146,7 @@ graph TD
   - **Behavior**:
     - `agent="simulation"`: Instantiate `SimulationAgent` and dispatch based on `CURRENT_SIMULATION_MODE`:
       - `mock_sim_mode` (default): calls `run_and_report(...)` and returns `{"history": [...], "output": str}` in the `result` field.
-      - `real_sim_mode`: calls `_prefetch_tool_context()` and returns `{"prefetch_output": str}` in the `result` field.
+      - `real_sim_mode`: calls `perform_real_simulation()` and returns `{"prefetch_output": str}` in the `result` field.
     - `agent="kb"`: Call `kb_agent.ask(query)` where `query` comes from `params["query"]` or falls back to `original_prompt`; returns the answer string in `result`.
     - `agent="processor"`: Call `linear.orchestrator.run(input_text, tasks=...)` where `input_text` is either `params["input_text"]` or `original_prompt`; returns the orchestrator dict (`summary`, `extraction`, `processing`) in `result`.
 
@@ -156,7 +156,7 @@ graph TD
     coordinator --> decision["Decision(agent, mode, params)"]
     decision --> executor["Executor (execute)"]
     executor -->|"mock_sim_mode"| simAgentLoop["SimulationAgent.run_and_report (multi/sim)"]
-    executor -->|"real_sim_mode"| simAgentPrefetch["SimulationAgent._prefetch_tool_context (multi/sim)"]
+    executor -->|"real_sim_mode"| simAgentPrefetch["SimulationAgent.perform_real_simulation (multi/sim)"]
     executor --> kbAgent["Kb agent (multi/kb_agent.ask)"]
     executor --> linearOrch["Linear orchestrator (linear/orchestrator.run)"]
 ```
@@ -330,24 +330,24 @@ The execution path taken by `_execute_simulation` in `src/executor.py` is contro
 | `CURRENT_SIMULATION_MODE` | Behaviour |
 |---|---|
 | `mock_sim_mode` (default) | Calls `agent.run_and_report()` — runs the full LLM-guided optimization loop and returns `{"history": [...], "output": str}`. |
-| `real_sim_mode` | Calls `agent._prefetch_tool_context()` only — the LLM may invoke registered tools (e.g. `compute_elastic_constants_tool`) and the result is returned as `{"prefetch_output": str}`. No optimization loop is run. |
+| `real_sim_mode` | Calls `agent.perform_real_simulation()` only — the LLM may invoke registered tools (e.g. `compute_elastic_constants_tool`) and the result is returned as `{"prefetch_output": str}`. No optimization loop is run. |
 
 ```mermaid
 flowchart TD
     envVar["CURRENT_SIMULATION_MODE env var"] -->|"read at dispatch"| executeSimulation["_execute_simulation()"]
     executeSimulation -->|"mock_sim_mode (default)"| runAndReport["agent.run_and_report()"]
-    executeSimulation -->|"real_sim_mode"| prefetch["agent._prefetch_tool_context()"]
+    executeSimulation -->|"real_sim_mode"| prefetch["agent.perform_real_simulation()"]
     runAndReport --> runLoop["run_optimization_loop()"]
     runLoop --> loop["optimization loop"]
 ```
 
-**Key design decision**: `_prefetch_tool_context` was previously called from inside `run_optimization_loop` when `use_tools=True`. This coupled the pre-computation phase to the loop body, making it impossible to run the pre-computation independently. Moving the dispatch to `_execute_simulation` with a pipeline-level config variable (Pillar 4: no hardcoding; Pillar 7: clear failure mode for invalid values) cleanly separates the two responsibilities.
+**Key design decision**: `perform_real_simulation` was previously called `_prefetch_tool_context` and was called from inside `run_optimization_loop` when `use_tools=True`. This coupled the pre-computation phase to the loop body, making it impossible to run the pre-computation independently. Moving the dispatch to `_execute_simulation` with a pipeline-level config variable (Pillar 4: no hardcoding; Pillar 7: clear failure mode for invalid values) cleanly separates the two responsibilities.
 
 ### Pre-computation phase (`real_sim_mode`)
 
 When `CURRENT_SIMULATION_MODE=real_sim_mode`:
 
-1. `_prefetch_tool_context()` sends `_PREFETCH_PROMPT` to the LLM via `complete_with_tools`. The prompt invites (but does not command) the LLM to call any tools it judges relevant.
+1. `perform_real_simulation()` sends `_PREFETCH_PROMPT` to the LLM via `complete_with_tools`. The prompt invites (but does not command) the LLM to call any tools it judges relevant.
 2. The LLM may call `compute_elastic_constants_tool` for constituent elements (Ni, Al, etc.) or return a plain text summary with no tool calls — its choice.
 3. The response is stored in `self._tool_context`.
 4. `_system_prompt()` appends `self._tool_context` to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
@@ -452,7 +452,7 @@ py -m pytest -v
 
 ### End-to-end pipeline test
 
-`test_sim_agent_prefetch_with_real_docker` — exercises `SimulationAgent._prefetch_tool_context()`
+`test_sim_agent_prefetch_with_real_docker` — exercises `SimulationAgent.perform_real_simulation()`
 with a real Docker-backed tool call and a real OpenAI API call. Requires `OPENAI_API_KEY`.
 
 ---

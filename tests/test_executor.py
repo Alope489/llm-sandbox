@@ -21,6 +21,7 @@ def test_execute_simulation_routes_to_simulation_agent(monkeypatch):
             return ["history"], "output"
 
     monkeypatch.setattr(executor, "SimulationAgent", FakeSimulationAgent)
+    monkeypatch.setenv("CURRENT_SIMULATION_MODE", "mock_sim_mode")
     decision = {
         "agent": "simulation",
         "mode": "structured",
@@ -118,19 +119,19 @@ class _FakeAgentForMode:
         self.run_and_report_called = True
         return ([], "output")
 
-    def _prefetch_tool_context(self):
+    def perform_real_simulation(self):
         self.prefetch_called = True
         return "prefetch summary"
 
 
 def test_execute_simulation_mock_sim_mode(monkeypatch):
-    """CURRENT_SIMULATION_MODE=mock_sim_mode → run_and_report called, _prefetch_tool_context not called.
+    """CURRENT_SIMULATION_MODE=mock_sim_mode → run_and_report called, perform_real_simulation not called.
 
     Pre-conditions:
         CURRENT_SIMULATION_MODE env var is explicitly set to 'mock_sim_mode'.
     Post-conditions:
         - result contains 'history' and 'output' keys.
-        - _prefetch_tool_context is never invoked.
+        - perform_real_simulation is never invoked.
     """
     captured = {}
 
@@ -152,7 +153,7 @@ def test_execute_simulation_mock_sim_mode(monkeypatch):
 
 
 def test_execute_simulation_real_sim_mode(monkeypatch):
-    """CURRENT_SIMULATION_MODE=real_sim_mode → _prefetch_tool_context called, run_and_report not called.
+    """CURRENT_SIMULATION_MODE=real_sim_mode → perform_real_simulation called, run_and_report not called.
 
     Pre-conditions:
         CURRENT_SIMULATION_MODE env var is explicitly set to 'real_sim_mode'.
@@ -186,7 +187,7 @@ def test_execute_simulation_default_mode_is_mock(monkeypatch):
         CURRENT_SIMULATION_MODE is not set in the environment.
     Post-conditions:
         - run_and_report is called (optimization loop path).
-        - _prefetch_tool_context is not called.
+        - perform_real_simulation is not called.
     """
     captured = {}
 
@@ -213,7 +214,7 @@ def test_execute_simulation_invalid_sim_mode(monkeypatch):
     Post-conditions:
         - The returned dict contains an 'error' key.
         - The error type is 'ValueError'.
-        - Neither run_and_report nor _prefetch_tool_context is called.
+        - Neither run_and_report nor perform_real_simulation is called.
     """
     captured = {}
 
