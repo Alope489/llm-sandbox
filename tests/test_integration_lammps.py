@@ -12,8 +12,8 @@ These tests call ``compute_elastic_constants_tool`` against the live Docker imag
     Layer 3 — EAM potential-specific ranges:
         Tight ±5% bounds derived from the Mishin/Mendelev/Zhou potentials used.
 
-All tests are skipped when the Docker image is not present so CI passes
-without Docker.  To run these tests locally::
+All tests fail when the Docker image is not present. Build the image before
+running this file::
 
     docker build -t elastic-lammps-tool:latest src/tools/elastic_constants_lammps/
     py -m pytest tests/test_integration_lammps.py -v
@@ -35,7 +35,7 @@ from src.multi.sim.agent import SimulationAgent
 
 
 # ---------------------------------------------------------------------------
-# Skip guard
+# Docker availability guard
 # ---------------------------------------------------------------------------
 
 def _docker_image_exists(tag: str) -> bool:
@@ -51,10 +51,24 @@ def _docker_image_exists(tag: str) -> bool:
         return False
 
 
-_skip_no_docker = pytest.mark.skipif(
-    not _docker_image_exists("elastic-lammps-tool:latest"),
-    reason="Docker image elastic-lammps-tool:latest not built — run docker build first",
-)
+@pytest.fixture(scope="session", autouse=True)
+def require_docker_image() -> None:
+    """Fail the entire session if the Docker image is not present.
+
+    Raises:
+        pytest.fail: If ``elastic-lammps-tool:latest`` is not in the local
+            Docker image store or if the Docker CLI is unavailable.
+
+    Preconditions:
+        - Docker daemon is running.
+        - Image ``elastic-lammps-tool:latest`` has been built.
+    """
+    if not _docker_image_exists("elastic-lammps-tool:latest"):
+        pytest.fail(
+            "Docker image elastic-lammps-tool:latest is not built. "
+            "Run: docker build -t elastic-lammps-tool:latest "
+            "src/tools/elastic_constants_lammps/"
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -100,7 +114,6 @@ def _assert_layer3(result: dict, c11_range, c12_range, c44_range) -> None:
 # Per-element tests (supercell_size=3 for speed, still physically valid)
 # ---------------------------------------------------------------------------
 
-@_skip_no_docker
 def test_elastic_Al():
     """Al (FCC, Mishin 1999): C11≈114, C12≈62, C44≈32 GPa."""
     result = compute_elastic_constants_tool(composition="Al", supercell_size=3)
@@ -109,7 +122,6 @@ def test_elastic_Al():
     _assert_layer3(result, c11_range=(108, 122), c12_range=(60, 70), c44_range=(30, 34))
 
 
-@_skip_no_docker
 def test_elastic_Cu():
     """Cu (FCC, Mishin 2001): C11≈170, C12≈122, C44≈76 GPa."""
     result = compute_elastic_constants_tool(composition="Cu", supercell_size=3)
@@ -118,7 +130,6 @@ def test_elastic_Cu():
     _assert_layer3(result, c11_range=(165, 178), c12_range=(118, 128), c44_range=(72, 80))
 
 
-@_skip_no_docker
 def test_elastic_Ni():
     """Ni (FCC, Mishin 1999): C11≈251, C12≈148, C44≈123 GPa."""
     result = compute_elastic_constants_tool(composition="Ni", supercell_size=4)
@@ -127,7 +138,6 @@ def test_elastic_Ni():
     _assert_layer3(result, c11_range=(244, 258), c12_range=(140, 155), c44_range=(117, 129))
 
 
-@_skip_no_docker
 def test_elastic_Fe():
     """Fe (BCC, Mendelev 2003): C11≈243, C12≈145, C44≈116 GPa."""
     result = compute_elastic_constants_tool(composition="Fe", supercell_size=4)
@@ -136,7 +146,6 @@ def test_elastic_Fe():
     _assert_layer3(result, c11_range=(231, 256), c12_range=(138, 150), c44_range=(110, 122))
 
 
-@_skip_no_docker
 def test_elastic_W():
     """W (BCC, Zhou 2004): C11≈523, C12≈204, C44≈160 GPa."""
     result = compute_elastic_constants_tool(composition="W", supercell_size=3)
@@ -145,7 +154,6 @@ def test_elastic_W():
     _assert_layer3(result, c11_range=(516, 536), c12_range=(195, 208), c44_range=(152, 168))
 
 
-@_skip_no_docker
 def test_elastic_Mo():
     """Mo (BCC, Zhou 2004): C11≈457, C12≈166, C44≈113 GPa."""
     result = compute_elastic_constants_tool(composition="Mo", supercell_size=5)
@@ -158,9 +166,8 @@ def test_elastic_Mo():
 # End-to-end pipeline test
 # ---------------------------------------------------------------------------
 
-@_skip_no_docker
 def test_sim_agent_prefetch_with_real_docker():
-    """Full pipeline: SimulationAgent._prefetch_tool_context() with real Docker.
+    """Full pipeline: SimulationAgent.perform_real_simulation() with real Docker.
 
     Preconditions:
         - ``elastic-lammps-tool:latest`` Docker image is built.
@@ -171,7 +178,7 @@ def test_sim_agent_prefetch_with_real_docker():
         - agent._tool_context equals the returned context.
     """
     agent = SimulationAgent(provider="openai", max_iterations=1)
-    context = agent._prefetch_tool_context()
+    context = agent.perform_real_simulation()
     assert isinstance(context, str) and len(context) > 0, (
         "Prefetch context must be a non-empty string"
     )
