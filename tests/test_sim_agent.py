@@ -112,23 +112,45 @@ def test_simulation_agent_integration_real_llm():
 # ---------------------------------------------------------------------------
 
 @patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
-@patch("src.wrapper.complete_with_tools", return_value="Ni C11=247 GPa")
+@patch("src.wrapper.complete_with_tools")
 def test_prefetch_called_when_use_tools_true(mock_cwt, mock_sim):
-    """run_optimization_loop with use_tools=True calls complete_with_tools once before the loop."""
+    """run_optimization_loop never calls complete_with_tools regardless of use_tools.
+
+    The pre-computation phase was removed from the loop body; use_tools is now
+    a no-op deprecated parameter.  The call that previously triggered
+    _prefetch_tool_context must now come from outside (via executor dispatch).
+    """
     with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
         agent = SimulationAgent(max_iterations=1)
         agent.run_optimization_loop(use_tools=True)
-    mock_cwt.assert_called_once()
+    mock_cwt.assert_not_called()
 
 
 @patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
 @patch("src.wrapper.complete_with_tools")
 def test_prefetch_not_called_when_use_tools_false(mock_cwt, mock_sim):
-    """Default use_tools=False means complete_with_tools is never invoked — backward compatible."""
+    """use_tools=False: complete_with_tools is never invoked — backward compatible."""
     with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
         agent = SimulationAgent(max_iterations=1)
         agent.run_optimization_loop(use_tools=False)
     mock_cwt.assert_not_called()
+
+
+@patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True))
+@patch("src.multi.sim.agent.SimulationAgent._prefetch_tool_context")
+def test_run_optimization_loop_never_calls_prefetch(mock_prefetch, mock_sim):
+    """_prefetch_tool_context is never invoked by run_optimization_loop regardless of use_tools.
+
+    Pre-conditions:
+        - run_optimization_loop is called with both use_tools=True and use_tools=False.
+    Post-conditions:
+        - _prefetch_tool_context is never called by the loop in either case.
+    """
+    with patch("src.multi.sim.agent.SimulationAgent._call_openai", return_value="15.0"):
+        agent = SimulationAgent(max_iterations=1)
+        agent.run_optimization_loop(use_tools=True)
+        agent.run_optimization_loop(use_tools=False)
+    mock_prefetch.assert_not_called()
 
 
 def test_tool_context_injected_into_system_prompt():

@@ -20,6 +20,7 @@ Pillar compliance:
     - Pillar 4: No hardcoding; agent names are module-level constants.
     - Pillar 7: All exceptions are caught and returned as error dicts.
 """
+
 from __future__ import annotations
 
 import dataclasses
@@ -33,6 +34,9 @@ from src.llm_pipeline_telemetry import CallContext
 
 
 ALLOWED_AGENTS = ("simulation", "kb", "processor")
+SIM_MODE_MOCK = "mock_sim_mode"
+SIM_MODE_REAL = "real_sim_mode"
+_ALLOWED_SIM_MODES = (SIM_MODE_MOCK, SIM_MODE_REAL)
 AgentRunner = Callable[[Dict[str, Any], Optional[str], Optional[CallContext]], Any]
 
 
@@ -41,16 +45,22 @@ def _validate_runtime_environment(agent: str, params: Dict[str, Any]) -> None:
     if isinstance(provider, str) and provider.strip():
         provider = provider.strip().lower()
     else:
-        provider = (os.environ.get("LLM_PROVIDER", "openai") or "openai").strip().lower()
+        provider = (
+            (os.environ.get("LLM_PROVIDER", "openai") or "openai").strip().lower()
+        )
 
     if provider not in ("openai", "anthropic"):
-        raise RuntimeError("Invalid LLM_PROVIDER/provider. Expected 'openai' or 'anthropic'.")
+        raise RuntimeError(
+            "Invalid LLM_PROVIDER/provider. Expected 'openai' or 'anthropic'."
+        )
 
     if agent in ALLOWED_AGENTS:
         if provider == "openai" and not os.environ.get("OPENAI_API_KEY"):
             raise RuntimeError("Missing required environment variable: OPENAI_API_KEY")
         if provider == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
-            raise RuntimeError("Missing required environment variable: ANTHROPIC_API_KEY")
+            raise RuntimeError(
+                "Missing required environment variable: ANTHROPIC_API_KEY"
+            )
 
 
 def _coerce_positive_float(value: Any, *, name: str) -> Optional[float]:
@@ -60,7 +70,7 @@ def _coerce_positive_float(value: Any, *, name: str) -> Optional[float]:
         raise ValueError(f"{name} must be a positive number")
     try:
         result = float(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         raise ValueError(f"{name} must be a positive number")
     if result <= 0:
         raise ValueError(f"{name} must be a positive number")
@@ -74,7 +84,7 @@ def _coerce_positive_int(value: Any, *, name: str) -> Optional[int]:
         raise ValueError(f"{name} must be a positive integer")
     try:
         result = int(value)
-    except (TypeError, ValueError):
+    except TypeError, ValueError:
         raise ValueError(f"{name} must be a positive integer")
     if result <= 0:
         raise ValueError(f"{name} must be a positive integer")
@@ -91,14 +101,18 @@ def _sanitize_simulation_params(params: Dict[str, Any]) -> Dict[str, Any]:
             sanitized["provider"] = provider
 
     try:
-        duration_hours = _coerce_positive_float(params.get("duration_hours"), name="duration_hours")
+        duration_hours = _coerce_positive_float(
+            params.get("duration_hours"), name="duration_hours"
+        )
     except ValueError:
         duration_hours = None
     if duration_hours is not None:
         sanitized["duration_hours"] = duration_hours
 
     try:
-        max_iterations = _coerce_positive_int(params.get("max_iterations"), name="max_iterations")
+        max_iterations = _coerce_positive_int(
+            params.get("max_iterations"), name="max_iterations"
+        )
     except ValueError:
         max_iterations = None
     if max_iterations is not None:
@@ -117,7 +131,9 @@ def _sanitize_simulation_params(params: Dict[str, Any]) -> Dict[str, Any]:
     return sanitized
 
 
-def _apply_mode(agent: str, mode: str, params: Dict[str, Any], original_prompt: Optional[str]) -> Dict[str, Any]:
+def _apply_mode(
+    agent: str, mode: str, params: Dict[str, Any], original_prompt: Optional[str]
+) -> Dict[str, Any]:
     if mode == "structured":
         return params
     if agent == "kb":
@@ -134,6 +150,44 @@ def _execute_simulation(
     original_prompt: Optional[str] = None,
     ctx: Optional[CallContext] = None,
 ) -> Dict[str, Any]:
+    """Execute the simulation agent, routing to the appropriate mode.
+
+    Reads ``CURRENT_SIMULATION_MODE`` from the environment to decide the
+    execution path:
+
+    - ``"mock_sim_mode"`` (default): instantiates ``SimulationAgent`` and
+      calls ``run_and_report``, returning a full optimization history.
+    - ``"real_sim_mode"``: instantiates ``SimulationAgent`` and calls
+      ``_prefetch_tool_context`` only, returning the pre-computation
+      summary without running the optimization loop.
+
+    The two paths are mutually exclusive — exactly one is taken per call.
+
+    Args:
+        params: Sanitized simulation parameters. Recognised keys:
+            ``provider``, ``duration_hours``, ``max_iterations``,
+            ``initial_cooling_rate_K_per_min``.
+        original_prompt: Unused; accepted for interface uniformity.
+        ctx: Optional ``CallContext`` propagated from the coordinator.
+            A snapshot labelled ``agent="sim_agent"`` is forwarded.
+
+    Returns:
+        ``{"history": list, "output": str}`` when in ``mock_sim_mode``, or
+        ``{"prefetch_output": str}`` when in ``real_sim_mode``.
+
+    Raises:
+        ValueError: If ``CURRENT_SIMULATION_MODE`` is set to a value not
+            in ``_ALLOWED_SIM_MODES``.
+
+    Preconditions:
+        - ``params`` has already been sanitised by
+          ``_sanitize_simulation_params``.
+
+    Complexity:
+        Θ(max_iterations) for ``mock_sim_mode``; Θ(1) LLM calls for
+        ``real_sim_mode`` (tool-calling loop is bounded by
+        ``MAX_TOOL_CALLS``).
+    """
     del original_prompt
     safe_params = _sanitize_simulation_params(params)
     provider = safe_params.get("provider")
@@ -149,19 +203,36 @@ def _execute_simulation(
             max_iterations=max_iterations if max_iterations is not None else 10,
         )
 
-    sim_ctx = (
-        dataclasses.replace(ctx, agent="sim_agent")
-        if ctx is not None
-        else None
+    sim_ctx = dataclasses.replace(ctx, agent="sim_agent") if ctx is not None else None
+
+    sim_mode = (
+        (os.environ.get("CURRENT_SIMULATION_MODE") or SIM_MODE_MOCK).strip().lower()
     )
-    initial_rate = safe_params.get("initial_cooling_rate_K_per_min")
-    if initial_rate is None:
-        history, output = agent.run_and_report(ctx=sim_ctx)
-    else:
-        history, output = agent.run_and_report(
-            initial_cooling_rate_K_per_min=initial_rate, ctx=sim_ctx
+    if sim_mode not in _ALLOWED_SIM_MODES:
+        raise ValueError(
+            f"Invalid CURRENT_SIMULATION_MODE {sim_mode!r}. "
+            f"Allowed: {_ALLOWED_SIM_MODES}"
         )
-    return {"history": history, "output": output}
+
+    if sim_mode == SIM_MODE_REAL:
+        prefetch_result = agent._prefetch_tool_context()
+        return {"prefetch_output": prefetch_result}
+    elif sim_mode == SIM_MODE_MOCK:
+        initial_rate = safe_params.get("initial_cooling_rate_K_per_min")
+        if initial_rate is None:
+            history, output = agent.run_and_report(ctx=sim_ctx)
+        else:
+            history, output = agent.run_and_report(
+                initial_cooling_rate_K_per_min=initial_rate, ctx=sim_ctx
+            )
+        return {"history": history, "output": output}
+    else:
+        return {
+            "error": {
+                "type": "ValueError",
+                "message": f"Invalid CURRENT_SIMULATION_MODE {sim_mode!r}. Allowed: {_ALLOWED_SIM_MODES}",
+            }
+        }
 
 
 def _execute_kb(
@@ -240,6 +311,7 @@ def execute(
     try:
         effective_params = _apply_mode(agent, mode, params, original_prompt)
         _validate_runtime_environment(agent, effective_params)
+        # Run the relevant agent with the appropriate parameters, and save the result
         result = AGENT_REGISTRY[agent](effective_params, original_prompt, ctx)
         return {"agent": agent, "mode": mode, "result": result}
     except Exception as exc:

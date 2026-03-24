@@ -25,6 +25,7 @@
 | `OPENAI_MODEL` | OpenAI model (default: gpt-4o-mini) |
 | `ANTHROPIC_MODEL` | Anthropic model (default: claude-sonnet-4-6) |
 | `MAX_TOKENS` | Max tokens for Anthropic (default: 1024) |
+| `CURRENT_SIMULATION_MODE` | `mock_sim_mode` (default) or `real_sim_mode` — controls which path `_execute_simulation` in `executor.py` takes (see [Simulation Agent — Tool-Augmented Mode](#simulation-agent--tool-augmented-mode)) |
 
 Loaded from `.env` via `python-dotenv`. For tests, `tests/conftest.py` calls `load_dotenv` at collection time so all tests can run in isolation without pre-sourcing the shell. In production code, each `src/` module that needs env vars also calls `load_dotenv()` on import as a fallback.
 
@@ -143,7 +144,9 @@ graph TD
   - **Interface**:
     - `execute(decision: dict, original_prompt: str | None = None) -> dict`: Run the selected agent and return a normalized result dict.
   - **Behavior**:
-    - `agent="simulation"`: Instantiate `SimulationAgent` and call `run_and_report(...)`; returns `{"history": [...], "output": str}` in the `result` field.
+    - `agent="simulation"`: Instantiate `SimulationAgent` and dispatch based on `CURRENT_SIMULATION_MODE`:
+      - `mock_sim_mode` (default): calls `run_and_report(...)` and returns `{"history": [...], "output": str}` in the `result` field.
+      - `real_sim_mode`: calls `_prefetch_tool_context()` and returns `{"prefetch_output": str}` in the `result` field.
     - `agent="kb"`: Call `kb_agent.ask(query)` where `query` comes from `params["query"]` or falls back to `original_prompt`; returns the answer string in `result`.
     - `agent="processor"`: Call `linear.orchestrator.run(input_text, tasks=...)` where `input_text` is either `params["input_text"]` or `original_prompt`; returns the orchestrator dict (`summary`, `extraction`, `processing`) in `result`.
 
@@ -152,7 +155,8 @@ graph TD
     userPrompt["UserPrompt"] --> coordinator["Coordinator (route_prompt/run)"]
     coordinator --> decision["Decision(agent, mode, params)"]
     decision --> executor["Executor (execute)"]
-    executor --> simAgent["SimulationAgent (multi/sim)"]
+    executor -->|"mock_sim_mode"| simAgentLoop["SimulationAgent.run_and_report (multi/sim)"]
+    executor -->|"real_sim_mode"| simAgentPrefetch["SimulationAgent._prefetch_tool_context (multi/sim)"]
     executor --> kbAgent["Kb agent (multi/kb_agent.ask)"]
     executor --> linearOrch["Linear orchestrator (linear/orchestrator.run)"]
 ```
@@ -319,21 +323,43 @@ def complete_with_tools(messages, provider=None) -> str:
 
 **Location**: `src/multi/sim/agent.py`
 
-### Pre-computation phase (Option A)
+### Pipeline mode dispatch (via `CURRENT_SIMULATION_MODE`)
 
-When `run_optimization_loop(use_tools=True)` or `run_and_report(use_tools=True)` is called:
+The execution path taken by `_execute_simulation` in `src/executor.py` is controlled by the `CURRENT_SIMULATION_MODE` environment variable. The two paths are mutually exclusive — exactly one is taken per invocation.
+
+| `CURRENT_SIMULATION_MODE` | Behaviour |
+|---|---|
+| `mock_sim_mode` (default) | Calls `agent.run_and_report()` — runs the full LLM-guided optimization loop and returns `{"history": [...], "output": str}`. |
+| `real_sim_mode` | Calls `agent._prefetch_tool_context()` only — the LLM may invoke registered tools (e.g. `compute_elastic_constants_tool`) and the result is returned as `{"prefetch_output": str}`. No optimization loop is run. |
+
+```mermaid
+flowchart TD
+    envVar["CURRENT_SIMULATION_MODE env var"] -->|"read at dispatch"| executeSimulation["_execute_simulation()"]
+    executeSimulation -->|"mock_sim_mode (default)"| runAndReport["agent.run_and_report()"]
+    executeSimulation -->|"real_sim_mode"| prefetch["agent._prefetch_tool_context()"]
+    runAndReport --> runLoop["run_optimization_loop()"]
+    runLoop --> loop["optimization loop"]
+```
+
+**Key design decision**: `_prefetch_tool_context` was previously called from inside `run_optimization_loop` when `use_tools=True`. This coupled the pre-computation phase to the loop body, making it impossible to run the pre-computation independently. Moving the dispatch to `_execute_simulation` with a pipeline-level config variable (Pillar 4: no hardcoding; Pillar 7: clear failure mode for invalid values) cleanly separates the two responsibilities.
+
+### Pre-computation phase (`real_sim_mode`)
+
+When `CURRENT_SIMULATION_MODE=real_sim_mode`:
 
 1. `_prefetch_tool_context()` sends `_PREFETCH_PROMPT` to the LLM via `complete_with_tools`. The prompt invites (but does not command) the LLM to call any tools it judges relevant.
 2. The LLM may call `compute_elastic_constants_tool` for constituent elements (Ni, Al, etc.) or return a plain text summary with no tool calls — its choice.
 3. The response is stored in `self._tool_context`.
 4. `_system_prompt()` appends `self._tool_context` to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
-5. Every subsequent `get_llm_suggestion()` call in the optimization loop uses this enriched system prompt.
+5. Every subsequent `get_llm_suggestion()` call in any future optimization loop uses this enriched system prompt.
 
-`use_tools` defaults to `False` — all existing callers and tests are unaffected.
+### Deprecated `use_tools` parameter
+
+`run_optimization_loop(use_tools=...)` and `run_and_report(use_tools=...)` still accept the `use_tools` parameter for backward compatibility, but it is now a no-op. The pre-computation responsibility has moved entirely to `_execute_simulation` via `CURRENT_SIMULATION_MODE`. Callers that previously set `use_tools=True` should migrate to setting `CURRENT_SIMULATION_MODE=real_sim_mode` in their environment.
 
 ### `ask_with_tools(query: str) -> str`
 
-Public method for ad-hoc material science queries. Calls `complete_with_tools` directly; the LLM can invoke any registered tool at its discretion.
+Public method for ad-hoc material science queries. Calls `complete_with_tools` directly; the LLM can invoke any registered tool at its discretion. Unaffected by `CURRENT_SIMULATION_MODE`.
 
 ### Per-iteration LLM measurement instrumentation
 
@@ -343,7 +369,7 @@ Per-call latency (`elapsed_seconds`), token counts (`prompt_tokens`, `completion
 
 - `tests/test_tool_registry.py` — 5 unit tests (register, schema shapes, call dispatch, elastic tool presence).
 - `tests/test_wrapper.py` — 5 unit tests for `complete_with_tools` (no-call path, single-loop OpenAI, single-loop Anthropic, MAX_TOOL_CALLS guard OpenAI, MAX_TOOL_CALLS guard Anthropic).
-- `tests/test_sim_agent.py` — 5 unit tests (prefetch called/skipped, context in system prompt, ask_with_tools, run_and_report passthrough).
+- `tests/test_sim_agent.py` — 6 unit tests (prefetch never called from loop, context in system prompt, ask_with_tools, run_and_report passthrough, `test_run_optimization_loop_never_calls_prefetch`).
 - `tests/test_integration_tool_calling.py` — 2 Level 2 integration tests (real LLM API + mocked `tool_registry.call`). Assert the live LLM autonomously emits a tool call when asked a material science question. No Docker required.
 
 ---

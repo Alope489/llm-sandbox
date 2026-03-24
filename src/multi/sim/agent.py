@@ -231,27 +231,33 @@ class SimulationAgent:
         use_tools: bool = False,
         ctx: Optional[CallContext] = None,
     ) -> List[HistoryEntry]:
-        """
-        Run the loop: simulate -> log -> get LLM suggestion -> repeat for max_iterations.
+        """Run the loop: simulate -> log -> get LLM suggestion -> repeat for max_iterations.
 
         Args:
             initial_cooling_rate_K_per_min: Starting cooling rate.
             on_step: Optional callback invoked after each simulation step with
                 (iteration_1based, cooling_rate_K_per_min, yield_strength_MPa, success).
-            use_tools: When True, runs a pre-computation phase before the loop
-                where the LLM may call registered tools to gather material
-                properties. Results are injected into the system prompt.
-                Defaults to False to preserve backward compatibility.
+            use_tools: Deprecated. Previously triggered an in-loop pre-computation
+                phase; that responsibility has moved to the pipeline dispatcher
+                (``_execute_simulation`` in ``executor.py`` via
+                ``CURRENT_SIMULATION_MODE``). This parameter is accepted for
+                backward compatibility but has no effect.
             ctx: Optional ``CallContext`` propagated from the caller.  When
                 provided, one ``llm_call`` record per iteration is appended.
 
         Returns:
             Full history of (cooling_rate_K_per_min, yield_strength_MPa, success).
+
+        Postconditions:
+            - ``_prefetch_tool_context`` is never called by this method.
+            - ``self.history`` is reset at entry and contains exactly
+              ``max_iterations`` entries on return.
+
+        Complexity:
+            Θ(max_iterations) LLM calls + simulation calls.
         """
         self.history = []
-
-        if use_tools:
-            self._prefetch_tool_context()
+        del use_tools  # intentionally unused — see deprecation note in docstring
 
         cooling_rate_K_per_min = initial_cooling_rate_K_per_min
 
@@ -271,17 +277,21 @@ class SimulationAgent:
         use_tools: bool = False,
         ctx: Optional[CallContext] = None,
     ) -> Tuple[List[HistoryEntry], str]:
-        """
-        Run the optimization loop and return (history, output_string).
+        """Run the optimization loop and return (history, output_string).
 
         Args:
             initial_cooling_rate_K_per_min: Starting cooling rate.
-            use_tools: Passed through to run_optimization_loop. When True,
-                enables the pre-computation tool-calling phase.
+            use_tools: Deprecated. Forwarded to ``run_optimization_loop`` where
+                it is also a no-op. Pre-computation is now controlled at the
+                pipeline level via ``CURRENT_SIMULATION_MODE`` in
+                ``executor.py``.
             ctx: Optional ``CallContext`` propagated to the loop.
 
         Returns:
             Tuple of (history, human-readable log string).
+
+        Complexity:
+            Θ(max_iterations) — delegates entirely to ``run_optimization_loop``.
         """
         lines: List[str] = []
 
