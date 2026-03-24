@@ -21,6 +21,7 @@ Pillar compliance:
     - Pillar 1: Functional parity with pre-telemetry code.
     - Pillar 7: Always-emit pattern in try/except; re-raises on error.
 """
+
 from __future__ import annotations
 
 import dataclasses
@@ -46,9 +47,7 @@ def _validate_runtime_environment() -> None:
     """
     provider = (os.environ.get("LLM_PROVIDER", "openai") or "openai").strip().lower()
     if provider not in ("openai", "anthropic"):
-        raise RuntimeError(
-            "Invalid LLM_PROVIDER. Expected 'openai' or 'anthropic'."
-        )
+        raise RuntimeError("Invalid LLM_PROVIDER. Expected 'openai' or 'anthropic'.")
     if provider == "openai" and not os.environ.get("OPENAI_API_KEY"):
         raise RuntimeError("Missing required environment variable: OPENAI_API_KEY")
     if provider == "anthropic" and not os.environ.get("ANTHROPIC_API_KEY"):
@@ -172,7 +171,9 @@ def run(prompt: str) -> Dict[str, Any]:
     try:
         routing_ctx = dataclasses.replace(ctx, agent="coordinator", span="routing")
         raw = _classify_with_llm(prompt, ctx=routing_ctx)
+        """Decide which agent to spin up"""
         decision = _parse_decision(raw, prompt)
+        """Have the executor spin up the agent and run it, and store the result"""
         result = execute(decision, original_prompt=prompt, ctx=ctx)
         log_pipeline_outcome_and_stats(
             ctx,
