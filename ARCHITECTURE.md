@@ -347,13 +347,13 @@ flowchart TD
 
 When `CURRENT_SIMULATION_MODE=real_sim_mode`:
 
-1. `perform_real_simulation()` iterates over the module-level constant `_PREDEFINED_SIM_CALLS` — a fixed `list[tuple[str, str]]` of 6 `(composition, supercell_size)` string pairs that mirror the per-element integration tests in `tests/test_integration_lammps.py` exactly (Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5).
-2. Each entry is destructured and `supercell_size` is cast to `int` before being passed as keyword arguments to `compute_elastic_constants_tool`, which runs the elastic-lammps Docker container.
+1. `perform_real_simulation()` computes `number_sims_to_run = len(original_prompt) % 6 + 1` (range: 1–6) and indexes into `_PREDEFINED_SIM_CALLS[0..number_sims_to_run-1]`. The module-level constant `_PREDEFINED_SIM_CALLS` is a `tuple[tuple[str, str], ...]` of 6 `(composition, supercell_size)` string pairs (Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5) that acts as a pool; the number of entries actually consumed per call varies by prompt length. This intentional variability lets different prompts exercise different numbers of simulations during testing.
+2. Each selected entry's `supercell_size` is cast to `int` before being passed as a positional argument to `compute_elastic_constants_tool`, which runs the elastic-lammps Docker container.
 3. The result dict from each call is JSON-serialised and appended to `self._current_sim_results`.
 4. `_system_prompt()` appends all `_current_sim_results` entries joined by newline to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
 5. Every subsequent `get_llm_suggestion()` call in any future optimization loop uses this enriched system prompt.
 
-**Key design decision (updated)**: The prefetch phase is now fully deterministic — it no longer delegates tool selection to the LLM via `complete_with_tools`. This eliminates API latency and non-determinism in the pre-computation step while guaranteeing that the exact same 6 elastic-constant simulations are run every time, matching the validated integration test parameters. The OpenAI provider guard is retained so the constraint remains explicit and testable (Pillar 7).
+**Key design decision (updated)**: The prefetch phase is now fully deterministic given a fixed prompt — it no longer delegates tool selection to the LLM via `complete_with_tools`. This eliminates API latency and non-determinism in the pre-computation step. The number of simulations run is determined by `len(original_prompt) % 6 + 1`, providing intentional prompt-driven variability (1–6 calls) for testing purposes without any randomness or LLM involvement. The OpenAI provider guard is retained so the constraint remains explicit and testable (Pillar 7).
 
 ### Deprecated `use_tools` parameter
 

@@ -82,14 +82,14 @@ MAX_PARSE_ATTEMPTS = 2
 # prefetch phase.  Each entry is a 2-tuple of strings (composition, supercell_size).
 # The call site unpacks the tuple and casts supercell_size to int.  Parameters
 # mirror the six per-element tests in tests/test_integration_lammps.py exactly.
-_PREDEFINED_SIM_CALLS: list[tuple[str, str]] = [
+_PREDEFINED_SIM_CALLS: tuple[tuple[str, str], ...] = (
     ("Al", "3"),
     ("Cu", "3"),
     ("Ni", "4"),
     ("Fe", "4"),
     ("W", "3"),
     ("Mo", "5"),
-]
+)
 
 
 def format_simulation_output(
@@ -330,12 +330,15 @@ class SimulationAgent:
     # ------------------------------------------------------------------
 
     def perform_real_simulation(self, original_prompt: str) -> List[str]:
-        """Run the deterministic prefetch phase: execute all 6 predefined elastic-constant simulations.
+        """Run the deterministic prefetch phase: execute 1–6 predefined elastic-constant simulations, determined by ``len(original_prompt) % 6 + 1``.
 
-        Validates that the active LLM provider is ``"openai"``, then iterates
-        over ``_PREDEFINED_SIM_CALLS`` — a fixed list of six
-        ``(composition, supercell_size)`` string 2-tuples that mirror the
-        per-element test calls in ``tests/test_integration_lammps.py`` exactly:
+        Validates that the active LLM provider is ``"openai"``, then computes
+        ``number_sims_to_run = len(original_prompt) % 6 + 1`` (range: 1–6) and
+        indexes into ``_PREDEFINED_SIM_CALLS[0..number_sims_to_run-1]``.
+        ``_PREDEFINED_SIM_CALLS`` is a pool of up to 6 ``(composition, supercell_size)``
+        string 2-tuples (Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5); the number of entries
+        consumed varies by prompt length, providing intentional variability for testing
+        without randomness:
 
         +---------+---------------+
         | element | supercell_size|
@@ -355,8 +358,10 @@ class SimulationAgent:
 
         Args:
             original_prompt: The original user prompt forwarded from the
-                pipeline dispatcher. Accepted for API compatibility; not used
-                to alter which simulations are run.
+                pipeline dispatcher. Its length determines
+                ``number_sims_to_run = len(original_prompt) % 6 + 1``
+                (1–6 simulations), providing prompt-driven variability for
+                testing purposes.
 
         Returns:
             The updated ``self._current_sim_results`` list; each entry is the
@@ -367,18 +372,16 @@ class SimulationAgent:
             RuntimeError: If ``self.provider`` is not ``"openai"``. Real
                 simulations are currently only supported with
                 ``LLM_PROVIDER=openai``.
-            Exception: Any exception raised by ``compute_elastic_constants_tool``
-                (e.g. Docker unavailable) propagates to the caller unmodified.
 
         Postconditions:
-            - On success, exactly 6 entries are appended to
-              ``self._current_sim_results`` (one per element in
-              ``_PREDEFINED_SIM_CALLS``).
+            - On success, between 1 and 6 entries are appended to
+              ``self._current_sim_results`` (``len(original_prompt) % 6 + 1``
+              entries, one per selected element in ``_PREDEFINED_SIM_CALLS``).
             - ``self._current_sim_results`` equals the returned list.
 
         Complexity:
-            Θ(6) — fixed number of Docker container invocations regardless of
-            prompt length.
+            Θ(len(original_prompt) % 6 + 1) — between 1 and 6 Docker container
+            invocations depending on prompt length.
         """
         if self.provider != "openai":
             raise RuntimeError(

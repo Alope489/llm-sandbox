@@ -222,6 +222,30 @@ def test_run_optimization_loop_ctx_attribution():
         assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
 
 
+def test_predefined_sim_calls_is_2d_tuple():
+    """_PREDEFINED_SIM_CALLS is a tuple[tuple[str, str], ...] — the outer container
+    and every inner element must be immutable tuples with exactly two str values.
+
+    Pre-conditions:
+        _PREDEFINED_SIM_CALLS is imported from src.multi.sim.agent.
+    Post-conditions:
+        - isinstance(_PREDEFINED_SIM_CALLS, tuple) is True.
+        - Every element is a tuple of length 2.
+        - Both values in each inner tuple are str.
+        - The constant has exactly 6 entries.
+    """
+    from src.multi.sim.agent import _PREDEFINED_SIM_CALLS
+
+    assert isinstance(_PREDEFINED_SIM_CALLS, tuple), "outer container must be a tuple"
+    assert len(_PREDEFINED_SIM_CALLS) == 6
+    for entry in _PREDEFINED_SIM_CALLS:
+        assert isinstance(entry, tuple), f"inner entry {entry!r} must be a tuple"
+        assert len(entry) == 2, f"inner entry {entry!r} must have exactly 2 elements"
+        composition, supercell_size = entry
+        assert isinstance(composition, str), f"composition {composition!r} must be str"
+        assert isinstance(supercell_size, str), f"supercell_size {supercell_size!r} must be str"
+
+
 def test_perform_real_simulation_raises_for_non_openai():
     """perform_real_simulation raises RuntimeError when provider is not openai.
 
@@ -253,7 +277,8 @@ def test_perform_real_simulation_calls_all_predefined(mock_tool):
     Post-conditions:
         - compute_elastic_constants_tool is called exactly 6 times.
         - Each call passes (composition, supercell_size_str) positionally from
-          _PREDEFINED_SIM_CALLS[i], in order: Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5.
+          _PREDEFINED_SIM_CALLS[i] (a tuple[tuple[str, str], ...]), in order:
+          Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5.
         - _current_sim_results contains 6 JSON-serialised result strings.
         - The returned list equals agent._current_sim_results.
     """
