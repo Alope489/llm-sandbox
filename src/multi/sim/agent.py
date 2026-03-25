@@ -11,8 +11,8 @@ called by the pipeline dispatcher (``_execute_simulation`` in ``executor.py`` vi
 pool of Docker-based elastic-constant simulations is run directly via
 ``compute_elastic_constants_tool``. The number of simulations executed is
 ``len(original_prompt) % 6 + 1`` (range: 1–6). Each JSON result is appended to
-``self._current_sim_results`` (a ``list[str]``), which is injected into the system
-prompt for every subsequent cooling rate suggestion.
+a local ``list[str]`` and returned directly to the caller; no instance state is
+mutated. ``_system_prompt()`` unconditionally returns the base ``SYSTEM_PROMPT``.
 
 Telemetry instrumentation:
     ``_call_openai``, ``_call_anthropic``, and ``get_llm_suggestion`` accept an
@@ -343,7 +343,8 @@ class SimulationAgent:
         Each call runs the elastic-lammps Docker container via
         ``compute_elastic_constants_tool``; ``supercell_size`` is cast from
         string to ``int`` at the call site. The result dict is JSON-serialised
-        and appended to ``self._current_sim_results``.
+        and appended to a local ``list_of_all_sim_results`` which is returned
+        to the caller. No instance state is mutated.
 
         Args:
             original_prompt: The original user prompt forwarded from the
@@ -353,9 +354,9 @@ class SimulationAgent:
                 testing purposes.
 
         Returns:
-            The updated ``self._current_sim_results`` list; each entry is the
-            JSON-serialised result dict from one ``compute_elastic_constants_tool``
-            call.
+            A new ``list[str]`` of ``n`` JSON-serialised result dicts, one per
+            ``compute_elastic_constants_tool`` call, where
+            ``n = len(original_prompt) % 6 + 1``.
 
         Raises:
             RuntimeError: If ``self.provider`` is not ``"openai"``. Real
@@ -363,10 +364,8 @@ class SimulationAgent:
                 ``LLM_PROVIDER=openai``.
 
         Postconditions:
-            - On success, between 1 and 6 entries are appended to
-              ``self._current_sim_results`` (``len(original_prompt) % 6 + 1``
-              entries, one per selected element in ``_PREDEFINED_SIM_CALLS``).
-            - ``self._current_sim_results`` equals the returned list.
+            - Returns a new ``list[str]`` of exactly ``n`` entries where
+              ``n = len(original_prompt) % 6 + 1``; no instance state is mutated.
 
         Complexity:
             Θ(len(original_prompt) % 6 + 1) — between 1 and 6 Docker container
@@ -384,7 +383,7 @@ class SimulationAgent:
             compute_elastic_constants_tool,
         )
 
-        current_sim_results_list: List[str] = []
+        list_of_all_sim_results: List[str] = []
         # Get 1 or more param pairs to run (deterministically determined by
         # deeper in the getter function, based on the original_prompt length)
         list_of_param_pairs_to_run: Tuple[Tuple[str, str], ...] = (
@@ -396,16 +395,19 @@ class SimulationAgent:
                 list_of_param_pairs_to_run[i][0],
                 supercell_size=int(list_of_param_pairs_to_run[i][1]),
             )
-            current_sim_results_list.append(json.dumps(current_sim_result))
-        return current_sim_results_list
+            list_of_all_sim_results.append(json.dumps(current_sim_result))
+        return list_of_all_sim_results
 
     def _system_prompt(self) -> str:
-        """Return the system prompt, appending simulation results when available.
+        """Return the base system prompt unconditionally.
+
+        Simulation results are no longer stored on the instance; they are
+        returned directly from ``perform_real_simulation`` to the caller.
+        This method therefore always returns the module-level ``SYSTEM_PROMPT``
+        constant without modification.
 
         Returns:
-            Base SYSTEM_PROMPT, or SYSTEM_PROMPT with ``_current_sim_results``
-            entries joined and appended. Never mutates the module-level
-            SYSTEM_PROMPT constant.
+            The module-level ``SYSTEM_PROMPT`` string, unchanged.
         """
         return SYSTEM_PROMPT
 
@@ -600,7 +602,6 @@ class SimulationAgent:
 
         Post-conditions:
             - Each inner tuple contains exactly two strings.
-            - ``self._current_sim_results`` is not mutated by this method.
 
         Complexity:
             Θ(1) for the stub. Expected Θ(n) where n = number of parameter
@@ -679,7 +680,6 @@ class SimulationAgent:
         Post-conditions:
             - ``messages`` is a non-empty list of dicts with ``"role"`` and ``"content"`` keys.
             - ``tools`` is a non-empty list of OpenAI tool schema dicts.
-            - ``self._current_sim_results`` is not mutated by this method.
 
         Complexity:
             Θ(1) for the stub. Expected Θ(k) where k = number of tool schemas

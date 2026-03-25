@@ -153,17 +153,20 @@ def test_run_optimization_loop_never_calls_prefetch(mock_prefetch, mock_sim):
     mock_prefetch.assert_not_called()
 
 
-def test_sim_results_injected_into_system_prompt():
-    """_system_prompt() returns SYSTEM_PROMPT unchanged when _current_sim_results is empty,
-    and appends all entries joined when set."""
+def test_system_prompt_returns_base_system_prompt():
+    """_system_prompt() always returns the base SYSTEM_PROMPT constant unchanged.
+
+    Since the _current_sim_results instance attribute was removed in favour of a
+    local variable returned from perform_real_simulation, _system_prompt() no
+    longer injects simulation results and always returns the module-level constant.
+
+    Pre-conditions:
+        SimulationAgent is constructed with default arguments.
+    Post-conditions:
+        - _system_prompt() returns exactly SYSTEM_PROMPT.
+    """
     agent = SimulationAgent()
     assert agent._system_prompt() == SYSTEM_PROMPT
-
-    agent._current_sim_results = ["Ni C11=247 GPa, C44=122 GPa"]
-    result = agent._system_prompt()
-    assert SYSTEM_PROMPT in result
-    assert "Ni C11=247 GPa" in result
-    assert result != SYSTEM_PROMPT
 
 
 @patch("src.wrapper.complete_with_tools", return_value="C11=247 GPa for Ni")
@@ -260,48 +263,150 @@ def test_perform_real_simulation_raises_for_non_openai():
         agent.perform_real_simulation("some prompt")
 
 
-@patch(
-    "src.tools.elastic_constants_lammps.host_wrapper.compute_elastic_constants_tool",
-    return_value={"status": "ok", "C11": 1.0, "C12": 0.5, "C44": 0.3, "runtime_seconds": 0.1},
-)
-def test_perform_real_simulation_calls_all_predefined(mock_tool):
-    """perform_real_simulation calls compute_elastic_constants_tool number_sims_to_run times.
+# ---------------------------------------------------------------------------
+# Schema tests: _build_tool_message_for_sim_param_api_request_openAI
+# Pure function — no mocking needed.
+# ---------------------------------------------------------------------------
 
-    number_sims_to_run = len(original_prompt) % 6 + 1.  The test prompt
-    "abcde" has length 5, so number_sims_to_run == 5 % 6 + 1 == 6 and all
-    entries of _PREDEFINED_SIM_CALLS are used.
+import json as _json
+
+from src.multi.sim.agent import _PREDEFINED_SIM_CALLS as _PSC
+
+# (prompt_length, expected_n)  — covers all 6 remainder classes plus len=0 boundary
+_SCHEMA_CASES = [
+    (0,  1),   # boundary: empty string, 0 % 6 + 1 = 1
+    (6,  1),   # remainder 0, non-zero multiple: 6 % 6 + 1 = 1
+    (7,  2),   # remainder 1
+    (8,  3),   # remainder 2
+    (9,  4),   # remainder 3
+    (10, 5),   # remainder 4
+    (5,  6),   # remainder 5
+]
+
+
+@pytest.mark.parametrize("prompt_length,expected_n", _SCHEMA_CASES)
+def test_build_tool_message_schema(prompt_length: int, expected_n: int) -> None:
+    """_build_tool_message_for_sim_param_api_request_openAI produces correct schema for each remainder class.
+
+    Verifies that the returned (messages, tools) pair encodes exactly ``expected_n``
+    as both minItems and maxItems, names the tool correctly, and embeds the full
+    ``_PREDEFINED_SIM_CALLS`` list in the user message.  Pure function — zero mocking.
+
+    Args:
+        prompt_length: Length of the synthetic prompt ``"x" * prompt_length``.
+        expected_n: Expected ``len(prompt) % 6 + 1`` for this case.
 
     Pre-conditions:
-        SimulationAgent is constructed with provider="openai".
-        compute_elastic_constants_tool is patched to avoid a real Docker call.
+        ``SimulationAgent`` is constructed with ``provider="openai"``.
     Post-conditions:
-        - compute_elastic_constants_tool is called exactly 6 times.
-        - Each call passes (composition, supercell_size_str) positionally from
-          _PREDEFINED_SIM_CALLS[i] (a tuple[tuple[str, str], ...]), in order:
-          Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5.
-        - _current_sim_results contains 6 JSON-serialised result strings.
-        - The returned list equals agent._current_sim_results.
+        - ``messages[0]["role"] == "system"`` and content mentions ``expected_n``.
+        - ``messages[1]["content"]`` contains ``json.dumps(_PREDEFINED_SIM_CALLS, indent=2)``.
+        - ``tools[0]["name"] == "select_first_pairs"`` and ``tools[0]["strict"] is True``.
+        - ``minItems == maxItems == expected_n``.
+
+    Complexity:
+        O(1) — no I/O.
     """
-    from src.multi.sim.agent import _PREDEFINED_SIM_CALLS
-
-    prompt = "abcde"  # len=5 → number_sims_to_run = 5 % 6 + 1 = 6
-    expected_count = len(prompt) % 6 + 1  # == 6
-
     agent = SimulationAgent(provider="openai")
-    result = agent.perform_real_simulation(prompt)
+    prompt = "x" * prompt_length
+    messages, tools = agent._build_tool_message_for_sim_param_api_request_openAI(prompt)
 
-    assert mock_tool.call_count == expected_count
-    expected_args = [
-        (_PREDEFINED_SIM_CALLS[i][0], _PREDEFINED_SIM_CALLS[i][1])
-        for i in range(expected_count)
-    ]
-    actual_args = [c.args for c in mock_tool.call_args_list]
-    assert actual_args == expected_args
+    assert messages[0]["role"] == "system"
+    assert str(expected_n) in messages[0]["content"]
 
-    assert len(result) == expected_count
-    assert result is agent._current_sim_results
+    expected_json_fragment = _json.dumps(_PSC, indent=2)
+    assert expected_json_fragment in messages[1]["content"]
 
-    import json
-    for entry in result:
-        parsed = json.loads(entry)
-        assert parsed["status"] == "ok"
+    tool = tools[0]
+    assert tool["name"] == "select_first_pairs"
+    assert tool["strict"] is True
+
+    pairs_schema = tool["parameters"]["properties"]["selected_pairs"]
+    assert pairs_schema["minItems"] == expected_n
+    assert pairs_schema["maxItems"] == expected_n
+
+
+# ---------------------------------------------------------------------------
+# Mock-based unit tests: _get_elastic_constants_params_from_LLM
+# 3a: error-path (no function_call)
+# 3b: happy-path parsing (mocked function_call with known arguments)
+# Note: 3c (provider guard) is already covered by
+#       test_perform_real_simulation_raises_for_non_openai above.
+# ---------------------------------------------------------------------------
+
+
+def _make_mock_openai_client(output_items: list) -> MagicMock:
+    """Build a MagicMock that mimics get_openai_client() for Responses API calls.
+
+    Args:
+        output_items: List of mock items to place in response.output.
+
+    Returns:
+        A MagicMock whose ``.responses.create()`` returns a response with
+        ``.output`` set to ``output_items``.
+    """
+    mock_response = MagicMock()
+    mock_response.output = output_items
+    mock_client = MagicMock()
+    mock_client.responses.create.return_value = mock_response
+    return mock_client
+
+
+def test_get_elastic_constants_params_no_function_call_raises() -> None:
+    """_get_elastic_constants_params_from_LLM raises RuntimeError when API returns no function_call.
+
+    This path is unreachable via the real API under tool_choice='required'; mocking is
+    the only way to exercise the ``tool_call is None`` branch.
+
+    Pre-conditions:
+        ``get_openai_client`` is patched to return a response whose ``.output``
+        contains only a message item (``type == "message"``), not a function_call.
+    Post-conditions:
+        - ``RuntimeError`` is raised.
+        - The message contains ``"no function_call tool invocation"``.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    message_item = MagicMock()
+    message_item.type = "message"
+
+    with patch("src.multi.sim.agent.get_openai_client", return_value=_make_mock_openai_client([message_item])):
+        agent = SimulationAgent(provider="openai")
+        with pytest.raises(RuntimeError) as exc_info:
+            agent._get_elastic_constants_params_from_LLM("any prompt")
+        assert "no function_call tool invocation" in str(exc_info.value)
+
+
+def test_get_elastic_constants_params_happy_path_parsing() -> None:
+    """_get_elastic_constants_params_from_LLM correctly parses a mocked function_call response.
+
+    Isolates the json.loads(tool_call.arguments) + tuple-comprehension path so
+    regressions in parsing are caught without a real API call.
+
+    Pre-conditions:
+        ``get_openai_client`` is patched to return a response whose ``.output``
+        contains one function_call item with
+        ``arguments = json.dumps({"selected_pairs": [["Al", "3"], ["Cu", "3"]]})``.
+    Post-conditions:
+        - Return value equals ``(("Al", "3"), ("Cu", "3"))``.
+        - Each element of the outer tuple is itself a tuple of two strings.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    function_call_item = MagicMock()
+    function_call_item.type = "function_call"
+    function_call_item.arguments = _json.dumps(
+        {"selected_pairs": [["Al", "3"], ["Cu", "3"]]}
+    )
+
+    with patch("src.multi.sim.agent.get_openai_client", return_value=_make_mock_openai_client([function_call_item])):
+        agent = SimulationAgent(provider="openai")
+        result = agent._get_elastic_constants_params_from_LLM("x" * 7)  # len=7 → n=2
+
+    assert result == (("Al", "3"), ("Cu", "3"))
+    for pair in result:
+        assert isinstance(pair, tuple)
+        assert len(pair) == 2
+        assert all(isinstance(v, str) for v in pair)

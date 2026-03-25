@@ -26,14 +26,32 @@ Postconditions:
     - All assertions hold; test suite exits 0.
 """
 
+import json
+import os
 import subprocess
 
 import pytest
 
+from src.multi.sim.agent import SimulationAgent, _PREDEFINED_SIM_CALLS
 from src.tools.elastic_constants_lammps.host_wrapper import (
     compute_elastic_constants_tool,
 )
-from src.multi.sim.agent import SimulationAgent
+
+
+# ---------------------------------------------------------------------------
+# Single source of truth for EAM potential-specific C11/C12/C44 ranges (±5%).
+# Both the per-element tests and the end-to-end parametrized test reference
+# this dict so range changes only need a single edit.
+# ---------------------------------------------------------------------------
+
+_ELEMENT_RANGES: dict[str, tuple] = {
+    "Al": ((108, 122), (60, 70), (30, 34)),
+    "Cu": ((165, 178), (118, 128), (72, 80)),
+    "Ni": ((244, 258), (140, 155), (117, 129)),
+    "Fe": ((231, 256), (138, 150), (110, 122)),
+    "W": ((516, 536), (195, 208), (152, 168)),
+    "Mo": ((451, 474), (162, 172), (107, 119)),
+}
 
 
 # ---------------------------------------------------------------------------
@@ -71,6 +89,28 @@ def require_docker_image() -> None:
             "Docker image elastic-lammps-tool:latest is not built. "
             "Run: docker build -t elastic-lammps-tool:latest "
             "src/tools/elastic_constants_lammps/"
+        )
+
+
+@pytest.fixture(scope="session", autouse=True)
+def require_openai_key() -> None:
+    """Fail the entire session if OPENAI_API_KEY is not set.
+
+    Required for any test in this file that calls ``perform_real_simulation``
+    via a real OpenAI Responses API call.
+
+    Raises:
+        pytest.fail: If ``OPENAI_API_KEY`` is absent from the environment.
+
+    Pre-conditions:
+        Test session is starting.
+    Post-conditions:
+        All tests in this module that need an API key may proceed.
+    """
+    if not os.environ.get("OPENAI_API_KEY"):
+        pytest.fail(
+            "OPENAI_API_KEY is not set. Set it in .env or environment before "
+            "running this test."
         )
 
 
@@ -124,7 +164,7 @@ def test_elastic_Al():
     result = compute_elastic_constants_tool(composition="Al", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(108, 122), c12_range=(60, 70), c44_range=(30, 34))
+    _assert_layer3(result, *_ELEMENT_RANGES["Al"])
 
 
 def test_elastic_Cu():
@@ -132,9 +172,7 @@ def test_elastic_Cu():
     result = compute_elastic_constants_tool(composition="Cu", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(
-        result, c11_range=(165, 178), c12_range=(118, 128), c44_range=(72, 80)
-    )
+    _assert_layer3(result, *_ELEMENT_RANGES["Cu"])
 
 
 def test_elastic_Ni():
@@ -142,9 +180,7 @@ def test_elastic_Ni():
     result = compute_elastic_constants_tool(composition="Ni", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(
-        result, c11_range=(244, 258), c12_range=(140, 155), c44_range=(117, 129)
-    )
+    _assert_layer3(result, *_ELEMENT_RANGES["Ni"])
 
 
 def test_elastic_Fe():
@@ -152,9 +188,7 @@ def test_elastic_Fe():
     result = compute_elastic_constants_tool(composition="Fe", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(
-        result, c11_range=(231, 256), c12_range=(138, 150), c44_range=(110, 122)
-    )
+    _assert_layer3(result, *_ELEMENT_RANGES["Fe"])
 
 
 def test_elastic_W():
@@ -162,9 +196,7 @@ def test_elastic_W():
     result = compute_elastic_constants_tool(composition="W", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(
-        result, c11_range=(516, 536), c12_range=(195, 208), c44_range=(152, 168)
-    )
+    _assert_layer3(result, *_ELEMENT_RANGES["W"])
 
 
 def test_elastic_Mo():
@@ -172,34 +204,88 @@ def test_elastic_Mo():
     result = compute_elastic_constants_tool(composition="Mo", supercell_size=5)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(
-        result, c11_range=(451, 474), c12_range=(162, 172), c44_range=(107, 119)
-    )
+    _assert_layer3(result, *_ELEMENT_RANGES["Mo"])
 
 
 # ---------------------------------------------------------------------------
-# End-to-end pipeline test
+# End-to-end pipeline test: perform_real_simulation across all remainder classes
 # ---------------------------------------------------------------------------
 
+# (prompt_length, expected_n) — all 6 remainder classes + len=0 boundary (7 rows)
+_PERF_SIM_CASES = [
+    pytest.param(0, 1, id="len=0_n=1_boundary"),
+    pytest.param(6, 1, id="len=6_n=1_remainder0"),
+    pytest.param(7, 2, id="len=7_n=2_remainder1"),
+    pytest.param(8, 3, id="len=8_n=3_remainder2"),
+    pytest.param(9, 4, id="len=9_n=4_remainder3"),
+    pytest.param(10, 5, id="len=10_n=5_remainder4"),
+    pytest.param(5, 6, id="len=5_n=6_remainder5"),
+]
 
-def test_sim_agent_prefetch_with_real_docker():
-    """Full pipeline: SimulationAgent.perform_real_simulation() with real Docker.
 
-    Preconditions:
-        - ``elastic-lammps-tool:latest`` Docker image is built.
-        - OPENAI_API_KEY is set in environment or .env.
+@pytest.mark.parametrize("prompt_length,expected_n", _PERF_SIM_CASES)
+def test_perform_real_simulation_all_remainder_classes(
+    prompt_length: int, expected_n: int
+) -> None:
+    """Full pipeline: perform_real_simulation returns correct results for every remainder class.
 
-    Postconditions:
-        - context is a non-empty list[str].
-        - agent._current_sim_results equals the returned context.
+    Exercises the complete call chain
+    ``perform_real_simulation → _get_elastic_constants_params_from_LLM → Docker``
+    for each of the 7 synthetic prompt lengths (6 remainder classes + len=0
+    boundary).  Applies all three validation layers to every result entry and
+    asserts the compositions match the expected ordered prefix of
+    ``_PREDEFINED_SIM_CALLS``.
+
+    Args:
+        prompt_length: Length of synthetic prompt ``"x" * prompt_length``.
+        expected_n: Expected number of simulation results, ``prompt_length % 6 + 1``.
+
+    Pre-conditions:
+        - ``elastic-lammps-tool:latest`` Docker image is built (enforced by
+          ``require_docker_image`` session fixture).
+        - ``OPENAI_API_KEY`` is set (enforced by ``require_openai_key`` session
+          fixture).
+        - ``SimulationAgent`` is constructed fresh inside this function body.
+    Post-conditions:
+        - ``result`` is a ``list[str]`` of length ``expected_n``.
+        - Every entry passes Layer 1 (status/schema), Layer 2 (Born stability),
+          and Layer 3 (EAM potential-specific ranges from ``_ELEMENT_RANGES``).
+        - Compositions match the ordered prefix of ``_PREDEFINED_SIM_CALLS[:n]``.
+
+    Complexity:
+        ``expected_n`` Docker container invocations plus one OpenAI Responses
+        API call per parametrized invocation.
     """
-    agent = SimulationAgent(provider="openai", max_iterations=1)
-    context = agent.perform_real_simulation(
-        "Compute elastic constants for the Ni superalloy constituents."
+    agent = SimulationAgent(provider="openai")
+    prompt = "x" * prompt_length
+
+    result = agent.perform_real_simulation(prompt)
+
+    assert isinstance(result, list), "perform_real_simulation must return a list"
+    assert len(result) == expected_n, (
+        f"Expected {expected_n} results for prompt length {prompt_length}, "
+        f"got {len(result)}"
     )
-    assert isinstance(context, list) and len(context) > 0, (
-        "Prefetch context must be a non-empty list"
+
+    parsed_results = [json.loads(entry) for entry in result]
+
+    for entry in parsed_results:
+        _assert_layer1(entry)
+        _assert_layer2(entry)
+
+        composition = entry.get("composition")
+        if composition not in _ELEMENT_RANGES:
+            pytest.fail(
+                f"Unknown composition '{composition}' returned by LLM — not in "
+                f"_ELEMENT_RANGES. _PREDEFINED_SIM_CALLS must have drifted from "
+                f"_ELEMENT_RANGES."
+            )
+        _assert_layer3(entry, *_ELEMENT_RANGES[composition])
+
+    actual_compositions = [e["composition"] for e in parsed_results]
+    expected_compositions = [p[0] for p in _PREDEFINED_SIM_CALLS[:expected_n]]
+    assert actual_compositions == expected_compositions, (
+        f"Composition prefix mismatch: expected {expected_compositions}, "
+        f"got {actual_compositions}"
     )
-    assert agent._current_sim_results == context, (
-        "_current_sim_results must be set to the prefetched context"
-    )
+

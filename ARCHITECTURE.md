@@ -349,9 +349,9 @@ When `CURRENT_SIMULATION_MODE=real_sim_mode`:
 
 1. `perform_real_simulation()` computes `number_sims_to_run = len(original_prompt) % 6 + 1` (range: 1–6) and indexes into `_PREDEFINED_SIM_CALLS[0..number_sims_to_run-1]`. The module-level constant `_PREDEFINED_SIM_CALLS` is a `tuple[tuple[str, str], ...]` of 6 `(composition, supercell_size)` string pairs (Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5) that acts as a pool; the number of entries actually consumed per call varies by prompt length. This intentional variability lets different prompts exercise different numbers of simulations during testing.
 2. Each selected entry's `supercell_size` is cast to `int` before being passed as a positional argument to `compute_elastic_constants_tool`, which runs the elastic-lammps Docker container.
-3. The result dict from each call is JSON-serialised and appended to `self._current_sim_results`.
-4. `_system_prompt()` appends all `_current_sim_results` entries joined by newline to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
-5. Every subsequent `get_llm_suggestion()` call in any future optimization loop uses this enriched system prompt.
+3. The result dict from each call is JSON-serialised and appended to a local `list_of_all_sim_results` which is returned directly to the caller. No instance state is mutated.
+4. `_system_prompt()` unconditionally returns the base `SYSTEM_PROMPT`; simulation results are no longer injected into the system prompt.
+5. The caller (pipeline dispatcher) receives the `list[str]` of results and may use them as needed.
 
 **Key design decision (updated)**: The real-simulation step is now fully deterministic given a fixed prompt — it no longer delegates tool selection to the LLM via `complete_with_tools`. This eliminates API latency and non-determinism in the simulation step. The number of simulations run is determined by `len(original_prompt) % 6 + 1`, providing intentional prompt-driven variability (1–6 calls) for testing purposes without any randomness or LLM involvement. The OpenAI provider guard is retained so the constraint remains explicit and testable (Pillar 7).
 
