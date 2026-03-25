@@ -196,9 +196,9 @@ def _execute_simulation(
     max_iterations = safe_params.get("max_iterations")
 
     if duration_hours is None and max_iterations is None and provider is None:
-        agent = SimulationAgent()
+        sim_agent = SimulationAgent()
     else:
-        agent = SimulationAgent(
+        sim_agent = SimulationAgent(
             provider=provider,
             duration_hours=duration_hours if duration_hours is not None else 4.0,
             max_iterations=max_iterations if max_iterations is not None else 10,
@@ -217,14 +217,14 @@ def _execute_simulation(
 
     if sim_mode == SIM_MODE_REAL:
         # Run the deterministic Docker-based elastic-constant simulations and return results.
-        list_of_sim_results = agent.perform_real_simulation(original_prompt)
+        list_of_sim_results = sim_agent.perform_real_simulation(original_prompt)
         return {"list_of_sim_results": list_of_sim_results}
     elif sim_mode == SIM_MODE_MOCK:
         initial_rate = safe_params.get("initial_cooling_rate_K_per_min")
         if initial_rate is None:
-            history, output = agent.run_and_report(ctx=sim_ctx)
+            history, output = sim_agent.run_and_report(ctx=sim_ctx)
         else:
-            history, output = agent.run_and_report(
+            history, output = sim_agent.run_and_report(
                 initial_cooling_rate_K_per_min=initial_rate, ctx=sim_ctx
             )
         return {"history": history, "output": output}
