@@ -386,10 +386,15 @@ class SimulationAgent:
             compute_elastic_constants_tool,
         )
 
-        number_sims_to_run = len(original_prompt) % 6 + 1
-        for i in range(number_sims_to_run):
+        # Get 1 or more param pairs to run (deterministically determined by
+        # deeper in the getter function, based on the original_prompt length)
+        list_of_param_pairs_to_run: Tuple[Tuple[str, str], ...] = (
+            self._get_elastic_constants_params_from_LLM(original_prompt)
+        )
+        # Run as many simulations as there are param pairs
+        for i in range(len(list_of_param_pairs_to_run)):
             current_sim_result = compute_elastic_constants_tool(
-                _PREDEFINED_SIM_CALLS[i][0], _PREDEFINED_SIM_CALLS[i][1]
+                list_of_param_pairs_to_run[i][0], int(list_of_param_pairs_to_run[i][1])
             )
             self._current_sim_results.append(json.dumps(current_sim_result))
         return self._current_sim_results
