@@ -159,7 +159,7 @@ def test_execute_simulation_real_sim_mode(monkeypatch):
     Pre-conditions:
         CURRENT_SIMULATION_MODE env var is explicitly set to 'real_sim_mode'.
     Post-conditions:
-        - result contains 'prefetch_output' key holding a list[str].
+        - result contains 'list_of_sim_results' key holding a list[str].
         - run_and_report is never invoked.
         - original_prompt is forwarded to perform_real_simulation.
     """
@@ -179,8 +179,8 @@ def test_execute_simulation_real_sim_mode(monkeypatch):
     )
     assert result["agent"] == "simulation"
     assert "result" in result
-    assert "prefetch_output" in result["result"]
-    assert result["result"]["prefetch_output"] == ["prefetch summary"]
+    assert "list_of_sim_results" in result["result"]
+    assert result["result"]["list_of_sim_results"] == ["prefetch summary"]
     assert captured["agent"].prefetch_called
     assert captured["agent"].received_prompt == "the-test-prompt"
     assert not captured["agent"].run_and_report_called

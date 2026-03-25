@@ -158,8 +158,8 @@ def _execute_simulation(
     - ``"mock_sim_mode"`` (default): instantiates ``SimulationAgent`` and
       calls ``run_and_report``, returning a full optimization history.
     - ``"real_sim_mode"``: instantiates ``SimulationAgent`` and calls
-      ``perform_real_simulation`` only, returning the pre-computation
-      summary without running the optimization loop.
+      ``perform_real_simulation`` only, running deterministic Docker-based
+      elastic-constant simulations without an optimization loop.
 
     The two paths are mutually exclusive — exactly one is taken per call.
 
@@ -168,14 +168,15 @@ def _execute_simulation(
             ``provider``, ``duration_hours``, ``max_iterations``,
             ``initial_cooling_rate_K_per_min``.
         original_prompt: The original user prompt forwarded to
-            ``perform_real_simulation`` in ``real_sim_mode``. Unused in
-            ``mock_sim_mode``.
+            ``perform_real_simulation`` in ``real_sim_mode``; its length
+            determines how many simulations run
+            (``len(original_prompt) % 6 + 1``). Unused in ``mock_sim_mode``.
         ctx: Optional ``CallContext`` propagated from the coordinator.
             A snapshot labelled ``agent="sim_agent"`` is forwarded.
 
     Returns:
         ``{"history": list, "output": str}`` when in ``mock_sim_mode``, or
-        ``{"prefetch_output": list[str]}`` when in ``real_sim_mode``.
+        ``{"list_of_sim_results": list[str]}`` when in ``real_sim_mode``.
 
     Raises:
         ValueError: If ``CURRENT_SIMULATION_MODE`` is set to a value not
@@ -186,9 +187,8 @@ def _execute_simulation(
           ``_sanitize_simulation_params``.
 
     Complexity:
-        Θ(max_iterations) for ``mock_sim_mode``; Θ(1) LLM calls for
-        ``real_sim_mode`` (tool-calling loop is bounded by
-        ``MAX_TOOL_CALLS``).
+        Θ(max_iterations) for ``mock_sim_mode``; Θ(len(original_prompt) % 6 + 1)
+        Docker invocations for ``real_sim_mode`` (1–6 calls, no LLM involved).
     """
     safe_params = _sanitize_simulation_params(params)
     provider = safe_params.get("provider")
@@ -216,9 +216,9 @@ def _execute_simulation(
         )
 
     if sim_mode == SIM_MODE_REAL:
-        # Here we run the real simulation, and store the result
-        prefetch_result = agent.perform_real_simulation(original_prompt)
-        return {"prefetch_output": prefetch_result}
+        # Run the deterministic Docker-based elastic-constant simulations and return results.
+        list_of_sim_results = agent.perform_real_simulation(original_prompt)
+        return {"list_of_sim_results": list_of_sim_results}
     elif sim_mode == SIM_MODE_MOCK:
         initial_rate = safe_params.get("initial_cooling_rate_K_per_min")
         if initial_rate is None:

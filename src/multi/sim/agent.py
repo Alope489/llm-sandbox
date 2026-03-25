@@ -3,13 +3,15 @@ Optimizer agent: uses an LLM (OpenAI or Anthropic) to suggest cooling_rate_K_per
 for the nickel-based superalloy material simulation. Goal: maximize yield_strength_MPa
 while keeping porosity_percent below 5.0. Schema-aligned variable names.
 
-Pre-computation phase
+Real-simulation phase
 ---------------------
 Before the optimization loop, ``perform_real_simulation(original_prompt)`` may be
 called by the pipeline dispatcher (``_execute_simulation`` in ``executor.py`` via
-``CURRENT_SIMULATION_MODE=real_sim_mode``). The LLM is offered all registered tools
-and the original user prompt is forwarded directly. Each response string is appended
-to ``self._current_sim_results`` (a ``list[str]``), which is injected into the system
+``CURRENT_SIMULATION_MODE=real_sim_mode``). No LLM call is made; instead, a fixed
+pool of Docker-based elastic-constant simulations is run directly via
+``compute_elastic_constants_tool``. The number of simulations executed is
+``len(original_prompt) % 6 + 1`` (range: 1–6). Each JSON result is appended to
+``self._current_sim_results`` (a ``list[str]``), which is injected into the system
 prompt for every subsequent cooling rate suggestion.
 
 Telemetry instrumentation:
@@ -63,23 +65,12 @@ You will receive a history of previous attempts: each line gives cooling_rate_K_
 
 Respond with ONLY a single number: the next cooling_rate_K_per_min in K/min (e.g. 15 or 12.5). No units, no explanation, no markdown, no other text. Typical range: about 5 to 50 K/min; going too high risks porosity > 5% and failure."""
 
-_PREFETCH_PROMPT = (
-    "We are about to run a heat treatment optimization for the following alloy:\n\n"
-    + MATERIAL_CONTEXT
-    + "\n\n"
-    "Before optimization begins, you have access to simulation tools. "
-    "If you judge that any material properties (such as elastic constants) would help "
-    "inform better cooling rate suggestions, please use the available tools to gather them now. "
-    "If no tool data is needed, simply summarize what you already know. "
-    "Your response will be injected into the system prompt for the entire optimization run."
-)
-
 DEFAULT_COOLING_RATE = 15.0
 COOLDOWN_FALLBACK_RATE = 12.0  # fallback when LLM returns non-numeric
 MAX_PARSE_ATTEMPTS = 2
 
 # Predefined calls to compute_elastic_constants_tool for the real-simulation
-# prefetch phase.  Each entry is a 2-tuple of strings (composition, supercell_size).
+# phase.  Each entry is a 2-tuple of strings (composition, supercell_size).
 # The call site unpacks the tuple and casts supercell_size to int.  Parameters
 # mirror the six per-element tests in tests/test_integration_lammps.py exactly.
 _PREDEFINED_SIM_CALLS: tuple[tuple[str, str], ...] = (
@@ -330,7 +321,7 @@ class SimulationAgent:
     # ------------------------------------------------------------------
 
     def perform_real_simulation(self, original_prompt: str) -> List[str]:
-        """Run the deterministic prefetch phase: execute 1–6 predefined elastic-constant simulations, determined by ``len(original_prompt) % 6 + 1``.
+        """Run the deterministic real-simulation phase: execute 1–6 predefined elastic-constant simulations, determined by ``len(original_prompt) % 6 + 1``.
 
         Validates that the active LLM provider is ``"openai"``, then computes
         ``number_sims_to_run = len(original_prompt) % 6 + 1`` (range: 1–6) and
