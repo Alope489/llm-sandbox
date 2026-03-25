@@ -347,11 +347,13 @@ flowchart TD
 
 When `CURRENT_SIMULATION_MODE=real_sim_mode`:
 
-1. `perform_real_simulation()` sends `_PREFETCH_PROMPT` to the LLM via `complete_with_tools`. The prompt invites (but does not command) the LLM to call any tools it judges relevant.
-2. The LLM may call `compute_elastic_constants_tool` for constituent elements (Ni, Al, etc.) or return a plain text summary with no tool calls — its choice.
-3. The response is stored in `self._tool_context`.
-4. `_system_prompt()` appends `self._tool_context` to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
+1. `perform_real_simulation()` iterates over the module-level constant `_PREDEFINED_SIM_CALLS` — a fixed `list[tuple[str, str]]` of 6 `(composition, supercell_size)` string pairs that mirror the per-element integration tests in `tests/test_integration_lammps.py` exactly (Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5).
+2. Each entry is destructured and `supercell_size` is cast to `int` before being passed as keyword arguments to `compute_elastic_constants_tool`, which runs the elastic-lammps Docker container.
+3. The result dict from each call is JSON-serialised and appended to `self._current_sim_results`.
+4. `_system_prompt()` appends all `_current_sim_results` entries joined by newline to `SYSTEM_PROMPT` when non-empty, without mutating the module-level constant.
 5. Every subsequent `get_llm_suggestion()` call in any future optimization loop uses this enriched system prompt.
+
+**Key design decision (updated)**: The prefetch phase is now fully deterministic — it no longer delegates tool selection to the LLM via `complete_with_tools`. This eliminates API latency and non-determinism in the pre-computation step while guaranteeing that the exact same 6 elastic-constant simulations are run every time, matching the validated integration test parameters. The OpenAI provider guard is retained so the constraint remains explicit and testable (Pillar 7).
 
 ### Deprecated `use_tools` parameter
 

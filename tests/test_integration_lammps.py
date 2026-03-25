@@ -30,13 +30,16 @@ import subprocess
 
 import pytest
 
-from src.tools.elastic_constants_lammps.host_wrapper import compute_elastic_constants_tool
+from src.tools.elastic_constants_lammps.host_wrapper import (
+    compute_elastic_constants_tool,
+)
 from src.multi.sim.agent import SimulationAgent
 
 
 # ---------------------------------------------------------------------------
 # Docker availability guard
 # ---------------------------------------------------------------------------
+
 
 def _docker_image_exists(tag: str) -> bool:
     """Return True if *tag* is present in the local Docker image store."""
@@ -74,6 +77,7 @@ def require_docker_image() -> None:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _assert_layer1(result: dict) -> None:
     """Layer 1: status and schema validation."""
@@ -114,6 +118,7 @@ def _assert_layer3(result: dict, c11_range, c12_range, c44_range) -> None:
 # Per-element tests (supercell_size=3 for speed, still physically valid)
 # ---------------------------------------------------------------------------
 
+
 def test_elastic_Al():
     """Al (FCC, Mishin 1999): C11≈114, C12≈62, C44≈32 GPa."""
     result = compute_elastic_constants_tool(composition="Al", supercell_size=3)
@@ -127,7 +132,9 @@ def test_elastic_Cu():
     result = compute_elastic_constants_tool(composition="Cu", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(165, 178), c12_range=(118, 128), c44_range=(72, 80))
+    _assert_layer3(
+        result, c11_range=(165, 178), c12_range=(118, 128), c44_range=(72, 80)
+    )
 
 
 def test_elastic_Ni():
@@ -135,7 +142,9 @@ def test_elastic_Ni():
     result = compute_elastic_constants_tool(composition="Ni", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(244, 258), c12_range=(140, 155), c44_range=(117, 129))
+    _assert_layer3(
+        result, c11_range=(244, 258), c12_range=(140, 155), c44_range=(117, 129)
+    )
 
 
 def test_elastic_Fe():
@@ -143,7 +152,9 @@ def test_elastic_Fe():
     result = compute_elastic_constants_tool(composition="Fe", supercell_size=4)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(231, 256), c12_range=(138, 150), c44_range=(110, 122))
+    _assert_layer3(
+        result, c11_range=(231, 256), c12_range=(138, 150), c44_range=(110, 122)
+    )
 
 
 def test_elastic_W():
@@ -151,7 +162,9 @@ def test_elastic_W():
     result = compute_elastic_constants_tool(composition="W", supercell_size=3)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(516, 536), c12_range=(195, 208), c44_range=(152, 168))
+    _assert_layer3(
+        result, c11_range=(516, 536), c12_range=(195, 208), c44_range=(152, 168)
+    )
 
 
 def test_elastic_Mo():
@@ -159,12 +172,15 @@ def test_elastic_Mo():
     result = compute_elastic_constants_tool(composition="Mo", supercell_size=5)
     _assert_layer1(result)
     _assert_layer2(result)
-    _assert_layer3(result, c11_range=(451, 474), c12_range=(162, 172), c44_range=(107, 119))
+    _assert_layer3(
+        result, c11_range=(451, 474), c12_range=(162, 172), c44_range=(107, 119)
+    )
 
 
 # ---------------------------------------------------------------------------
 # End-to-end pipeline test
 # ---------------------------------------------------------------------------
+
 
 def test_sim_agent_prefetch_with_real_docker():
     """Full pipeline: SimulationAgent.perform_real_simulation() with real Docker.

@@ -236,23 +236,47 @@ def test_perform_real_simulation_raises_for_non_openai():
         agent.perform_real_simulation("some prompt")
 
 
-@patch("src.wrapper.complete_with_tools", return_value=["result"])
-def test_perform_real_simulation_number_sims_computed(mock_cwt):
-    """perform_real_simulation succeeds for openai provider and calls complete_with_tools.
+@patch(
+    "src.tools.elastic_constants_lammps.host_wrapper.compute_elastic_constants_tool",
+    return_value={"status": "ok", "C11": 1.0, "C12": 0.5, "C44": 0.3, "runtime_seconds": 0.1},
+)
+def test_perform_real_simulation_calls_all_predefined(mock_tool):
+    """perform_real_simulation calls compute_elastic_constants_tool number_sims_to_run times.
 
-    Verifies that number_sims_to_run is computed without error for prompts
-    of varying lengths:
-      - len("123456") == 6  -> 6 % 6 == 0
-      - len("12345")  == 5  -> 5 % 6 == 5
+    number_sims_to_run = len(original_prompt) % 6 + 1.  The test prompt
+    "abcde" has length 5, so number_sims_to_run == 5 % 6 + 1 == 6 and all
+    entries of _PREDEFINED_SIM_CALLS are used.
 
     Pre-conditions:
         SimulationAgent is constructed with provider="openai".
-        complete_with_tools is patched to avoid a real API call.
+        compute_elastic_constants_tool is patched to avoid a real Docker call.
     Post-conditions:
-        - No exception is raised for either prompt length.
-        - complete_with_tools is called once per invocation.
+        - compute_elastic_constants_tool is called exactly 6 times.
+        - Each call passes (composition, supercell_size_str) positionally from
+          _PREDEFINED_SIM_CALLS[i], in order: Al/3, Cu/3, Ni/4, Fe/4, W/3, Mo/5.
+        - _current_sim_results contains 6 JSON-serialised result strings.
+        - The returned list equals agent._current_sim_results.
     """
+    from src.multi.sim.agent import _PREDEFINED_SIM_CALLS
+
+    prompt = "abcde"  # len=5 → number_sims_to_run = 5 % 6 + 1 = 6
+    expected_count = len(prompt) % 6 + 1  # == 6
+
     agent = SimulationAgent(provider="openai")
-    agent.perform_real_simulation("123456")
-    agent.perform_real_simulation("12345")
-    assert mock_cwt.call_count == 2
+    result = agent.perform_real_simulation(prompt)
+
+    assert mock_tool.call_count == expected_count
+    expected_args = [
+        (_PREDEFINED_SIM_CALLS[i][0], _PREDEFINED_SIM_CALLS[i][1])
+        for i in range(expected_count)
+    ]
+    actual_args = [c.args for c in mock_tool.call_args_list]
+    assert actual_args == expected_args
+
+    assert len(result) == expected_count
+    assert result is agent._current_sim_results
+
+    import json
+    for entry in result:
+        parsed = json.loads(entry)
+        assert parsed["status"] == "ok"

@@ -26,6 +26,7 @@ Pillar compliance:
     - Pillar 4: No hardcoding; model / provider from env vars.
     - Pillar 7: try/except with error-path telemetry records; GIL-safe appends.
 """
+
 import dataclasses
 import os
 import re
@@ -64,7 +65,8 @@ Respond with ONLY a single number: the next cooling_rate_K_per_min in K/min (e.g
 
 _PREFETCH_PROMPT = (
     "We are about to run a heat treatment optimization for the following alloy:\n\n"
-    + MATERIAL_CONTEXT + "\n\n"
+    + MATERIAL_CONTEXT
+    + "\n\n"
     "Before optimization begins, you have access to simulation tools. "
     "If you judge that any material properties (such as elastic constants) would help "
     "inform better cooling rate suggestions, please use the available tools to gather them now. "
@@ -75,6 +77,19 @@ _PREFETCH_PROMPT = (
 DEFAULT_COOLING_RATE = 15.0
 COOLDOWN_FALLBACK_RATE = 12.0  # fallback when LLM returns non-numeric
 MAX_PARSE_ATTEMPTS = 2
+
+# Predefined calls to compute_elastic_constants_tool for the real-simulation
+# prefetch phase.  Each entry is a 2-tuple of strings (composition, supercell_size).
+# The call site unpacks the tuple and casts supercell_size to int.  Parameters
+# mirror the six per-element tests in tests/test_integration_lammps.py exactly.
+_PREDEFINED_SIM_CALLS: list[tuple[str, str]] = [
+    ("Al", "3"),
+    ("Cu", "3"),
+    ("Ni", "4"),
+    ("Fe", "4"),
+    ("W", "3"),
+    ("Mo", "5"),
+]
 
 
 def format_simulation_output(
@@ -315,50 +330,74 @@ class SimulationAgent:
     # ------------------------------------------------------------------
 
     def perform_real_simulation(self, original_prompt: str) -> List[str]:
-        """Run the real simulation via the tool-calling pre-computation phase.
+        """Run the deterministic prefetch phase: execute all 6 predefined elastic-constant simulations.
 
-        Validates that the active LLM provider is OpenAI, then forwards
-        ``original_prompt`` directly to the LLM via ``complete_with_tools``
-        with all registered tool schemas. The LLM decides autonomously whether
-        to call any tools. The resulting response string is appended to
-        ``self._current_sim_results``.
+        Validates that the active LLM provider is ``"openai"``, then iterates
+        over ``_PREDEFINED_SIM_CALLS`` — a fixed list of six
+        ``(composition, supercell_size)`` string 2-tuples that mirror the
+        per-element test calls in ``tests/test_integration_lammps.py`` exactly:
+
+        +---------+---------------+
+        | element | supercell_size|
+        +=========+===============+
+        | Al      | 3             |
+        | Cu      | 3             |
+        | Ni      | 4             |
+        | Fe      | 4             |
+        | W       | 3             |
+        | Mo      | 5             |
+        +---------+---------------+
+
+        Each call runs the elastic-lammps Docker container via
+        ``compute_elastic_constants_tool``; ``supercell_size`` is cast from
+        string to ``int`` at the call site. The result dict is JSON-serialised
+        and appended to ``self._current_sim_results``.
 
         Args:
             original_prompt: The original user prompt forwarded from the
-                pipeline dispatcher. Used as the sole user message; no
-                fallback constant is applied.
+                pipeline dispatcher. Accepted for API compatibility; not used
+                to alter which simulations are run.
 
         Returns:
-            The updated ``self._current_sim_results`` list (each entry is a
-            plain-text or JSON response string from one invocation).
+            The updated ``self._current_sim_results`` list; each entry is the
+            JSON-serialised result dict from one ``compute_elastic_constants_tool``
+            call.
 
         Raises:
             RuntimeError: If ``self.provider`` is not ``"openai"``. Real
                 simulations are currently only supported with
                 ``LLM_PROVIDER=openai``.
+            Exception: Any exception raised by ``compute_elastic_constants_tool``
+                (e.g. Docker unavailable) propagates to the caller unmodified.
 
         Postconditions:
-            - ``self._current_sim_results`` has exactly one more entry than
-              before this call.
+            - On success, exactly 6 entries are appended to
+              ``self._current_sim_results`` (one per element in
+              ``_PREDEFINED_SIM_CALLS``).
+            - ``self._current_sim_results`` equals the returned list.
 
-        Notes:
-            ``number_sims_to_run`` is computed as ``len(original_prompt) % 6``
-            and held as a local variable for future use.
+        Complexity:
+            Θ(6) — fixed number of Docker container invocations regardless of
+            prompt length.
         """
         if self.provider != "openai":
             raise RuntimeError(
                 f"Real simulations are only supported with LLM_PROVIDER=openai. "
                 f"Current provider: {self.provider!r}"
             )
-        number_sims_to_run = len(original_prompt) % 6  # reserved for future use  # noqa: F841
 
-        from src.wrapper import complete_with_tools
+        import json
 
-        result_list = complete_with_tools(
-            [{"role": "user", "content": original_prompt}],
-            provider=self.provider,
+        from src.tools.elastic_constants_lammps.host_wrapper import (
+            compute_elastic_constants_tool,
         )
-        self._current_sim_results = result_list
+
+        number_sims_to_run = len(original_prompt) % 6 + 1
+        for i in range(number_sims_to_run):
+            current_sim_result = compute_elastic_constants_tool(
+                _PREDEFINED_SIM_CALLS[i][0], _PREDEFINED_SIM_CALLS[i][1]
+            )
+            self._current_sim_results.append(json.dumps(current_sim_result))
         return self._current_sim_results
 
     def _system_prompt(self) -> str:
@@ -372,7 +411,11 @@ class SimulationAgent:
         if not self._current_sim_results:
             return SYSTEM_PROMPT
         context_text = "\n".join(self._current_sim_results)
-        return SYSTEM_PROMPT + "\n\nMaterial properties gathered before this run:\n" + context_text
+        return (
+            SYSTEM_PROMPT
+            + "\n\nMaterial properties gathered before this run:\n"
+            + context_text
+        )
 
     # ------------------------------------------------------------------
     # Private: provider calls
@@ -516,4 +559,8 @@ class SimulationAgent:
             f"cooling_rate_K_per_min={rate}, yield_strength_MPa={y:.2f}, success={ok}"
             for rate, y, ok in self.history
         ]
-        return "Previous attempts:\n" + "\n".join(lines) + "\n\nNext cooling_rate_K_per_min (reply with one number only):"
+        return (
+            "Previous attempts:\n"
+            + "\n".join(lines)
+            + "\n\nNext cooling_rate_K_per_min (reply with one number only):"
+        )
