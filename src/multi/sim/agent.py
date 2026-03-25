@@ -581,16 +581,19 @@ class SimulationAgent:
             A tuple of 2-tuples ``(composition, supercell_size)`` where both
             elements are strings.  Each inner tuple maps directly to one
             ``compute_elastic_constants_tool`` call parameter set.
-            Returns an empty tuple when the LLM produces no usable parameters.
 
         Raises:
-            NotImplementedError: Always — logic is not yet implemented.
-            RuntimeError: (future) If ``self.provider`` is not ``"openai"``.
-            ValueError: (future) If ``original_prompt`` is empty or not a str.
+            RuntimeError: If the API response contains no ``function_call``
+                output item, indicating the provider failed to invoke the
+                simulation parameter selection tool.
+            RuntimeError: Planned — will be raised when ``self.provider`` is
+                not ``"openai"``.
 
         Examples:
             >>> agent = SimulationAgent()
-            >>> agent._get_elastic_constants_params_from_LLM("Compute Ni elastic constants")
+            >>> agent._get_elastic_constants_params_from_LLM(
+            ...     "Compute Ni elastic constants"
+            ... )
             NotImplementedError
 
         Pre-conditions:
@@ -605,13 +608,44 @@ class SimulationAgent:
             Θ(1) for the stub. Expected Θ(n) where n = number of parameter
             pairs extracted from the LLM response once implemented.
         """
-        raise NotImplementedError(
-            "_get_elastic_constants_params_from_LLM is not yet implemented."
+        import json
+
+        # call helper to build message body, and tool schemas message
+        input_message, tools = (
+            self._build_tool_message_for_sim_param_api_request_openAI(original_prompt)
         )
+        # call OpenAI API to get the params list
+        openAI_client = get_openai_client()
+        params_list_response = openAI_client.responses.create(
+            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            input=input_message,
+            tools=tools,
+            tool_choice="required",
+            temperature=0.0,
+        )
+        # Find the first function_call item in the Responses API output list
+        tool_call = next(
+            (
+                item
+                for item in params_list_response.output
+                if item.type == "function_call"
+            ),
+            None,
+        )
+        if tool_call is None:
+            raise RuntimeError(
+                f"LLM provider '{self.provider}' failed to select simulation parameters: "
+                "no function_call tool invocation was found in the API response. "
+                "Ensure the model supports tool use and that tool_choice='required' is honoured."
+            )
+        parsed = json.loads(tool_call.arguments)
+        # parsed["selected_pairs"] is a list[list[str]], e.g. [["Al", "3"], ["Cu", "3"]]
+        params_list = tuple((pair[0], pair[1]) for pair in parsed["selected_pairs"])
+        return params_list
 
     def _build_tool_message_for_sim_param_api_request_openAI(
         self, original_prompt: str
-    ) -> list[dict]:
+    ) -> tuple[list[dict], list[dict]]:
         """Build the OpenAI function-calling tool definition for parameter extraction.
 
         Constructs and returns the list of tool/function schemas (in the OpenAI
@@ -629,17 +663,15 @@ class SimulationAgent:
                 schema as needed. Must be a non-empty string.
 
         Returns:
-            A list of dicts, each representing one OpenAI tool/function
-            definition (``{"type": "function", "function": {...}}`` shape).
-            Returns an empty list if no tools are applicable.
-
-        Raises:
-            NotImplementedError: Always — logic is not yet implemented.
-            ValueError: (future) If ``original_prompt`` is empty or not a str.
+            A 2-tuple ``(messages, tools)`` where ``messages`` is a list of
+            OpenAI chat message dicts and ``tools`` is a list of OpenAI
+            function-calling tool schema dicts.
 
         Examples:
             >>> agent = SimulationAgent()
-            >>> agent._build_tool_message_for_sim_param_api_request_openAI("Compute Ni elastic constants")
+            >>> agent._build_tool_message_for_sim_param_api_request_openAI(
+            ...     "Compute Ni elastic constants"
+            ... )
             NotImplementedError
 
         Pre-conditions:
@@ -647,13 +679,59 @@ class SimulationAgent:
             - ``self.provider == "openai"``.
 
         Post-conditions:
-            - Each element of the returned list is a ``dict``.
+            - ``messages`` is a non-empty list of dicts with ``"role"`` and ``"content"`` keys.
+            - ``tools`` is a non-empty list of OpenAI tool schema dicts.
             - ``self._current_sim_results`` is not mutated by this method.
 
         Complexity:
             Θ(1) for the stub. Expected Θ(k) where k = number of tool schemas
             constructed once implemented.
         """
-        raise NotImplementedError(
-            "_build_tool_message_for_sim_param_api_request_openAI is not yet implemented."
-        )
+        # Deterministically determine the number of simulations to run based on the original_prompt length
+        # Up to 6 simulations can be run
+        number_sims_to_run = len(original_prompt) % 6 + 1
+        import json
+
+        input_message = [
+            {
+                "role": "system",
+                "content": f"You are a deterministic prefix extractor. Always call the tool and return exactly the first {number_sims_to_run} pairs.",
+            },
+            {
+                "role": "user",
+                "content": f"""Here is the complete ordered list of valid parameter pairs (JSON):{json.dumps(_PREDEFINED_SIM_CALLS, indent=2)}. Extract exactly the first {number_sims_to_run} pairs using the tool.""",
+            },
+        ]
+        tools = [
+            {
+                "type": "function",
+                "name": "select_first_pairs",
+                "description": (
+                    f"Return EXACTLY the first {number_sims_to_run} pairs from the JSON list. "
+                    "Take them in the exact order they appear in the list (literal prefix). "
+                    "Do NOT choose based on relevance, content, or the user's request semantics. "
+                    f"This is pure mechanical extraction of the first {number_sims_to_run} pairs only. "
+                ),
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "selected_pairs": {
+                            "type": "array",
+                            "description": f"Exactly the first {number_sims_to_run} pairs from the provided list",
+                            "minItems": number_sims_to_run,  # enforces exactly number_sims_to_run
+                            "maxItems": number_sims_to_run,  # enforces exactly number_sims_to_run
+                            "items": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "minItems": 2,
+                                "maxItems": 2,
+                            },
+                        }
+                    },
+                    "required": ["selected_pairs"],
+                    "additionalProperties": False,
+                },
+                "strict": True,
+            }
+        ]
+        return (input_message, tools)
