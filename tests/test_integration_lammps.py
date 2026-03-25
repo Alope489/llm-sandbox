@@ -174,14 +174,16 @@ def test_sim_agent_prefetch_with_real_docker():
         - OPENAI_API_KEY is set in environment or .env.
 
     Postconditions:
-        - context is a non-empty string.
-        - agent._tool_context equals the returned context.
+        - context is a non-empty list[str].
+        - agent._current_sim_results equals the returned context.
     """
     agent = SimulationAgent(provider="openai", max_iterations=1)
-    context = agent.perform_real_simulation()
-    assert isinstance(context, str) and len(context) > 0, (
-        "Prefetch context must be a non-empty string"
+    context = agent.perform_real_simulation(
+        "Compute elastic constants for the Ni superalloy constituents."
     )
-    assert agent._tool_context == context, (
-        "_tool_context must be set to the prefetched context"
+    assert isinstance(context, list) and len(context) > 0, (
+        "Prefetch context must be a non-empty list"
+    )
+    assert agent._current_sim_results == context, (
+        "_current_sim_results must be set to the prefetched context"
     )

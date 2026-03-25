@@ -3,13 +3,14 @@ Optimizer agent: uses an LLM (OpenAI or Anthropic) to suggest cooling_rate_K_per
 for the nickel-based superalloy material simulation. Goal: maximize yield_strength_MPa
 while keeping porosity_percent below 5.0. Schema-aligned variable names.
 
-Pre-computation phase (Option A)
----------------------------------
-When run_and_report or run_optimization_loop is called with use_tools=True, a single
-pre-computation phase runs before the optimization loop. The LLM is offered all
-registered tools and asked (but not commanded) to gather any material properties it
-judges relevant. The result is stored in self._tool_context and injected into the
-system prompt for every subsequent cooling rate suggestion.
+Pre-computation phase
+---------------------
+Before the optimization loop, ``perform_real_simulation(original_prompt)`` may be
+called by the pipeline dispatcher (``_execute_simulation`` in ``executor.py`` via
+``CURRENT_SIMULATION_MODE=real_sim_mode``). The LLM is offered all registered tools
+and the original user prompt is forwarded directly. Each response string is appended
+to ``self._current_sim_results`` (a ``list[str]``), which is injected into the system
+prompt for every subsequent cooling rate suggestion.
 
 Telemetry instrumentation:
     ``_call_openai``, ``_call_anthropic``, and ``get_llm_suggestion`` accept an
@@ -140,7 +141,8 @@ class SimulationAgent:
         self.duration_hours = duration_hours
         self.max_iterations = max_iterations
         self.history: List[HistoryEntry] = []
-        self._tool_context: str = ""
+        # Expected to be a list of JSON strings
+        self._current_sim_results: List[str] = []
 
     # ------------------------------------------------------------------
     # Public: tool-augmented queries
@@ -312,34 +314,65 @@ class SimulationAgent:
     # Public: real simulation execution
     # ------------------------------------------------------------------
 
-    def perform_real_simulation(self) -> str:
+    def perform_real_simulation(self, original_prompt: str) -> List[str]:
         """Run the real simulation via the tool-calling pre-computation phase.
 
-        Sends _PREFETCH_PROMPT to the LLM with all registered tool schemas.
-        The LLM decides autonomously whether to call any tools. The resulting
-        text summary is stored in self._tool_context.
+        Validates that the active LLM provider is OpenAI, then forwards
+        ``original_prompt`` directly to the LLM via ``complete_with_tools``
+        with all registered tool schemas. The LLM decides autonomously whether
+        to call any tools. The resulting response string is appended to
+        ``self._current_sim_results``.
+
+        Args:
+            original_prompt: The original user prompt forwarded from the
+                pipeline dispatcher. Used as the sole user message; no
+                fallback constant is applied.
 
         Returns:
-            The LLM's response text (also stored as self._tool_context).
+            The updated ``self._current_sim_results`` list (each entry is a
+            plain-text or JSON response string from one invocation).
+
+        Raises:
+            RuntimeError: If ``self.provider`` is not ``"openai"``. Real
+                simulations are currently only supported with
+                ``LLM_PROVIDER=openai``.
+
+        Postconditions:
+            - ``self._current_sim_results`` has exactly one more entry than
+              before this call.
+
+        Notes:
+            ``number_sims_to_run`` is computed as ``len(original_prompt) % 6``
+            and held as a local variable for future use.
         """
+        if self.provider != "openai":
+            raise RuntimeError(
+                f"Real simulations are only supported with LLM_PROVIDER=openai. "
+                f"Current provider: {self.provider!r}"
+            )
+        number_sims_to_run = len(original_prompt) % 6  # reserved for future use  # noqa: F841
+
         from src.wrapper import complete_with_tools
 
-        self._tool_context = complete_with_tools(
-            [{"role": "user", "content": _PREFETCH_PROMPT}],
+        result_list = complete_with_tools(
+            [{"role": "user", "content": original_prompt}],
             provider=self.provider,
         )
-        return self._tool_context
+        self._current_sim_results = result_list
+        return self._current_sim_results
 
     def _system_prompt(self) -> str:
-        """Return the system prompt, appending tool context when available.
+        """Return the system prompt, appending simulation results when available.
 
         Returns:
-            Base SYSTEM_PROMPT, or SYSTEM_PROMPT with tool context appended.
-            Never mutates the module-level SYSTEM_PROMPT constant.
+            Base SYSTEM_PROMPT, or SYSTEM_PROMPT with ``_current_sim_results``
+            entries joined and appended. Never mutates the module-level
+            SYSTEM_PROMPT constant.
         """
-        if not self._tool_context:
+        if not self._current_sim_results:
             return SYSTEM_PROMPT
-        return SYSTEM_PROMPT + "\n\nMaterial properties gathered before this run:\n" + self._tool_context
+        context_text = "\n".join(self._current_sim_results)
+        return SYSTEM_PROMPT + "\n\nMaterial properties gathered before this run:\n" + context_text
 
     # ------------------------------------------------------------------
     # Private: provider calls

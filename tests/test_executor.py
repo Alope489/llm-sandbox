@@ -119,9 +119,10 @@ class _FakeAgentForMode:
         self.run_and_report_called = True
         return ([], "output")
 
-    def perform_real_simulation(self):
+    def perform_real_simulation(self, original_prompt):
         self.prefetch_called = True
-        return "prefetch summary"
+        self.received_prompt = original_prompt
+        return ["prefetch summary"]
 
 
 def test_execute_simulation_mock_sim_mode(monkeypatch):
@@ -158,8 +159,9 @@ def test_execute_simulation_real_sim_mode(monkeypatch):
     Pre-conditions:
         CURRENT_SIMULATION_MODE env var is explicitly set to 'real_sim_mode'.
     Post-conditions:
-        - result contains 'prefetch_output' key.
+        - result contains 'prefetch_output' key holding a list[str].
         - run_and_report is never invoked.
+        - original_prompt is forwarded to perform_real_simulation.
     """
     captured = {}
 
@@ -171,12 +173,16 @@ def test_execute_simulation_real_sim_mode(monkeypatch):
     monkeypatch.setattr(executor, "SimulationAgent", TrackingAgent)
     monkeypatch.setenv("CURRENT_SIMULATION_MODE", "real_sim_mode")
 
-    result = executor.execute({"agent": "simulation", "mode": "structured", "params": {}})
+    result = executor.execute(
+        {"agent": "simulation", "mode": "structured", "params": {}},
+        original_prompt="the-test-prompt",
+    )
     assert result["agent"] == "simulation"
     assert "result" in result
     assert "prefetch_output" in result["result"]
-    assert result["result"]["prefetch_output"] == "prefetch summary"
+    assert result["result"]["prefetch_output"] == ["prefetch summary"]
     assert captured["agent"].prefetch_called
+    assert captured["agent"].received_prompt == "the-test-prompt"
     assert not captured["agent"].run_and_report_called
 
 

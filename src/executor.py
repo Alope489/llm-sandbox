@@ -167,13 +167,15 @@ def _execute_simulation(
         params: Sanitized simulation parameters. Recognised keys:
             ``provider``, ``duration_hours``, ``max_iterations``,
             ``initial_cooling_rate_K_per_min``.
-        original_prompt: Unused; accepted for interface uniformity.
+        original_prompt: The original user prompt forwarded to
+            ``perform_real_simulation`` in ``real_sim_mode``. Unused in
+            ``mock_sim_mode``.
         ctx: Optional ``CallContext`` propagated from the coordinator.
             A snapshot labelled ``agent="sim_agent"`` is forwarded.
 
     Returns:
         ``{"history": list, "output": str}`` when in ``mock_sim_mode``, or
-        ``{"prefetch_output": str}`` when in ``real_sim_mode``.
+        ``{"prefetch_output": list[str]}`` when in ``real_sim_mode``.
 
     Raises:
         ValueError: If ``CURRENT_SIMULATION_MODE`` is set to a value not
@@ -188,7 +190,6 @@ def _execute_simulation(
         ``real_sim_mode`` (tool-calling loop is bounded by
         ``MAX_TOOL_CALLS``).
     """
-    del original_prompt
     safe_params = _sanitize_simulation_params(params)
     provider = safe_params.get("provider")
     duration_hours = safe_params.get("duration_hours")
@@ -215,8 +216,8 @@ def _execute_simulation(
         )
 
     if sim_mode == SIM_MODE_REAL:
-        prefetch_result = agent.perform_real_simulation()
-        # Here we return the result from a real simulation
+        # Here we run the real simulation, and store the result
+        prefetch_result = agent.perform_real_simulation(original_prompt)
         return {"prefetch_output": prefetch_result}
     elif sim_mode == SIM_MODE_MOCK:
         initial_rate = safe_params.get("initial_cooling_rate_K_per_min")

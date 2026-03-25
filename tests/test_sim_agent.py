@@ -153,13 +153,13 @@ def test_run_optimization_loop_never_calls_prefetch(mock_prefetch, mock_sim):
     mock_prefetch.assert_not_called()
 
 
-def test_tool_context_injected_into_system_prompt():
-    """_system_prompt() returns SYSTEM_PROMPT unchanged when _tool_context is empty,
-    and appends the context string when set."""
+def test_sim_results_injected_into_system_prompt():
+    """_system_prompt() returns SYSTEM_PROMPT unchanged when _current_sim_results is empty,
+    and appends all entries joined when set."""
     agent = SimulationAgent()
     assert agent._system_prompt() == SYSTEM_PROMPT
 
-    agent._tool_context = "Ni C11=247 GPa, C44=122 GPa"
+    agent._current_sim_results = ["Ni C11=247 GPa, C44=122 GPa"]
     result = agent._system_prompt()
     assert SYSTEM_PROMPT in result
     assert "Ni C11=247 GPa" in result
@@ -220,3 +220,39 @@ def test_run_optimization_loop_ctx_attribution():
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
         assert_openai_server_latency(rec)  # openai-processing-ms must be a positive int
+
+
+def test_perform_real_simulation_raises_for_non_openai():
+    """perform_real_simulation raises RuntimeError when provider is not openai.
+
+    Pre-conditions:
+        SimulationAgent is constructed with provider="anthropic".
+    Post-conditions:
+        - RuntimeError is raised before any LLM call is made.
+        - The error message references "openai".
+    """
+    agent = SimulationAgent(provider="anthropic")
+    with pytest.raises(RuntimeError, match="openai"):
+        agent.perform_real_simulation("some prompt")
+
+
+@patch("src.wrapper.complete_with_tools", return_value=["result"])
+def test_perform_real_simulation_number_sims_computed(mock_cwt):
+    """perform_real_simulation succeeds for openai provider and calls complete_with_tools.
+
+    Verifies that number_sims_to_run is computed without error for prompts
+    of varying lengths:
+      - len("123456") == 6  -> 6 % 6 == 0
+      - len("12345")  == 5  -> 5 % 6 == 5
+
+    Pre-conditions:
+        SimulationAgent is constructed with provider="openai".
+        complete_with_tools is patched to avoid a real API call.
+    Post-conditions:
+        - No exception is raised for either prompt length.
+        - complete_with_tools is called once per invocation.
+    """
+    agent = SimulationAgent(provider="openai")
+    agent.perform_real_simulation("123456")
+    agent.perform_real_simulation("12345")
+    assert mock_cwt.call_count == 2
