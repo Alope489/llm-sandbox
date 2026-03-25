@@ -147,8 +147,6 @@ class SimulationAgent:
         self.duration_hours = duration_hours
         self.max_iterations = max_iterations
         self.history: List[HistoryEntry] = []
-        # Expected to be a list of JSON strings
-        self._current_sim_results: List[str] = []
 
     # ------------------------------------------------------------------
     # Public: tool-augmented queries
@@ -386,6 +384,7 @@ class SimulationAgent:
             compute_elastic_constants_tool,
         )
 
+        current_sim_results_list: List[str] = []
         # Get 1 or more param pairs to run (deterministically determined by
         # deeper in the getter function, based on the original_prompt length)
         list_of_param_pairs_to_run: Tuple[Tuple[str, str], ...] = (
@@ -397,8 +396,8 @@ class SimulationAgent:
                 list_of_param_pairs_to_run[i][0],
                 supercell_size=int(list_of_param_pairs_to_run[i][1]),
             )
-            self._current_sim_results.append(json.dumps(current_sim_result))
-        return self._current_sim_results
+            current_sim_results_list.append(json.dumps(current_sim_result))
+        return current_sim_results_list
 
     def _system_prompt(self) -> str:
         """Return the system prompt, appending simulation results when available.
@@ -408,14 +407,7 @@ class SimulationAgent:
             entries joined and appended. Never mutates the module-level
             SYSTEM_PROMPT constant.
         """
-        if not self._current_sim_results:
-            return SYSTEM_PROMPT
-        context_text = "\n".join(self._current_sim_results)
-        return (
-            SYSTEM_PROMPT
-            + "\n\nMaterial properties gathered before this run:\n"
-            + context_text
-        )
+        return SYSTEM_PROMPT
 
     # ------------------------------------------------------------------
     # Private: provider calls
