@@ -70,7 +70,7 @@ COOLDOWN_FALLBACK_RATE = 12.0  # fallback when LLM returns non-numeric
 MAX_PARSE_ATTEMPTS = 2
 
 # Predefined calls to compute_elastic_constants_tool for the real-simulation
-# phase.  Each entry is a 2-tuple of strings (composition, supercell_size).
+#  Each entry is a 2-tuple of strings (composition, supercell_size).
 # The call site unpacks the tuple and casts supercell_size to int.  Parameters
 # mirror the six per-element tests in tests/test_integration_lammps.py exactly.
 _PREDEFINED_SIM_CALLS: tuple[tuple[str, str], ...] = (
@@ -557,4 +557,103 @@ class SimulationAgent:
             "Previous attempts:\n"
             + "\n".join(lines)
             + "\n\nNext cooling_rate_K_per_min (reply with one number only):"
+        )
+
+    def _get_elastic_constants_params_from_LLM(
+        self, original_prompt: str
+    ) -> tuple[tuple[str, str], ...]:
+        """Extract elastic-constants simulation parameters from the LLM response.
+
+        Given the raw original user prompt, queries the OpenAI API and parses its
+        response into an immutable sequence of (composition, supercell_size) string
+        pairs suitable for direct consumption by ``compute_elastic_constants_tool``.
+
+        Note:
+            This method is currently intended to work with the OpenAI API only
+            (``self.provider == "openai"``). Anthropic and other providers are not
+            supported at this time.
+
+        Args:
+            original_prompt: The raw user prompt string forwarded from the
+                pipeline dispatcher. Must be a non-empty string.
+
+        Returns:
+            A tuple of 2-tuples ``(composition, supercell_size)`` where both
+            elements are strings.  Each inner tuple maps directly to one
+            ``compute_elastic_constants_tool`` call parameter set.
+            Returns an empty tuple when the LLM produces no usable parameters.
+
+        Raises:
+            NotImplementedError: Always — logic is not yet implemented.
+            RuntimeError: (future) If ``self.provider`` is not ``"openai"``.
+            ValueError: (future) If ``original_prompt`` is empty or not a str.
+
+        Examples:
+            >>> agent = SimulationAgent()
+            >>> agent._get_elastic_constants_params_from_LLM("Compute Ni elastic constants")
+            NotImplementedError
+
+        Pre-conditions:
+            - ``original_prompt`` is a non-empty ``str``.
+            - ``self.provider == "openai"``.
+
+        Post-conditions:
+            - Each inner tuple contains exactly two strings.
+            - ``self._current_sim_results`` is not mutated by this method.
+
+        Complexity:
+            Θ(1) for the stub. Expected Θ(n) where n = number of parameter
+            pairs extracted from the LLM response once implemented.
+        """
+        raise NotImplementedError(
+            "_get_elastic_constants_params_from_LLM is not yet implemented."
+        )
+
+    def _build_tool_message_for_sim_param_api_request_openAI(
+        self, original_prompt: str
+    ) -> list[dict]:
+        """Build the OpenAI function-calling tool definition for parameter extraction.
+
+        Constructs and returns the list of tool/function schemas (in the OpenAI
+        ``tools`` API format) that describe how the model should extract
+        elastic-constants simulation parameters from ``original_prompt``.
+
+        Note:
+            This method is intended to work with the OpenAI API only. The
+            returned schema conforms to the OpenAI ``tools`` request field
+            format and is not compatible with other providers.
+
+        Args:
+            original_prompt: The raw user prompt string forwarded from the
+                pipeline dispatcher. Used to inform or parameterise the tool
+                schema as needed. Must be a non-empty string.
+
+        Returns:
+            A list of dicts, each representing one OpenAI tool/function
+            definition (``{"type": "function", "function": {...}}`` shape).
+            Returns an empty list if no tools are applicable.
+
+        Raises:
+            NotImplementedError: Always — logic is not yet implemented.
+            ValueError: (future) If ``original_prompt`` is empty or not a str.
+
+        Examples:
+            >>> agent = SimulationAgent()
+            >>> agent._build_tool_message_for_sim_param_api_request_openAI("Compute Ni elastic constants")
+            NotImplementedError
+
+        Pre-conditions:
+            - ``original_prompt`` is a non-empty ``str``.
+            - ``self.provider == "openai"``.
+
+        Post-conditions:
+            - Each element of the returned list is a ``dict``.
+            - ``self._current_sim_results`` is not mutated by this method.
+
+        Complexity:
+            Θ(1) for the stub. Expected Θ(k) where k = number of tool schemas
+            constructed once implemented.
+        """
+        raise NotImplementedError(
+            "_build_tool_message_for_sim_param_api_request_openAI is not yet implemented."
         )
