@@ -394,7 +394,8 @@ class SimulationAgent:
         # Run as many simulations as there are param pairs
         for i in range(len(list_of_param_pairs_to_run)):
             current_sim_result = compute_elastic_constants_tool(
-                list_of_param_pairs_to_run[i][0], int(list_of_param_pairs_to_run[i][1])
+                list_of_param_pairs_to_run[i][0],
+                supercell_size=int(list_of_param_pairs_to_run[i][1]),
             )
             self._current_sim_results.append(json.dumps(current_sim_result))
         return self._current_sim_results
