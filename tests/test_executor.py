@@ -119,7 +119,7 @@ class _FakeAgentForMode:
         self.run_and_report_called = True
         return ([], "output")
 
-    def perform_real_simulation(self, original_prompt):
+    def perform_real_simulation(self, original_prompt, ctx=None):
         self.prefetch_called = True
         self.received_prompt = original_prompt
         return ["prefetch summary"]
