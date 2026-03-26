@@ -17,8 +17,13 @@ mutated. ``_system_prompt()`` unconditionally returns the base ``SYSTEM_PROMPT``
 Telemetry instrumentation:
     ``_call_openai``, ``_call_anthropic``, and ``get_llm_suggestion`` accept an
     optional ``ctx`` (``CallContext``).  ``get_llm_suggestion`` stamps
-    ``agent="sim_agent"`` and ``span="sim_iter_<n>"`` per iteration.
+    ``agent="sim_agent"`` and ``span="sim_iter_<n>"`` per iteration; retries
+    receive a ``span="sim_iter_<n>_retry_<attempt>"`` suffix.
     ``run_optimization_loop`` accepts and threads ``ctx`` through the loop.
+    ``perform_real_simulation`` and ``_get_elastic_constants_params_from_LLM``
+    also accept an optional ``ctx``: the LLM call emits one ``llm_call`` record
+    with ``span="real_sim_param_select"`` and each Docker invocation emits one
+    ``tool_execution`` record with ``span="real_sim_docker_<i+1>"``.
 
 Dependencies:
     os, re, dataclasses, time, datetime, dotenv, src.llm_pipeline_telemetry.
@@ -43,6 +48,7 @@ from src.llm_pipeline_telemetry import (
     get_anthropic_client,
     get_openai_client,
     log_llm_call,
+    log_tool_execution,
 )
 
 load_dotenv()
@@ -210,11 +216,19 @@ class SimulationAgent:
         if value is not None:
             return max(0.1, min(100.0, value))
 
-        for _ in range(MAX_PARSE_ATTEMPTS - 1):
+        for attempt in range(1, MAX_PARSE_ATTEMPTS):
+            retry_ctx = (
+                dataclasses.replace(
+                    call_ctx,
+                    span=f"sim_iter_{len(self.history) + 1}_retry_{attempt}",
+                )
+                if call_ctx is not None
+                else None
+            )
             if self.provider == "anthropic":
-                raw = self._call_anthropic(ctx=call_ctx)
+                raw = self._call_anthropic(ctx=retry_ctx)
             else:
-                raw = self._call_openai(ctx=call_ctx)
+                raw = self._call_openai(ctx=retry_ctx)
             value = _parse_cooling_rate_from_response(raw)
             if value is not None:
                 return max(0.1, min(100.0, value))
@@ -318,7 +332,7 @@ class SimulationAgent:
     # Public: real simulation execution
     # ------------------------------------------------------------------
 
-    def perform_real_simulation(self, original_prompt: str) -> List[str]:
+    def perform_real_simulation(self, original_prompt: str, ctx: Optional[CallContext] = None) -> List[str]:
         """Run the deterministic real-simulation phase: execute 1–6 predefined elastic-constant simulations, determined by ``len(original_prompt) % 6 + 1``.
 
         Validates that the active LLM provider is ``"openai"``, then computes
@@ -352,6 +366,10 @@ class SimulationAgent:
                 ``number_sims_to_run = len(original_prompt) % 6 + 1``
                 (1–6 simulations), providing prompt-driven variability for
                 testing purposes.
+            ctx: Optional ``CallContext`` snapshot. When not ``None``, one
+                ``tool_execution`` record is appended to ``ctx.records`` per
+                Docker invocation, labelled with ``span="real_sim_docker_{i+1}"``.
+                Pass ``None`` to skip telemetry (backward-compatible default).
 
         Returns:
             A new ``list[str]`` of ``n`` JSON-serialised result dicts, one per
@@ -366,6 +384,8 @@ class SimulationAgent:
         Postconditions:
             - Returns a new ``list[str]`` of exactly ``n`` entries where
               ``n = len(original_prompt) % 6 + 1``; no instance state is mutated.
+            - If ``ctx`` is not ``None``, exactly ``n`` ``tool_execution``
+              records have been appended to ``ctx.records``.
 
         Complexity:
             Θ(len(original_prompt) % 6 + 1) — between 1 and 6 Docker container
@@ -383,19 +403,43 @@ class SimulationAgent:
             compute_elastic_constants_tool,
         )
 
-        list_of_all_sim_results: List[str] = []
-        # Get 1 or more param pairs to run (deterministically determined by
-        # deeper in the getter function, based on the original_prompt length)
         list_of_param_pairs_to_run: Tuple[Tuple[str, str], ...] = (
-            self._get_elastic_constants_params_from_LLM(original_prompt)
+            self._get_elastic_constants_params_from_LLM(original_prompt, ctx=ctx)
         )
+        list_of_all_sim_results: List[str] = []
         # Run as many simulations as there are param pairs
         for i in range(len(list_of_param_pairs_to_run)):
-            current_sim_result = compute_elastic_constants_tool(
-                list_of_param_pairs_to_run[i][0],
-                supercell_size=int(list_of_param_pairs_to_run[i][1]),
+            composition = list_of_param_pairs_to_run[i][0]
+            supercell_size_str = list_of_param_pairs_to_run[i][1]
+            tool_ctx = (
+                dataclasses.replace(ctx, span=f"real_sim_docker_{i + 1}")
+                if ctx is not None
+                else None
             )
-            list_of_all_sim_results.append(json.dumps(current_sim_result))
+            tool_start_ts = datetime.now(timezone.utc)
+            t_tool = time.perf_counter()
+            result = compute_elastic_constants_tool(
+                composition,
+                supercell_size=int(supercell_size_str),
+            )
+            tool_elapsed_ms = (time.perf_counter() - t_tool) * 1000
+            tool_end_ts = datetime.now(timezone.utc)
+            if tool_ctx is not None:
+                result_dict = result if isinstance(result, dict) else {}
+                tool_status = result_dict.get("status", "ok")
+                runtime_sec = result_dict.get("runtime_seconds")
+                log_tool_execution(
+                    tool_ctx,
+                    tool_name="compute_elastic_constants_tool",
+                    tool_execution_ms=tool_elapsed_ms,
+                    status=tool_status,
+                    call_start_ts=tool_start_ts.isoformat(),
+                    call_end_ts=tool_end_ts.isoformat(),
+                    tool_internal_runtime_ms=(
+                        runtime_sec * 1000 if isinstance(runtime_sec, (int, float)) else None
+                    ),
+                )
+            list_of_all_sim_results.append(json.dumps(result))
         return list_of_all_sim_results
 
     def _system_prompt(self) -> str:
@@ -560,7 +604,7 @@ class SimulationAgent:
         )
 
     def _get_elastic_constants_params_from_LLM(
-        self, original_prompt: str
+        self, original_prompt: str, ctx: Optional[CallContext] = None
     ) -> tuple[tuple[str, str], ...]:
         """Extract elastic-constants simulation parameters from the LLM response.
 
@@ -576,6 +620,10 @@ class SimulationAgent:
         Args:
             original_prompt: The raw user prompt string forwarded from the
                 pipeline dispatcher. Must be a non-empty string.
+            ctx: Optional ``CallContext`` snapshot. When not ``None``, one
+                ``llm_call`` record is appended to ``ctx.records`` with
+                ``agent="sim_agent"`` and ``span="real_sim_param_select"``.
+                Pass ``None`` to skip telemetry (backward-compatible default).
 
         Returns:
             A tuple of 2-tuples ``(composition, supercell_size)`` where both
@@ -584,8 +632,9 @@ class SimulationAgent:
 
         Raises:
             RuntimeError: If the API response contains no ``function_call``
-                output item, indicating the provider failed to invoke the
-                simulation parameter selection tool.
+                output item: "API contract violation: tool_choice='required'
+                was set but no function_call item appeared in the response
+                output — this indicates an unexpected API or SDK change."
             RuntimeError: Planned — will be raised when ``self.provider`` is
                 not ``"openai"``.
 
@@ -602,44 +651,89 @@ class SimulationAgent:
 
         Post-conditions:
             - Each inner tuple contains exactly two strings.
+            - If ``ctx`` is not ``None``, exactly one ``llm_call`` record has
+              been appended to ``ctx.records``.
 
         Complexity:
-            Θ(1) for the stub. Expected Θ(n) where n = number of parameter
-            pairs extracted from the LLM response once implemented.
+            Θ(n) where n = number of parameter pairs extracted from the LLM
+            response (bounded by the tool schema's ``maxItems`` constraint).
         """
         import json
 
-        # call helper to build message body, and tool schemas message
+        # --- before the timer: setup that must NOT count toward client_elapsed_ms ---
         input_message, tools = (
             self._build_tool_message_for_sim_param_api_request_openAI(original_prompt)
         )
-        # call OpenAI API to get the params list
-        openAI_client = get_openai_client()
-        params_list_response = openAI_client.responses.create(
-            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-            input=input_message,
-            tools=tools,
-            tool_choice="required",
-            temperature=0.0,
+        client = get_openai_client()
+        model = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+        ctx_snap = (
+            dataclasses.replace(ctx, agent="sim_agent", span="real_sim_param_select")
+            if ctx is not None
+            else None
         )
+
+        # --- timer starts here ---
+        t0 = time.perf_counter()
+        call_start_ts = datetime.now(timezone.utc)
+        try:
+            raw = client.with_raw_response.responses.create(
+                model=model,
+                input=input_message,
+                tools=tools,
+                tool_choice="required",
+                temperature=0.0,
+            )
+            client_elapsed_ms = (time.perf_counter() - t0) * 1000
+            call_end_ts = datetime.now(timezone.utc)
+            parsed = raw.parse()  # call exactly once; reuse below
+            raw_ms = raw.headers.get("openai-processing-ms")
+            server_ms = int(raw_ms) if raw_ms and int(raw_ms) > 0 else None
+            usage = getattr(parsed, "usage", None)
+            input_tokens = getattr(usage, "input_tokens", 0) or 0
+            output_tokens = getattr(usage, "output_tokens", 0) or 0
+            if ctx_snap is not None:
+                log_llm_call(
+                    ctx_snap,
+                    model=model,
+                    input_tokens=input_tokens,
+                    output_tokens=output_tokens,
+                    provider_server_latency_ms=server_ms,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="ok",
+                )
+        except Exception:
+            client_elapsed_ms = (time.perf_counter() - t0) * 1000
+            call_end_ts = datetime.now(timezone.utc)
+            if ctx_snap is not None:
+                log_llm_call(
+                    ctx_snap,
+                    model=model,
+                    input_tokens=0,
+                    output_tokens=0,
+                    provider_server_latency_ms=None,
+                    client_elapsed_ms=client_elapsed_ms,
+                    call_start_ts=call_start_ts.isoformat(),
+                    call_end_ts=call_end_ts.isoformat(),
+                    status="error",
+                )
+            raise
+
+        # --- outside the try/except: post-response validation (only reachable on success) ---
         # Find the first function_call item in the Responses API output list
         tool_call = next(
-            (
-                item
-                for item in params_list_response.output
-                if item.type == "function_call"
-            ),
+            (item for item in parsed.output if item.type == "function_call"),
             None,
         )
         if tool_call is None:
             raise RuntimeError(
-                f"LLM provider '{self.provider}' failed to select simulation parameters: "
-                "no function_call tool invocation was found in the API response. "
-                "Ensure the model supports tool use and that tool_choice='required' is honoured."
+                "API contract violation: tool_choice='required' was set but no function_call "
+                "item appeared in the response output — this indicates an unexpected API or SDK change."
             )
-        parsed = json.loads(tool_call.arguments)
-        # parsed["selected_pairs"] is a list[list[str]], e.g. [["Al", "3"], ["Cu", "3"]]
-        params_list = tuple((pair[0], pair[1]) for pair in parsed["selected_pairs"])
+        args = json.loads(tool_call.arguments)
+        # args["selected_pairs"] is a list[list[str]], e.g. [["Al", "3"], ["Cu", "3"]]
+        params_list = tuple((pair[0], pair[1]) for pair in args["selected_pairs"])
         return params_list
 
     def _build_tool_message_for_sim_param_api_request_openAI(

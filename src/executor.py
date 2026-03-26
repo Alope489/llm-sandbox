@@ -217,7 +217,7 @@ def _execute_simulation(
 
     if sim_mode == SIM_MODE_REAL:
         # Run the deterministic Docker-based elastic-constant simulations and return results.
-        list_of_sim_results = sim_agent.perform_real_simulation(original_prompt)
+        list_of_sim_results = sim_agent.perform_real_simulation(original_prompt, ctx=sim_ctx)
         return {"list_of_sim_results": list_of_sim_results}
     elif sim_mode == SIM_MODE_MOCK:
         initial_rate = safe_params.get("initial_cooling_rate_K_per_min")

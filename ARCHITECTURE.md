@@ -365,7 +365,12 @@ Public method for ad-hoc material science queries. Calls `complete_with_tools` d
 
 ### Per-iteration LLM measurement instrumentation
 
-Per-call latency (`elapsed_seconds`), token counts (`prompt_tokens`, `completion_tokens`), and derived throughput (`tokens_per_second`) were removed from `src/multi/sim/agent.py` and `src/wrapper.py`. The `self.timing` class variable and `_record_timing` helper have been deleted. A replacement observability approach is planned.
+Both simulation modes are now fully instrumented via `CallContext` and `src/llm_pipeline_telemetry`:
+
+- **Mock-sim mode** (`_call_openai`, `_call_anthropic`, `get_llm_suggestion`): one `llm_call` record per iteration with `span="sim_iter_<n>"`; retries receive `span="sim_iter_<n>_retry_<attempt>"`.
+- **Real-sim mode** (`_get_elastic_constants_params_from_LLM`, `perform_real_simulation`): one `llm_call` record with `span="real_sim_param_select"` for the parameter-selection LLM call; one `tool_execution` record per Docker invocation with `span="real_sim_docker_<i+1>"`.
+
+All records include `client_elapsed_ms`, `call_start_ts`, `call_end_ts`, token counts, and (where available) `provider_server_latency_ms` from the `openai-processing-ms` HTTP header.
 
 ### Tests
 
@@ -541,7 +546,7 @@ flowchart TD
 | `src/linear/processor.py` | ctx propagation to `complete()` |
 | `src/linear/reasoning.py` | ctx propagation to `complete()` |
 | `src/linear/orchestrator.py` | creates `CallContext`, `log_pipeline_outcome_and_stats` |
-| `src/multi/sim/agent.py` | `_call_openai`, `_call_anthropic` |
+| `src/multi/sim/agent.py` | `_call_openai`, `_call_anthropic`, `perform_real_simulation`, `_get_elastic_constants_params_from_LLM` |
 | `src/multi/kb_agent.py` | `_ask_openai`, `_web_search_openai`, `_ask_anthropic`, `_web_search_anthropic` |
 | `src/multi/file_store.py` | `query_openai` (Responses API, `response.usage`; `provider_server_latency_ms` from `openai-processing-ms` header) |
 | `src/multi/knowledge_base.py` | `_embed` (embeddings; `output_tokens=0`) |
@@ -556,7 +561,7 @@ flowchart TD
   coverage (all three cases), zero-records edge case, error path, `JsonFormatter`, `_configure_logger`.
 - `tests/test_wrapper.py` — 3 new real-API tests (skip when key absent): OpenAI/Anthropic
   `_complete_*` with ctx shape verification, ctx=None no-op.
-- `tests/test_sim_agent.py` — 1 new real-API test: ctx attribution across optimization loop.
+- `tests/test_sim_agent.py` — 1 new real-API test: ctx attribution across optimization loop; 11 new unit tests covering real-sim telemetry (`_get_elastic_constants_params_from_LLM` llm_call record, absent header, error path, ctx=None; `perform_real_simulation` tool_execution records, no-runtime_seconds, error path, ctx=None; retry span labeling).
 - `tests/test_multi_kb_agent.py` — 2 new real-API tests: ctx attribution on web-search and KB-hit paths.
 - `tests/test_multi_knowledge_base.py` — 1 new real-API test: `_embed` emits `llm_call` with `output_tokens=0`.
 - `tests/integration/linear/test_integration_telemetry_linear.py` — 3 E2E tests (real OpenAI): full linear pipeline telemetry wiring.

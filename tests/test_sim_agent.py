@@ -335,20 +335,35 @@ def test_build_tool_message_schema(prompt_length: int, expected_n: int) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _make_mock_openai_client(output_items: list) -> MagicMock:
-    """Build a MagicMock that mimics get_openai_client() for Responses API calls.
+def _make_mock_openai_client(output_items: list, *, processing_ms: str | None = "250") -> MagicMock:
+    """Build a MagicMock that mimics get_openai_client() for Responses API calls via with_raw_response.
+
+    The production code calls ``client.with_raw_response.responses.create(...)``
+    which returns a raw response object.  Callers then call ``raw.parse()`` to get
+    the parsed response and ``raw.headers.get(...)`` to read HTTP headers.
 
     Args:
-        output_items: List of mock items to place in response.output.
+        output_items: List of mock items to place in ``parsed_response.output``.
+        processing_ms: Value returned by ``raw.headers.get("openai-processing-ms")``.
+            Defaults to ``"250"``. Pass ``None`` to simulate an absent header.
 
     Returns:
-        A MagicMock whose ``.responses.create()`` returns a response with
-        ``.output`` set to ``output_items``.
+        A MagicMock whose ``.with_raw_response.responses.create()`` returns a raw
+        object whose ``.parse()`` yields a response with ``.output`` set to
+        ``output_items`` and ``.headers.get(...)`` returning ``processing_ms``.
     """
-    mock_response = MagicMock()
-    mock_response.output = output_items
+    parsed_response = MagicMock()
+    parsed_response.output = output_items
+    parsed_response.usage = MagicMock()
+    parsed_response.usage.input_tokens = 10
+    parsed_response.usage.output_tokens = 5
+
+    mock_raw = MagicMock()
+    mock_raw.parse.return_value = parsed_response
+    mock_raw.headers.get.return_value = processing_ms
+
     mock_client = MagicMock()
-    mock_client.responses.create.return_value = mock_response
+    mock_client.with_raw_response.responses.create.return_value = mock_raw
     return mock_client
 
 
@@ -375,7 +390,7 @@ def test_get_elastic_constants_params_no_function_call_raises() -> None:
         agent = SimulationAgent(provider="openai")
         with pytest.raises(RuntimeError) as exc_info:
             agent._get_elastic_constants_params_from_LLM("any prompt")
-        assert "no function_call tool invocation" in str(exc_info.value)
+        assert "API contract violation" in str(exc_info.value)
 
 
 def test_get_elastic_constants_params_happy_path_parsing() -> None:
@@ -410,3 +425,440 @@ def test_get_elastic_constants_params_happy_path_parsing() -> None:
         assert isinstance(pair, tuple)
         assert len(pair) == 2
         assert all(isinstance(v, str) for v in pair)
+
+
+# ---------------------------------------------------------------------------
+# Group A: _get_elastic_constants_params_from_LLM — the llm_call record
+# ---------------------------------------------------------------------------
+
+
+def test_get_elastic_constants_params_llm_call_record() -> None:
+    """_get_elastic_constants_params_from_LLM appends a correctly-labelled llm_call record.
+
+    Pre-conditions:
+        get_openai_client is patched; header "openai-processing-ms" returns "500";
+        usage has known token counts; a valid function_call item is returned.
+    Post-conditions:
+        - Exactly one llm_call record in ctx.records.
+        - provider_server_latency_ms == 500.
+        - client_elapsed_ms >= 0.
+        - call_start_ts and call_end_ts are present.
+        - agent == "sim_agent", span == "real_sim_param_select", status == "ok".
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    function_call_item = MagicMock()
+    function_call_item.type = "function_call"
+    function_call_item.arguments = _json.dumps({"selected_pairs": [["Al", "3"]]})
+
+    mock_client = _make_mock_openai_client([function_call_item], processing_ms="500")
+    mock_client.with_raw_response.responses.create.return_value.parse.return_value.usage.input_tokens = 20
+    mock_client.with_raw_response.responses.create.return_value.parse.return_value.usage.output_tokens = 8
+
+    ctx = CallContext(pipeline="test_pipeline")
+    with patch("src.multi.sim.agent.get_openai_client", return_value=mock_client):
+        agent = SimulationAgent(provider="openai")
+        agent._get_elastic_constants_params_from_LLM("x" * 7, ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) == 1
+    rec = llm_records[0]
+    assert rec["provider_server_latency_ms"] == 500
+    assert rec["client_elapsed_ms"] >= 0
+    assert "call_start_ts" in rec
+    assert "call_end_ts" in rec
+    assert rec["agent"] == "sim_agent"
+    assert rec["span"] == "real_sim_param_select"
+    assert rec["status"] == "ok"
+
+
+def test_get_elastic_constants_params_llm_call_no_server_latency() -> None:
+    """_get_elastic_constants_params_from_LLM sets provider_server_latency_ms=None when header absent.
+
+    Pre-conditions:
+        get_openai_client is patched; header "openai-processing-ms" returns None.
+    Post-conditions:
+        - provider_server_latency_ms is None in the llm_call record.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    function_call_item = MagicMock()
+    function_call_item.type = "function_call"
+    function_call_item.arguments = _json.dumps({"selected_pairs": [["Al", "3"]]})
+
+    mock_client = _make_mock_openai_client([function_call_item], processing_ms=None)
+    ctx = CallContext(pipeline="test_pipeline")
+    with patch("src.multi.sim.agent.get_openai_client", return_value=mock_client):
+        agent = SimulationAgent(provider="openai")
+        agent._get_elastic_constants_params_from_LLM("x" * 7, ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) == 1
+    assert llm_records[0]["provider_server_latency_ms"] is None
+
+
+def test_get_elastic_constants_params_llm_call_error_path() -> None:
+    """_get_elastic_constants_params_from_LLM emits status='error' record when API raises.
+
+    Pre-conditions:
+        get_openai_client is patched; with_raw_response.responses.create raises RuntimeError.
+    Post-conditions:
+        - Exactly one llm_call record with status='error', input_tokens=0, output_tokens=0.
+        - client_elapsed_ms >= 0.
+        - The original exception propagates.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    mock_client = MagicMock()
+    mock_client.with_raw_response.responses.create.side_effect = RuntimeError("network failure")
+
+    ctx = CallContext(pipeline="test_pipeline")
+    with patch("src.multi.sim.agent.get_openai_client", return_value=mock_client):
+        agent = SimulationAgent(provider="openai")
+        with pytest.raises(RuntimeError, match="network failure"):
+            agent._get_elastic_constants_params_from_LLM("any prompt", ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) == 1
+    rec = llm_records[0]
+    assert rec["status"] == "error"
+    assert rec["input_tokens"] == 0
+    assert rec["output_tokens"] == 0
+    assert rec["client_elapsed_ms"] >= 0
+
+
+def test_get_elastic_constants_params_llm_call_real_api() -> None:
+    """_get_elastic_constants_params_from_LLM emits a complete llm_call record against the real API.
+
+    Requires OPENAI_API_KEY to be set; fails loudly without it.  This is the only test
+    that verifies the openai-processing-ms header is received from the real OpenAI API.
+
+    Pre-conditions:
+        OPENAI_API_KEY is set in the environment.
+    Post-conditions:
+        - Exactly one llm_call record with status='ok'.
+        - assert_openai_server_latency(rec) passes.
+
+    Complexity:
+        O(1) calls — one live HTTP request.
+    """
+    assert os.environ.get("OPENAI_API_KEY"), (
+        "OPENAI_API_KEY must be set to run this test — "
+        "it verifies the openai-processing-ms header is received from the real API"
+    )
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="test_real_api")
+    agent = SimulationAgent(provider="openai")
+    agent._get_elastic_constants_params_from_LLM("Compute elastic constants for Al", ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) == 1
+    rec = llm_records[0]
+    assert rec["status"] == "ok"
+    assert_openai_server_latency(rec)
+
+
+def test_get_elastic_constants_params_ctx_none() -> None:
+    """_get_elastic_constants_params_from_LLM with ctx=None produces no records and no crash.
+
+    Pre-conditions:
+        get_openai_client is patched; ctx is None.
+    Post-conditions:
+        - No exception raised.
+        - Return value equals the expected tuple of pairs.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    function_call_item = MagicMock()
+    function_call_item.type = "function_call"
+    function_call_item.arguments = _json.dumps({"selected_pairs": [["Al", "3"]]})
+
+    mock_client = _make_mock_openai_client([function_call_item])
+    with patch("src.multi.sim.agent.get_openai_client", return_value=mock_client):
+        agent = SimulationAgent(provider="openai")
+        result = agent._get_elastic_constants_params_from_LLM("x" * 7, ctx=None)
+
+    assert result == (("Al", "3"),)
+
+
+# ---------------------------------------------------------------------------
+# Group B: perform_real_simulation — the tool_execution records
+# ---------------------------------------------------------------------------
+
+
+def test_perform_real_simulation_ctx_attribution() -> None:
+    """perform_real_simulation appends correctly-labelled tool_execution records.
+
+    Pre-conditions:
+        _get_elastic_constants_params_from_LLM is patched to return 2 pairs.
+        compute_elastic_constants_tool is patched to return a successful result dict.
+    Post-conditions:
+        - Exactly 2 tool_execution records with spans "real_sim_docker_1" / "real_sim_docker_2".
+        - tool_execution_ms >= 0 on both.
+        - tool_internal_runtime_ms == pytest.approx(500.0) on both.
+        - call_start_ts and call_end_ts present on both.
+        - status == "ok" on both.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="test_pipeline")
+    mock_tool_result = {"status": "ok", "runtime_seconds": 0.5, "C11": 100.0, "C12": 60.0, "C44": 30.0}
+
+    with (
+        patch(
+            "src.multi.sim.agent.SimulationAgent._get_elastic_constants_params_from_LLM",
+            return_value=(("Al", "3"), ("Cu", "3")),
+        ),
+        patch(
+            "src.tools.elastic_constants_lammps.host_wrapper.compute_elastic_constants_tool",
+            return_value=mock_tool_result,
+        ),
+    ):
+        agent = SimulationAgent(provider="openai")
+        agent.perform_real_simulation("any prompt", ctx=ctx)
+
+    tool_records = [r for r in ctx.records if r.get("record_type") == "tool_execution"]
+    assert len(tool_records) == 2
+    assert tool_records[0]["span"] == "real_sim_docker_1"
+    assert tool_records[1]["span"] == "real_sim_docker_2"
+    for rec in tool_records:
+        assert rec["tool_execution_ms"] >= 0
+        assert rec["tool_internal_runtime_ms"] == pytest.approx(500.0)
+        assert "call_start_ts" in rec
+        assert "call_end_ts" in rec
+        assert rec["status"] == "ok"
+
+
+def test_perform_real_simulation_tool_execution_no_runtime_seconds() -> None:
+    """perform_real_simulation omits tool_internal_runtime_ms when runtime_seconds absent.
+
+    Pre-conditions:
+        compute_elastic_constants_tool returns {"status": "ok"} with no runtime_seconds.
+    Post-conditions:
+        - tool_internal_runtime_ms is not present in the tool_execution record.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="test_pipeline")
+    with (
+        patch(
+            "src.multi.sim.agent.SimulationAgent._get_elastic_constants_params_from_LLM",
+            return_value=(("Al", "3"),),
+        ),
+        patch(
+            "src.tools.elastic_constants_lammps.host_wrapper.compute_elastic_constants_tool",
+            return_value={"status": "ok"},
+        ),
+    ):
+        agent = SimulationAgent(provider="openai")
+        agent.perform_real_simulation("x", ctx=ctx)
+
+    tool_records = [r for r in ctx.records if r.get("record_type") == "tool_execution"]
+    assert len(tool_records) == 1
+    assert "tool_internal_runtime_ms" not in tool_records[0]
+
+
+def test_perform_real_simulation_tool_execution_error_path() -> None:
+    """perform_real_simulation records status='error' when tool returns error dict.
+
+    Pre-conditions:
+        compute_elastic_constants_tool returns {"status": "error"}.
+    Post-conditions:
+        - tool_execution record has status == "error".
+        - tool_internal_runtime_ms is not present.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="test_pipeline")
+    with (
+        patch(
+            "src.multi.sim.agent.SimulationAgent._get_elastic_constants_params_from_LLM",
+            return_value=(("Al", "3"),),
+        ),
+        patch(
+            "src.tools.elastic_constants_lammps.host_wrapper.compute_elastic_constants_tool",
+            return_value={"status": "error"},
+        ),
+    ):
+        agent = SimulationAgent(provider="openai")
+        agent.perform_real_simulation("x", ctx=ctx)
+
+    tool_records = [r for r in ctx.records if r.get("record_type") == "tool_execution"]
+    assert len(tool_records) == 1
+    assert tool_records[0]["status"] == "error"
+    assert "tool_internal_runtime_ms" not in tool_records[0]
+
+
+def test_perform_real_simulation_ctx_none() -> None:
+    """perform_real_simulation with ctx=None produces no records and returns correct results.
+
+    Pre-conditions:
+        ctx is None; compute_elastic_constants_tool is patched.
+    Post-conditions:
+        - No exception raised.
+        - Return value is a list of JSON strings.
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    mock_tool_result = {"status": "ok", "C11": 100.0}
+    with (
+        patch(
+            "src.multi.sim.agent.SimulationAgent._get_elastic_constants_params_from_LLM",
+            return_value=(("Al", "3"),),
+        ),
+        patch(
+            "src.tools.elastic_constants_lammps.host_wrapper.compute_elastic_constants_tool",
+            return_value=mock_tool_result,
+        ),
+    ):
+        agent = SimulationAgent(provider="openai")
+        result = agent.perform_real_simulation("x", ctx=None)
+
+    assert isinstance(result, list)
+    assert len(result) == 1
+    parsed = _json.loads(result[0])
+    assert parsed["status"] == "ok"
+
+
+# ---------------------------------------------------------------------------
+# Group C: get_llm_suggestion retry span labeling
+# ---------------------------------------------------------------------------
+
+
+def _make_mock_openai_chat_client(responses: list[str]) -> MagicMock:
+    """Build a MagicMock that mimics get_openai_client() for Chat Completions via with_raw_response.
+
+    The production ``_call_openai`` calls
+    ``client.with_raw_response.chat.completions.create(...)`` and then reads
+    ``.parse().usage``, ``.parse().choices[0].message.content``, and
+    ``.headers.get("openai-processing-ms")``.
+
+    Args:
+        responses: Sequence of content strings to return on successive calls.
+            Each call to ``create`` consumes the next entry.
+
+    Returns:
+        A MagicMock whose ``with_raw_response.chat.completions.create`` returns
+        a raw mock that produces the appropriate parsed shape.
+    """
+    call_index = {"n": 0}
+
+    def _create_side_effect(*args, **kwargs):
+        idx = call_index["n"]
+        call_index["n"] += 1
+        content = responses[idx] if idx < len(responses) else responses[-1]
+
+        mock_message = MagicMock()
+        mock_message.content = content
+        mock_message.refusal = None
+
+        mock_choice = MagicMock()
+        mock_choice.message = mock_message
+
+        mock_usage = MagicMock()
+        mock_usage.prompt_tokens = 10
+        mock_usage.completion_tokens = 3
+
+        mock_parsed = MagicMock()
+        mock_parsed.usage = mock_usage
+        mock_parsed.choices = [mock_choice]
+
+        mock_raw = MagicMock()
+        mock_raw.parse.return_value = mock_parsed
+        mock_raw.headers.get.return_value = "100"
+        return mock_raw
+
+    mock_client = MagicMock()
+    mock_client.with_raw_response.chat.completions.create.side_effect = _create_side_effect
+    return mock_client
+
+
+def test_get_llm_suggestion_retry_span_labels() -> None:
+    """get_llm_suggestion retry receives a unique span with _retry_ suffix.
+
+    Patches get_openai_client at the HTTP level so the real _call_openai and
+    log_llm_call run, writing actual records to ctx.records.
+
+    Pre-conditions:
+        get_openai_client is patched; first response is "not-a-number" (triggers
+        retry), second is "15.0".
+        A real CallContext is passed.
+    Post-conditions:
+        - Exactly 2 llm_call records.
+        - First record span has no "_retry_" substring.
+        - Second record span equals first_span + "_retry_1".
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="test_pipeline")
+    mock_client = _make_mock_openai_chat_client(["not-a-number", "15.0"])
+
+    with (
+        patch("src.multi.sim.agent.get_openai_client", return_value=mock_client),
+        patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True)),
+    ):
+        agent = SimulationAgent(provider="openai", max_iterations=1)
+        agent.run_optimization_loop(ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) == 2
+    first_span = llm_records[0]["span"]
+    assert "_retry_" not in first_span
+    assert llm_records[1]["span"] == f"{first_span}_retry_1"
+
+
+def test_get_llm_suggestion_no_retry_no_suffix() -> None:
+    """get_llm_suggestion with no retry produces a single record with no _retry_ in span.
+
+    Patches get_openai_client at the HTTP level so the real _call_openai and
+    log_llm_call run, writing actual records to ctx.records.
+
+    Pre-conditions:
+        get_openai_client is patched; first response is "15.0" (no retry needed).
+        A real CallContext is passed.
+    Post-conditions:
+        - Exactly 1 llm_call record.
+        - Span does not contain "_retry_".
+
+    Complexity:
+        O(1) — no real I/O.
+    """
+    from src.llm_pipeline_telemetry import CallContext
+
+    ctx = CallContext(pipeline="test_pipeline")
+    mock_client = _make_mock_openai_chat_client(["15.0"])
+
+    with (
+        patch("src.multi.sim.agent.get_openai_client", return_value=mock_client),
+        patch("src.multi.sim.agent.SimulationAgent.run_simulation", return_value=(420.0, True)),
+    ):
+        agent = SimulationAgent(provider="openai", max_iterations=1)
+        agent.run_optimization_loop(ctx=ctx)
+
+    llm_records = [r for r in ctx.records if r.get("record_type") == "llm_call"]
+    assert len(llm_records) == 1
+    assert "_retry_" not in llm_records[0]["span"]
