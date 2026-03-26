@@ -609,6 +609,8 @@ def test_perform_real_simulation_ctx_attribution() -> None:
         - tool_internal_runtime_ms == pytest.approx(500.0) on both.
         - call_start_ts and call_end_ts present on both.
         - status == "ok" on both.
+        - Return value is a list of exactly 2 str items.
+        - Each str is valid JSON that round-trips to mock_tool_result.
 
     Complexity:
         O(1) — no real I/O.
@@ -629,7 +631,7 @@ def test_perform_real_simulation_ctx_attribution() -> None:
         ),
     ):
         agent = SimulationAgent(provider="openai")
-        agent.perform_real_simulation("any prompt", ctx=ctx)
+        result = agent.perform_real_simulation("any prompt", ctx=ctx)
 
     tool_records = [r for r in ctx.records if r.get("record_type") == "tool_execution"]
     assert len(tool_records) == 2
@@ -641,6 +643,22 @@ def test_perform_real_simulation_ctx_attribution() -> None:
         assert "call_start_ts" in rec
         assert "call_end_ts" in rec
         assert rec["status"] == "ok"
+
+    # --- return value: list of JSON strings that round-trip to the original dict ---
+    assert isinstance(result, list), (
+        f"perform_real_simulation must return a list, got {type(result).__name__}"
+    )
+    assert len(result) == 2, (
+        f"Expected 2 JSON strings (one per param pair), got {len(result)}: {result!r}"
+    )
+    for i, s in enumerate(result):
+        assert isinstance(s, str), (
+            f"result[{i}] must be a str, got {type(s).__name__}: {s!r}"
+        )
+        parsed = _json.loads(s)  # raises JSONDecodeError if not valid JSON
+        assert parsed == mock_tool_result, (
+            f"result[{i}] round-trip mismatch — got {parsed!r}, expected {mock_tool_result!r}"
+        )
 
 
 def test_perform_real_simulation_tool_execution_no_runtime_seconds() -> None:
