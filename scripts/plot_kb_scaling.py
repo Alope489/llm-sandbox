@@ -97,7 +97,7 @@ def generate_artifacts(csv_path: Path, output_dir: Path) -> dict[str, Path]:
         x=[int(row["file_count"]) for row in rows],
         y=[float(row["ask_elapsed_ms_mean"]) for row in rows],
         xlabel="File count",
-        ylabel="Mean ask elapsed (ms)",
+        ylabel="Mean ask latency (ms)",
         title="KB search latency vs file count",
     )
     _plot_xy(
@@ -105,15 +105,15 @@ def generate_artifacts(csv_path: Path, output_dir: Path) -> dict[str, Path]:
         x=[int(row["file_count"]) for row in rows],
         y=[float(row["ask_input_tokens_mean"]) for row in rows],
         xlabel="File count",
-        ylabel="Mean ask input tokens",
+        ylabel="Tokens used by LLM (from knowledge base)",
         title="KB input tokens vs file count",
     )
     _plot_xy(
         input_tokens_vs_bytes,
         x=[int(row["local_store_bytes"]) for row in rows],
         y=[float(row["ask_input_tokens_mean"]) for row in rows],
-        xlabel="Local KB bytes",
-        ylabel="Mean ask input tokens",
+        xlabel="Knowledge base size in bytes",
+        ylabel="Tokens used by LLM (from knowledge base)",
         title="KB input tokens vs local KB size",
     )
     _plot_xy(
@@ -121,7 +121,7 @@ def generate_artifacts(csv_path: Path, output_dir: Path) -> dict[str, Path]:
         x=[int(row["vector_store_usage_bytes_after"]) for row in rows],
         y=[float(row["ask_elapsed_ms_mean"]) for row in rows],
         xlabel="Vector store usage bytes after upload",
-        ylabel="Mean ask elapsed (ms)",
+        ylabel="Mean ask latency (ms)",
         title="KB search latency vs vector store size",
     )
     return {
