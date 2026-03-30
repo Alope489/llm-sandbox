@@ -1,0 +1,11 @@
+For Inconel 718, summarize likely effects of solution treatment temperature on yield strength and what assumptions should be tracked.
+---
+For Ti-6Al-4V, explain how cooling rate after heat treatment can shift the strength-ductility balance and what data gaps matter most.
+---
+For porous Al2O3 ceramic, describe why thermal conductivity trends with porosity and list boundary-condition assumptions a simulation should report.
+---
+Compare Inconel 718 and CoCrFeMnNi for high-temperature service: what properties are most relevant and what uncertainties should be documented.
+---
+Given a materials simulation matrix, what minimum checks should be used to validate physical plausibility versus operational usefulness.
+---
+How should uncertainty be communicated when model predictions rely on extrapolated property data outside measured temperature ranges.

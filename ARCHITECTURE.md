@@ -161,6 +161,68 @@ graph TD
     executor --> linearOrch["Linear orchestrator (linear/orchestrator.run)"]
 ```
 
+## Sandbox coordinator and executor
+
+- **Location**: `sandbox/coordinator.py`, `sandbox/executor.py`, `sandbox/run_coordinator.py`, `sandbox/config.json`
+- **Purpose**: Queue-driven orchestration in the sandbox that can route each input to `extractor`, `processor`, `kb`, or `simulation`, run in linear or parallel mode, and feed outputs to reasoning sequentially.
+- **Reasoning behavior**: unchanged functional behavior; no reasoning parallelism. In parallel mode, executor work completes concurrently and reasoning consumes those results sequentially in completion order.
+- **Programmatic handoff**: coordinator path uses in-memory outputs (`emit_artifacts=False`) so intermediate prompt/result files are not required; direct standalone calls to sandbox agents keep existing file-writing behavior.
+
+### Queue format (`sandbox/prompts/coordinator_queue.txt`)
+
+`JSON` records separated by `---` (or one JSON record per line), with:
+
+- `input_id` (required)
+- `payload` (required)
+- `source_hint` (optional)
+- `route_hint` (optional; when set to `extractor|processor|kb|simulation`, routing is forced)
+
+Example:
+
+```json
+{"input_id":"input-001","payload":"Extract structured data from this materials task.","source_hint":"extractor.txt"}
+---
+{"input_id":"input-002","payload":"Validate constraints and produce risk ranking.","source_hint":"processor.txt"}
+```
+
+### Config (`sandbox/config.json`)
+
+- `execution_mode`: `linear` or `parallel`
+- `worker_mode`: `max` or `fixed`
+- `max_workers`: positive integer (used when `worker_mode=fixed`)
+- `kb_scale`: `small|medium|large` (used by sandbox KB preload)
+- `sim_mode`: `regular` or `real`
+- `sim_regular`: regular simulation defaults (`initial_cooling_rate_K_per_min`, `max_iterations`, `duration_hours`)
+- `processor_tasks`: allowed processor task list for coordinator processor route
+
+### Entrypoint
+
+Run the sandbox coordinator end-to-end:
+
+```bash
+py -m sandbox.run_coordinator --queue sandbox/prompts/coordinator_queue.txt --config sandbox/config.json
+```
+
+The returned JSON includes:
+
+- `per_input_runs[]` (per-input telemetry envelope with `input_id`, `elapsed_ms`, `input_tokens`, `output_tokens`, `status`, `agent`)
+- `reasoning_runs[]`
+- `final_reasoning_response`
+- `aggregate` totals
+
+### Worker sweep benchmarking
+
+Use fixed workers to identify scaling plateaus, then compare with `worker_mode=max`.
+
+PowerShell example:
+
+```powershell
+foreach ($w in 1,2,4,8,12) {
+  (Get-Content sandbox/config.json -Raw | ConvertFrom-Json) | ForEach-Object { $_.worker_mode="fixed"; $_.max_workers=$w; $_ } | ConvertTo-Json -Depth 10 | Set-Content sandbox/config.json
+  py -m sandbox.run_coordinator --queue sandbox/prompts/coordinator_queue.txt --config sandbox/config.json
+}
+```
+
 ## Testing
 
 This is an **LLM agent pipeline**. Integration tests must use the **real LLM with ZERO mocking of any kind** (no mocks, no patch, no monkeypatch). Every agent has E2E integration tests.

@@ -1,0 +1,12 @@
+You are given a short materials science experiment description. Extract the structured material/simulation fields (composition, processing, simulation params, computed properties, uncertainty) as JSON.
+
+Material: NiTi shape memory alloy (Nitinol), ~55% Ni and 45% Ti by atomic percent. Vacuum induction melted, solution treated at 1073 K for 1 hour, water quenched. Target simulation: temperature sweep from 250 K to 450 K in 25 K steps, strain rate 1e-3 s^-1, periodic boundary conditions, model type "molecular dynamics". Report computed properties: density 6450 kg/m3, Young's modulus 75 GPa, Poisson's ratio 0.33, yield strength 350 MPa. Thermal conductivity and specific heat unknown. Uncertainty ~5% and confidence 0.7.
+---
+Extract structured data from this task description (return null for unknowns):
+
+We are studying porous alumina (Al2O3) ceramic produced by sol-gel synthesis. Heat treatment: 1473 K for 4 hours, cooling rate 10 K/min. Porosity about 25%, grain size around 500 nm, crystal structure corundum. Simulation: temperature range 300–1200 K step 100 K, boundary conditions: fixed. Model type: finite element. Pressure not specified. Measured: thermal expansion coefficient 8e-6 /K, density 3200 kg/m3. Others unknown. Uncertainty 12%, confidence 0.6.
+---
+Return structured JSON only:
+
+Material system: high-entropy alloy CoCrFeMnNi, equiatomic (20% each). Processing: arc melted, then homogenized at 1200 K for 24 hours, furnace cooled. Simulation: tensile test at 293 K (single temperature), strain rate 1e-4 s^-1, boundary conditions: uniaxial tension. Model type: crystal plasticity. Reported properties: yield strength 280 MPa, Young's modulus 200 GPa, Poisson's ratio 0.29, density 7900 kg/m3, thermal conductivity 15 W/mK, specific heat 450 J/kgK, electrical conductivity 1.3e6 S/m. Uncertainty 8%, confidence 0.75.
+

@@ -1,0 +1,5 @@
+What are the temperature and property themes covered for Inconel 718 in this knowledge base? Include uncertainty caveats.
+---
+For Ti-6Al-4V, explain how cooling rate during heat treatment changes strength and ductility trends.
+---
+Describe why porosity reduces thermal conductivity in alumina-like ceramic systems and list modeling cautions.

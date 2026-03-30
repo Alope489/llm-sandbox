@@ -1,0 +1,7 @@
+{"input_id":"input-001","payload":"Extract structured data from this materials task and return schema-ready JSON for downstream processing.","source_hint":"extractor.txt"}
+---
+{"input_id":"input-002","payload":"Validate constraints and produce feature extraction plus risk ranking for this alloy process description.","source_hint":"processor.txt"}
+---
+{"input_id":"input-003","payload":"What are practical tradeoffs for increasing cooling rate in nickel-based superalloy processing?","source_hint":"kb_queries.txt"}
+---
+{"input_id":"input-004","payload":"Run a simulation plan for elastic constant exploration with supercell sizing guidance.","source_hint":"sim_prompt"}

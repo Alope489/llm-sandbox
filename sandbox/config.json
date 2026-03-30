@@ -1,0 +1,19 @@
+{
+  "execution_mode": "parallel",
+  "worker_mode": "max",
+  "max_workers": 4,
+  "kb_scale": "small",
+  "sim_mode": "regular",
+  "sim_regular": {
+    "initial_cooling_rate_K_per_min": 15.0,
+    "max_iterations": 3,
+    "duration_hours": 4.0
+  },
+  "processor_tasks": [
+    "schema_validation",
+    "constraint_verification",
+    "feature_extraction",
+    "normalization",
+    "risk_ranking"
+  ]
+}
