@@ -632,6 +632,112 @@ flowchart TD
 
 ---
 
+## KB Growth Benchmark Suite (`new_kb_sandbox/`)
+
+Standalone measurement harness that quantifies how OpenAI vector-store query
+latency, token usage, and throughput change as the knowledge base grows, under
+two distinct file-structure regimes.
+
+### Purpose
+
+| Question answered | Test |
+|---|---|
+| How does KB *size* (bytes) affect query latency and throughput when the entire KB is one file? | Test 1 — single-file growth |
+| Does *file granularity* (N separate files vs one merged file of equal bytes) change those metrics? | Test 2 — multi-file growth |
+
+### File layout
+
+```
+new_kb_sandbox/
+  prompts/
+    kb_benchmark_queries.txt          — 6 benchmark queries (verbatim copy)
+  _shared.py                          — all pure helpers + run_benchmark() loop
+  benchmark_single_file_growth.py     — Test 1 CLI entry point
+  benchmark_multi_file_growth.py      — Test 2 CLI entry point
+  plot_single_file_growth.py          — Test 1 plotter (4 PNGs + report.md)
+  plot_multi_file_growth.py           — Test 2 plotter (4 PNGs + report.md)
+  cleanup_vector_stores.py            — deletes all kb-bench-* VS from account
+  results/
+    single_file/<YYYY-MM-DDTHHMMSS>/  — metrics_per_run.csv, metrics_averaged.csv, PNGs, report.md
+    multi_file/<YYYY-MM-DDTHHMMSS>/   — same structure, independent directory
+tests/
+  integration/
+    test_benchmark_kb_growth_smoke.py — 22 unit tests + 2 integration smoke tests
+```
+
+### Architecture alignment
+
+- **Reuses `src.llm_pipeline_telemetry`** (`get_openai_client`, `CallContext`,
+  `log_llm_call`) without modifying any `src/` module.  All telemetry is emitted
+  via the existing `llm.telemetry` logger.
+- **Does not alter the KB Agent public interface** (`src/multi/kb_agent.py`).
+- **Isolated in `new_kb_sandbox/`** — no production code imports from this directory.
+
+### Key design decisions
+
+- **Fresh VS per step** in both tests: the only variable between tests is
+  file structure (one growing file vs. N separate files of equal total bytes).
+- **`run_benchmark(get_files_for_step, ...)` in `_shared.py`**: the single
+  benchmark loop used by both runners.  Each runner passes a one-line lambda
+  that controls how files are assembled for each step.
+- **`compute_step_metrics`**: single authoritative function for all per-step CSV
+  aggregation — no risk of divergent p50/p95 formulas between the two runners.
+- **Binary-safe concatenation** in `build_growing_file`: reads/writes in `rb`/`wb`
+  mode so `len(output) == sum(chunk.stat().st_size for chunk in chunks[:step])`.
+- **Temp-file cleanup** guaranteed via `try/finally` in `run_benchmark`; at most
+  one temp file on disk at a time (Test 1 only).
+- **Partial-result flush**: on `upload_with_retry` exhaustion, all completed rows
+  are flushed to `metrics_per_run.csv` before re-raising.
+
+### Data flow
+
+```mermaid
+flowchart TD
+    subgraph test1 [Test 1 - Single File Growth]
+        T1_chunks["chunk_0000..chunk_N"] -->|"concat N chunks (binary)"| T1_file["growing_file.bin"]
+        T1_file -->|upload_and_poll| T1_vs["OpenAI VS kb-bench-single-R-S-ts"]
+        T1_vs -->|file_search query| T1_raw["with_raw_response"]
+        T1_raw -->|"openai-processing-ms header"| T1_tel["log_llm_call()"]
+        T1_tel --> T1_ctx["CallContext.records"]
+        T1_raw --> T1_row["step row dict"]
+        T1_ctx --> T1_row
+        T1_row --> T1_csv["metrics_per_run.csv"]
+    end
+    subgraph test2 [Test 2 - Multi File Growth]
+        T2_chunks["chunk_0000..chunk_N"] -->|upload N files at once| T2_vs["OpenAI VS kb-bench-multi-R-S-ts"]
+        T2_vs -->|file_search query| T2_raw["with_raw_response"]
+        T2_raw -->|"openai-processing-ms header"| T2_tel["log_llm_call()"]
+        T2_tel --> T2_ctx["CallContext.records"]
+        T2_raw --> T2_row["step row dict"]
+        T2_ctx --> T2_row
+        T2_row --> T2_csv["metrics_per_run.csv"]
+    end
+    T1_csv -->|average_rows| avg1["metrics_averaged.csv"]
+    T2_csv -->|average_rows| avg2["metrics_averaged.csv"]
+    avg1 --> plot1["plot_single_file_growth.py"]
+    avg2 --> plot2["plot_multi_file_growth.py"]
+    plot1 --> art1["4x PNG + report.md"]
+    plot2 --> art2["4x PNG + report.md"]
+```
+
+### Complexity summary
+
+| Dimension | Cost |
+|---|---|
+| API calls (queries) | Θ(R × S × Q) — default 5×50×6 = 1 500 |
+| VS creations | Θ(R × S) — default 250 |
+| Upload data volume | Θ(R × S²) — quadratic; ~31.9 MB at defaults |
+| In-memory row dicts | Θ(R × S) — ~40 KB at defaults; negligible |
+
+### Environment variables
+
+| Variable | Purpose |
+|---|---|
+| `OPENAI_API_KEY` | Required for all benchmark and cleanup operations |
+| `OPENAI_MODEL` | Model used for all queries (default: `gpt-4o-mini`) |
+
+---
+
 ## Non-Functional Considerations
 
 ### Python Version Lock
