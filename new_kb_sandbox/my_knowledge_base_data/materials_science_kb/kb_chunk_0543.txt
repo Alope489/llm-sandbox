@@ -1,0 +1,56 @@
+
+
+### Synthesis Record 10.1149/2.1311712jes
+Target: Li4Ti5-δMoαO12
+Precursors: TiO2, MoO3, Li2CO3
+Operations: mixed; drying; treated
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1321608jes
+Target: SrTi0.3Fe0.7O3-δ
+Precursors: TiO2, Fe2O3, SrCO3
+Operations: milled; milling; dried; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1331610jes
+Target: α-Cu6.9V6O18.9
+Precursors: Cu2O, V2O5
+Operations: milled; pressed; sintered; cooled; ground; annealing; cooling; milled
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1361608jes
+Target: CaTiO3
+Precursors: TiO2, CaCO3
+Operations: mixed; milled; heated; blended; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1361707jes
+Target: LixSi
+Precursors: Si, Li
+Operations: dry
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1361713jes
+Target: Ni5Zr
+Precursors: (CH3)2CO, ZrO2, NiO
+Operations: added; milled; drying; powdered; pressed; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1501707jes
+Target: Li6.4La3Zr1.4Ta0.6O12
+Precursors: Ta2O5, ZrO2, La2O3, Li2O
+Operations: mixed; milling
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.1581704jes
+Target: La0.1Sr0.9Co0.8Fe0.2O3-δ
+Precursors: Fe2O3, Co3O4, La2O3, SrCO3
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.jes113286
+Target: 40SiO2-25Al2O3-15BaCO3-10BaF2-10YF3-0.25Eu2O3
+Precursors: Eu2O3, Al2O3, SiO2, BaF2, BaCO3, YF3
+Operations: pressed; treated
+Conditions: N/A
+

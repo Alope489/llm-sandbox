@@ -1,0 +1,187 @@
+
+
+### Synthesis Record 10.1016/j.powtec.2014.05.022
+Target: CaMnO3
+Precursors: NH4NO3, Mn(NO3)2·4H2O, Ca(NO3)2·4H2O
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2015.02.035
+Target: Sr1-xSixMnO3-δ
+Precursors: SiO2, Mn3O4, SrCO3
+Operations: milled; dried; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2015.04.062
+Target: TiAl-Nb
+Precursors: Al, Nb, TiH2
+Operations: mixed; milling; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2015.09.031
+Target: LiMn2O4
+Precursors: Li2CO3, MnO2
+Operations: mixed; milling; dried; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2016.02.002
+Target: LiNi0.5Mn1.5O4
+Precursors: NiO, Mn3O4, Li2CO3
+Operations: mixed; milling; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2016.03.002
+Target: Cu3.21Bi4.79S9
+Precursors: Cu, Bi, S
+Operations: mixed; mixed; milling; milled; milling; added; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2016.11.026
+Target: MgTi
+Precursors: Ti, Mg
+Operations: ground; ground; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2017.01.089
+Target: Sr2M1-xTbxO4
+Precursors: ZrO2, Tb4O7, SrCO3
+Operations: homogenized; mixing; dried; drying; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2017.05.011
+Target: Li0.5+0.5xSixFe2.5-1.5xO4
+Precursors: SiO2, α-Fe2O3, Li2CO3
+Operations: milling; mixed; ground; milling; Milling; compressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2017.05.026
+Target: Ag2WO4
+Precursors: Ag2CO3, WO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2017.09.036
+Target: EuxBa2Ca1-xWO6
+Precursors: CaCO3, WO3, Eu2O3, BaCO3
+Operations: ground; preheated; reground; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2018.03.013
+Target: CaGd4F14
+Precursors: GdF3, CaF2
+Operations: pressed; heated; ground; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.progsolidstchem.2007.01.013
+Target: CaCu3Ti4-xRuxO12
+Precursors: CuO, TiO2, CaCO3, RuO2
+Operations: mixed; added; calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.progsolidstchem.2014.04.007
+Target: LiCrMnO4
+Precursors: LiNO3, Mn(CH3COO)2·4H2O, Cr2O3
+Operations: pressed; heated; grinding; calcination
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2004.01.005
+Target: YBa2Cu3O7
+Precursors: CuO, Y2O3, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2004.01.019
+Target: Y1-xYbxAlO3
+Precursors: Y2O3, Al2O3, Yb2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2004.01.031
+Target: SrAl2O4
+Precursors: Al2O3, SrCO3, Eu2O3
+Operations: heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2004.02.006
+Target: LiREP4O12
+Precursors: NH4H2PO4, Eu2O3, Li2CO3
+Operations: milled; annealed; diluted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2004.09.009
+Target: xPbO·(0.50-x)BaO·0.50B2O3
+Precursors: PbO, H3BO3, BaCO3
+Operations: mixed; annealing; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2007.02.010
+Target: EuAl2O4
+Precursors: Al2O3, Eu2O3
+Operations: mixed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2009.10.017
+Target: BaY2-x-yEryNdxF8
+Precursors: BaF2, ErF3, NdF3, YF3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2009.12.010
+Target: BaHfO3
+Precursors: HfO2, Eu2O3, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2011.07.025
+Target: SrAl2O4
+Precursors: Eu2O3, SrCO3, Al2O3, Dy2O3
+Operations: pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2012.03.027
+Target: LiAl4.99-xO8
+Precursors: Dy2O3, Al2O3, CeO2, Li2CO3
+Operations: ground; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2013.01.055
+Target: Gd3Al2Ga3O12
+Precursors: Gd2O3, β-Ga2O3, α-Al2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2013.02.019
+Target: BixCa1-xWO4
+Precursors: CaCO3, WO3, Bi2O3
+Operations: mixed; milled; calcined; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2013.03.026
+Target: Na3YSi2O7
+Precursors: Na2CO3, CeO2, Y2O3, SiO2, Tb4O7
+Operations: added; ground; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2013.11.005
+Target: Li2BaP2O7
+Precursors: BaCO3, NH4H2PO4, Eu2O3, Li2CO3
+Operations: pulverized; treated; cooled; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2014.02.008
+Target: LaAlO3
+Precursors: Al2O3, La2O3
+Operations: mixing; mixed; dried; calcinated; mixed; compacted; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2014.12.005
+Target: SrSnO3
+Precursors: SnO2, Sm2O3, SrCO3
+Operations: mixed; sintered; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.radmeas.2015.07.002
+Target: Sr3Al2O5Cl2
+Precursors: SrCO3, Al2O3, SrCl2·6H2O
+Operations: mixed; ground; sintered; ground; sintered; cooled; ground
+Conditions: N/A

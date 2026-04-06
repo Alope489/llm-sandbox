@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1021/acs.chemmater.6b04983
+Target: Ba2FeOsO6
+Precursors: Fe2O3, OsO2, BaO2
+Operations: mixed; pressed; regrinding; regrinding; heating
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b05056
+Target: Li1+xAlxGe2-x(PO4)3
+Precursors: GeO2, NH4H2PO4, Al2O3, Li2CO3
+Operations: mixed; ballmilled; preheated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b05075
+Target: LaSrMnO4
+Precursors: Mn2O3, La2O3, SrCO3
+Operations: ground; dried; heated; grinding; mixed; milled; dried
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b05394
+Target: Ca1-xCexSc2O4
+Precursors: Sc2O3, CaCO3, CeO2
+Operations: ground; fired; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b05458
+Target: RbLn2Fe4As4O2
+Precursors: FeAs, RbFe2As2, Tb4O7
+Operations: sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00006
+Target: xSr2Ca(PO4)2-(1 - x)Eu0Ca10Li(PO4)7
+Precursors: NH4H2PO4, SrCO3, CaCO3, Li2CO3
+Operations: ground; dry; preheated; ground; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00167
+Target: K4Mg4(P2O7)3
+Precursors: MgO, NH4H2PO4, K2CO3
+Operations: ground; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00226
+Target: NaFePO4
+Precursors: Na2CO3, FeC2O4·2H2O, (NH4)2HPO4
+Operations: milled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00276
+Target: Bi0.5K0.5TiO3
+Precursors: TiO2, K2CO3, Bi2O3
+Operations: mixed; milled; dried; calcined; milling; pressed; sintered; annealed; crushing
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00655
+Target: CuxNbSe2
+Precursors: Se, Cu, Nb
+Operations: heated; reground; repelletized; sintered; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00764
+Target: Na2Fe2Si2O7
+Precursors: Na2SiO3, Fe2SiO4
+Operations: milled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b00927
+Target: Na3V2(PO4)2F3
+Precursors: NH4VO3, NH4H2PO4, NaF
+Operations: evaporated; ground; sintered; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b01511
+Target: Li3RuyNb1-yO4
+Precursors: RuO2, Nb2O5, Li2CO3
+Operations: mixed; grinding; pelletizing; fired; grinded; pelletized; fired
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b01697
+Target: β-Si5.82Al0.18O0.18N7.82
+Precursors: Eu2O3, α-Si3N4, Al2O3, AlN
+Operations: ground; sintered; heated; fired
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b01746
+Target: Mg3.07Sb1.5Bi0.5-xSex
+Precursors: Mg, Se, Sb, Bi
+Operations: added; ground; mixed; pressed; crushed; ground; mixed; sintered; pressing; conducted; heating
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b01768
+Target: MgAgSb
+Precursors: Sb, Mg, Ag
+Operations: milled; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b01834
+Target: NaxMoO2
+Precursors: Na2/3MoO2, MoO2, 2H2O
+Operations: heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b02255
+Target: (GaN)1-x(ZnO)x
+Precursors: NH3, β-Ga2O3, ZnO
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b02589
+Target: Li2MnO3
+Precursors: MnCO3, Li2CO3
+Operations: milled; heated; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b02724
+Target: EuxCa10-xM(PO4)7
+Precursors: NH4H2PO4, Eu2O3, CaCO3, K2CO3
+Operations: ground; dry; preheated; ground; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.7b03143
+Target: KHg4Ga5Se12
+Precursors: K2Se, Ga2Se3, HgSe
+Operations: heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00102
+Target: Sr2TiO4
+Precursors: TiO2, SrCO3
+Operations: mixed; calcined; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00184
+Target: Li7La3Zr2O12
+Precursors: LiOH, ZrO2, La2O3
+Operations: milled; dried; milling; pressed; compacted; sintered; added
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00280
+Target: CaSc2O4
+Precursors: Sc2O3, CaCO3, CeO2, Yb2O3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00455
+Target: Ca1.65Sr0.35SiO4
+Precursors: SrCO3, CaCO3, SiO2
+Operations: mixed; ground; sintered; cooled; reground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00847
+Target: CaZrTi2O7
+Precursors: TiO2, CaCO3, ZrO2
+Operations: mixed; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00851
+Target: LaVO4
+Precursors: NH4(VO4)3, La2O3
+Operations: mixed; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b00937
+Target: Sr2ZnGe2O7
+Precursors: GeO2, ZnO, SrCO3
+Operations: heated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b01042
+Target: Sr2TiO4
+Precursors: SrCO3, TiO2
+Operations: mixed; pressed; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.5b01098
+Target: Ba0.5-xTaO3-x
+Precursors: Ta2O5, BaCO3
+Operations: mixed; calcined; pressed; fired; fired; fired
+Conditions: N/A

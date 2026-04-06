@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.electacta.2007.11.042
+Target: Li(Ni0.4Co0.2Mn0.4)O2
+Precursors: LiOH, (Ni0.4Co0.2Mn0.4)(OH)2
+Operations: pelletized
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2007.12.020
+Target: BaCe0.85-xZrxY0.15O3-δ
+Precursors: Y2O3, ZrO2, CeO2, BaCO3
+Operations: mixed; ground; dried; milling; ground; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2007.12.054
+Target: LiNi0.4Mn1.6O4
+Precursors: LiCO3, MnCO3, NiCO3·2Ni(OH)2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.01.014
+Target: CuWO4
+Precursors: CuO, WO3
+Operations: mixed; milled; added; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.01.039
+Target: La0.9Sr0.1Ga0.8Mg0.2O3-δ
+Precursors: Ga2O3, MgO, La2O3, SrCO3
+Operations: mixed; milled; dried; pre-fired; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.03.060
+Target: La0.9Sr0.1Ga0.8Mg0.2O3-δ
+Precursors: Ga2O3, MgO, La2O3, SrCO3
+Operations: pre-calcined; milled; calcined; pressed; sintered; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.04.063
+Target: LiFe(WO4)2
+Precursors: Fe2O3, WO3, Li2CO3
+Operations: mixed; milled; added; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.06.013
+Target: SrZr0.9Y0.1O3-δ
+Precursors: Y2O3, ZrO2, SrCO3
+Operations: blended; calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.07.076
+Target: Li4Ti5O12
+Precursors: TiO2, LiOH·H2O
+Operations: mixed; ground; calcined; cooled; drying
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.08.037
+Target: (La0.85Sr0.15)0.9MnO3
+Precursors: SrCO3, La2O3, MnO2
+Operations: calcinating; powdered; ground; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.10.021
+Target: Li2Ti3O7
+Precursors: TiO2, Li2CO3
+Operations: mixed; grounded; added; pressed; heated; reheated; grinding; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.10.062
+Target: Li3V2(PO4)3C
+Precursors: NH4H2PO4, V2O5, Li2CO3
+Operations: added; dispersed; mixed; milling; evaporating; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.10.070
+Target: Na2/3(Ni1/3-xMn2/3-yMx+y)O2
+Precursors: Na2CO3, Mn2O3, Ni(OH)2, Mg(OH)2
+Operations: mixed; milling; pressed; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.11.045
+Target: LiV3O8-yFz
+Precursors: LiF, NH4VO3, Li2CO3
+Operations: mixed; pressed; heated; cooled; ground; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.12.024
+Target: LiFePO4
+Precursors: FeC2O4·H2O, NH4H2PO4, Li2CO3
+Operations: precalcined; cooling; pressed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.12.039
+Target: Sm0.2Ce0.8O1.9
+Precursors: CeO2, Sm2O3, H2O
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2008.12.049
+Target: LiYMo3O8
+Precursors: LiOH, MoO3, Y2O3
+Operations: ground; pressed; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.03.009
+Target: MGeO3
+Precursors: CuO, GeO2
+Operations: mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.03.053
+Target: (NH4)2Si1-xTixP4O13
+Precursors: SiO2, TiO2, NH4PO3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.03.063
+Target: LiFePO4
+Precursors: FePO4, Li2CO3
+Operations: mixed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.03.071
+Target: La0.7Sr0.3MnO3
+Precursors: La(NO3)2·6H2O, Sr(NO3)2, Mn(NO3)2
+Operations: pressed; sintered; calcined; ballmilled; mixed; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.04.010
+Target: Li4Ti5O12-xBrx
+Precursors: TiO2, LiOH·H2O, LiBr·H2O
+Operations: mixed; ground; heated; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.05.054
+Target: Ca1-xHoxMnO3
+Precursors: Ho2O3, CaCO3, Mn(NO3)2·4H2O
+Operations: grounded; heated; distributed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.05.058
+Target: Li(Li1/3Ti5/3)O4
+Precursors: TiO2, LiOH·H2O
+Operations: milled; dried; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.06.030
+Target: LiFePO4
+Precursors: (CH3COO)2Fe, NH4H2PO4, Li2CO3
+Operations: calcined; ground; pressed; sintered; pressed; sintered; post-annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.07.040
+Target: Sm0.2Ce0.8O1.9
+Precursors: CeO2, Sm2O3, H2O
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.07.082
+Target: Li4Ti5-xVxO12
+Precursors: TiO2, V2O5, Li2CO3
+Operations: milled; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2009.08.021
+Target: NdBaCo2-xNixO5+δ
+Precursors: NiO, Co3O4, Nd2O3, BaCO3
+Operations: mixed; calcined; ground; pressed; sintered; cooling; annealed
+Conditions: N/A

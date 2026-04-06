@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.07.066
+Target: ZnS-In2O3
+Precursors: ZnS, In2O3
+Operations: milling; compacted; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.09.045
+Target: Zn2TiO4
+Precursors: TiO2, ZnO
+Operations: calcining; grinding; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.09.074
+Target: Bi(Cu1-xZnx)2PO6
+Precursors: CuO, NH4H2PO4, Bi2O3, ZnO
+Operations: mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.10.208
+Target: PMN-PT
+Precursors: PbO, MgO, TiO2, Nb2O5
+Operations: mixed; sintered; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.10.223
+Target: BaAl1-xGaxBO3F2
+Precursors: Ga2O3, BaF2, Al2O3, H3BO3
+Operations: mixed; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.11.020
+Target: NdFeO3
+Precursors: Fe2O3, Nd2O3
+Operations: calcined; pressed; sintered; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.11.022
+Target: Na0.8-yAyCoO2
+Precursors: Na2CO3, Co3O4, SrCO3
+Operations: added; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.11.053
+Target: LiAlO2
+Precursors: Al2O3, Li2CO3
+Operations: pre-sintered; mixed; added; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2010.12.018
+Target: Sr3Tb(BO3)3
+Precursors: H3BO3, Tb4O7, SrCO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.01.014
+Target: Co2SiO4
+Precursors: SiO2, Co3O4
+Operations: mixed; milling; calcined; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.01.081
+Target: MgO-CaO-SiO2
+Precursors: CaO, MgO, SiO2
+Operations: milled; quenched; crushed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.02.003
+Target: (NaxCa1-x-yLuy-0.05Ce0.05)F2+y-x
+Precursors: CeF3, LuF3, NaF, CaF2
+Operations: heated; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.04.010
+Target: Sr14-xCaxCu24O41
+Precursors: CuO, CaCO3, SrCO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.04.018
+Target: GdxLa1-xSc3(BO3)4
+Precursors: Sc2O3(4N), B2O3, Gd2O3(4N), La2O3(4N)
+Operations: added; sintered; ground; heated; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.07.023
+Target: Sm0.03Gd2.97Ga5O12
+Precursors: Gd2O3, Ga2O3, Sm2O3
+Operations: mixed; pressed; sintered; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.07.024
+Target: LiCoO2
+Precursors: Co3O4, Li2CO3
+Operations: mixed; calcined; mixed; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.07.026
+Target: CsLa(WO4)2
+Precursors: Nd2O3, Cs2CO3, WO3, La2O3
+Operations: dried; grinding; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.08.036
+Target: Zn1-xMgxO
+Precursors: MgO, ZnO
+Operations: mixing; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.09.030
+Target: Sr1-xCaxTiO3
+Precursors: TiO2, CaCO3, SrCO3
+Operations: milled; calcined; milled; pelletized; sintered; heated; cooled; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.10.027
+Target: Bi12SiO20
+Precursors: SiO2, Bi2O3
+Operations: mixed; dried; heated; cooled; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.11.020
+Target: Li((Y1-xLux)0.98Ce0.02)F4
+Precursors: CeF3, LiF, LuF3, YF3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.12.073
+Target: 0.80Na0.5Bi0.5TiO3-0.20K0.5Bi0.5TiO3
+Precursors: Na2CO3, TiO2, K2CO3, Bi2O3
+Operations: ground; mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.12.088
+Target: Bi4(GexSi1-x)3O12
+Precursors: SiO2, Bi2O3, Ge2O3
+Operations: cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.12.094
+Target: Pr1/2Sr1/2MnO3
+Precursors: Pr6O11, MnO2, SrCO3
+Operations: ground; preheated; mixed; reground; pressed; sintered; shaped
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2011.12.096
+Target: PrFeO3
+Precursors: Pr6O11, Fe2O3
+Operations: ground; pressed; sintered; grinding; pressed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2012.01.019
+Target: (Ce0.008Lu0.1488Y0.8432)3Al5O12
+Precursors: Lu2O3, Y2O3, Al2O3, CeO2
+Operations: mixed; pressed; grinding; heated; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2012.02.029
+Target: Ba3In4Cu3O12
+Precursors: CuO, BaCO3, In2O3
+Operations: mixed; calcined; grinding; calcination; pressed; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2012.03.042
+Target: Lu2Ti2O7
+Precursors: TiO2, Lu2O3
+Operations: agglomerated; mixed; milled; dried; added; ground; annealed; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2012.04.024
+Target: PrSr2Mn2O7
+Precursors: Pr6O11, MnO2, SrCO3
+Operations: pre-annealed; mixed; grounded; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jcrysgro.2012.04.029
+Target: Y1.5Ba2Cu3Ox
+Precursors: Y2O3, YBa2Cu3O7
+Operations: mixed; milled; pressed; treated; heating; cooling; cooling; cooling
+Conditions: N/A

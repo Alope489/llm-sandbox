@@ -1,0 +1,175 @@
+
+
+### Synthesis Record 10.1016/S0925-4005(01)00539-1
+Target: SrTi0.95Nb0.05O3.025
+Precursors: TiO2, Nb2O5, SrCO3
+Operations: mixing; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)00549-4
+Target: Na3Zr2Si2PO12
+Precursors: ZrSiO4, Na3PO4
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)00667-0
+Target: BaTiO3
+Precursors: BaTiO(C2O4)·4H2O
+Operations: mixed; dried; calcined; pressing; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)00721-3
+Target: La2CuO4
+Precursors: CuO, La2O3
+Operations: milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)00730-4
+Target: GdCoO3
+Precursors: Gd2O3, CoO
+Operations: ground; pressed; sintered; pulverized; sintered; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)00748-1
+Target: xα-Fe2O3-(1-x)ZrO2
+Precursors: ZrO2, α-Fe2O3
+Operations: mixed; mixing; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)00957-1
+Target: ZnMoO4
+Precursors: MoO3, ZnO
+Operations: mixed; milled; ground; dried; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(01)01062-0
+Target: SrTi1-xMgxO3-δ
+Precursors: TiO2, MgO, SrCO3
+Operations: calcining; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(02)00372-6
+Target: Na3Zr2Si2PO12
+Precursors: SiO2, Na2CO3, NH4H2PO4, ZrO2
+Operations: milled; dried; calcined; re-milled; pelletised; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(02)00473-2
+Target: La2/3-xLi3xTiO3
+Precursors: TiO2, La2O3, Li2CO3
+Operations: ground; heated; fired; cooled; grinding; pressed; fired; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(03)00169-2
+Target: xTiO2-(1-x)WO3
+Precursors: anataseTiO2, WO3
+Operations: mixing; mixing; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(03)00174-6
+Target: Bi2Cu0.1V0.9O5.35
+Precursors: CuO, V2O5, Bi2O3
+Operations: mixed; drying; calcined; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(03)00191-6
+Target: xTiO2-(1-x)α-Fe2O3
+Precursors: TiO2, α-Fe2O3
+Operations: mixed; mixing; milling; milling; milling; milling; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(03)00346-0
+Target: MgFe2O4
+Precursors: Fe(NO3)3·9H2O, Mg(NO3)2·6H2O
+Operations: heated; grounded; mixed; calcined; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0925-4005(99)00414-1
+Target: xSnO2-(1-x)α-Fe2O3
+Precursors: t-SnO2, α-Fe2O3
+Operations: mixing; mixing; milling; milling; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-2040(99)00061-2
+Target: CdTiO3
+Precursors: CdCO3, TiO2
+Operations: fired; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-3373(00)00204-6
+Target: CoO-MgO
+Precursors: Co(NO3)2, Mg(CH3COO)2, H2O
+Operations: mixing; dissolved; added; dried; ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-3373(02)00239-4
+Target: LaCo(1-x)FexO3
+Precursors: Co3O4, La2O3, Fe2O3
+Operations: grinding; milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-3373(02)00308-9
+Target: FiveLaCo1-xFexO3
+Precursors: Co3O4, La2O3, Fe2O3
+Operations: grinding; milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(00)00429-4
+Target: BaCeO3
+Precursors: CeO2, BaCO3
+Operations: mixed; heated; milled; fired; pressed; granulated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(00)00579-2
+Target: LaMnxV1-xO4-δ
+Precursors: La2O3, V2O5, MnO2
+Operations: mixed; mixed; pelletised; calcined; calcination; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(02)00457-X
+Target: La1-xSrxFeO3±δ
+Precursors: Fe(NO3)3·9H2O, Sr(NO3)2, La(NO3)3·6H2O
+Operations: mixed; heated; heated; cooled; ground; heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(02)00458-1
+Target: La1-xSrxFeO3±δ
+Precursors: Fe(NO3)3·9H2O, Sr(NO3)2, La(NO3)3·6H2O
+Operations: mixed; heated; heated; cooled; ground; heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(02)00492-1
+Target: LaFexV1-xO4-δ
+Precursors: Fe2O3, La2O3, V2O5
+Operations: ground; palletized; calcined; cooling; grinding; heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(03)00255-2
+Target: VSbO4
+Precursors: Sb2O3, V2O5
+Operations: grounded; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(99)00445-7
+Target: VSb1-xTixO4
+Precursors: Sb2O3, TiO2, V2O5
+Operations: mixing; grinded; heated; heating; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0926-860X(99)00446-9
+Target: Ca10.5-xCux(PO4)7
+Precursors: NH4H2PO4, CaCO3, CuO
+Operations: mixed; heated; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0969-806X(03)00228-7
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: milled; dried; calcinated; milling; added; done
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0969-806X(03)00464-X
+Target: KLiO4S
+Precursors: K2SO4, Li2SO4
+Operations: mixing; ground; heated; ground; mixed; ground
+Conditions: N/A

@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.jssc.2007.09.023
+Target: Sr1-xEuxZnP2O7
+Precursors: (NH4)2HPO4, Eu2O3, ZnO, SrCO3
+Operations: ground; mixed; fired; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.09.027
+Target: BaZr0.8Y0.2O3-δ
+Precursors: Y2O3, ZrO2, BaCO3
+Operations: dried; mixing; milling; fired; mixed; milled; pressed; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.09.028
+Target: AVO3
+Precursors: NH4VO3, Sc2O3
+Operations: ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.10.008
+Target: TbxLa1-x(PO3)3
+Precursors: (NH4)2HPO4, La2O3, Tb4O7
+Operations: mixing; added; mixing; heated; grinding; fired; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.10.013
+Target: Bi2Te3
+Precursors: Bi, Te
+Operations: melted; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.10.025
+Target: Ln2(Ti2-xLnx)O7-x/2
+Precursors: Ho2O3, TiO2
+Operations: mixing; pressed; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.11.035
+Target: Ba2Eu1-xPrxNb1-xSbxO6
+Precursors: Pr6O11, Eu2O3, Nb2O5, Sb2O3, BaCO3
+Operations: dried; ground; drying; heated; pressed; heated; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.11.037
+Target: M2Si5N8
+Precursors: EuNx, Ca3N2, α-Si3N4
+Operations: mixed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.12.005
+Target: CaTiO3
+Precursors: TiO2, CaCO3
+Operations: mixed; grinding; pelletized; cooled; quenched; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.12.012
+Target: Bi3.25La0.75Ti3O12
+Precursors: TiO2, La2O3, Bi2O3
+Operations: pre-calcined; mixed; ground; pressed; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.12.016
+Target: YBaCo4O8.1
+Precursors: Co3O4, Y2O3, BaCO3
+Operations: mixed; heated; cooled; annealed; quenched; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2007.12.024
+Target: Pr2-xCaxMo2O9-δ
+Precursors: Pr6O11, CaCO3, (NH4)6Mo7O24·4H2O
+Operations: mixed; homogenized; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.01.022
+Target: Sr(1-x)CaxCrO3
+Precursors: CrO2, SrO, CaO
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.01.027
+Target: Na2WO4
+Precursors: Na2WO4·2H2O
+Operations: preheated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.01.038
+Target: La0.7A0.3Mn0.96(InxAl(1-x))0.04O3
+Precursors: SrO, Al2O3, Mn2O3, In2O3, La2O3
+Operations: mixed; heated; reground; pressed; fired; reground; pressed; sintered; grinding; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.01.042
+Target: Li2CaTa2O7
+Precursors: Ta2O5, CaCO3, Li2CO3
+Operations: mixed; heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.01.046
+Target: Sr2Nb2O7
+Precursors: Nb2O5, SrCO3
+Operations: grinding; calcined; sintered; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.02.005
+Target: Bi2MoO6
+Precursors: MoO3, Bi2O3
+Operations: ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.02.031
+Target: YBaCo4-xMxO7
+Precursors: Co3O4, Y2O3, BaCO3, ZnO
+Operations: mixing; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.003
+Target: LiAl5O8
+Precursors: Al2O3, Li2CO3
+Operations: mixed; pelletized; heated; cooled; reground; pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.004
+Target: Pr0.75Na0.25MnO3
+Precursors: Pr6O11, MnCO3, NaHCO3
+Operations: mixed; heated; pressed; treated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.005
+Target: ZnMoO4
+Precursors: (NH4)6Mo7O24·4H2O, ZnO, Eu2O3
+Operations: mixed; pre-calcined; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.015
+Target: Cr2xFe2-2xMo3O12
+Precursors: MoO3, Fe2O3, Cr2O3
+Operations: preheated; milling; pressed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.016
+Target: Ce1-xLaxNbO4+δ
+Precursors: Nb2O5, La2O3, CeO2
+Operations: mixed; heated; cooled; milled; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.026
+Target: Ca3Al2O6
+Precursors: Al(OH)3·0H2O, CaCO3
+Operations: attrition; milled; dried; pressed; heated; heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.029
+Target: Sr2CoSbO6
+Precursors: Sb2O5, Co(C5H7O2)3, SrCO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.033
+Target: (Sr2O2)(CrO2)1.85
+Precursors: CrO2, SrO
+Operations: mixing; pressed; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.041
+Target: LaNi0.5Fe0.5O3
+Precursors: Fe2O3, La2O3, NiO
+Operations: ground; pressed; fired; pelletized; fired; firing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.03.043
+Target: BaAl2O4
+Precursors: Al2O3, BaCO3
+Operations: ground; calcined; reground; pressed; reacted; reground; heated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2008.04.005
+Target: Li2MO3
+Precursors: Ru, Li2CO3
+Operations: added; mixed; heated; cooling
+Conditions: N/A

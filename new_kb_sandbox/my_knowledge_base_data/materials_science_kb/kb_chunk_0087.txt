@@ -1,0 +1,175 @@
+
+
+### Synthesis Record 10.1016/S0040-6090(03)01023-X
+Target: SrCu2O2
+Precursors: CuO, SrCO3
+Operations: reground; reground; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0040-6090(03)01174-X
+Target: Cu2Sc2O5
+Precursors: Sc2O3, CuO
+Operations: ground; heated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0040-6090(03)01486-X
+Target: Sr1.9Ca0.1NaNb5O15
+Precursors: Na2CO3, CaCO3, Nb2O5, SrCO3
+Operations: milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0040-6090(99)00717-8
+Target: YBa2Cu3O7-δ
+Precursors: CuO, Y2O3, BaCO3
+Operations: mixed; milling; calcined; milled; pressed; sintered; annealed; milling; calcination; pressing; heated; quenched; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0040-6090(99)01091-3
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0040-6090(99)01098-6
+Target: Zn3In2O6
+Precursors: In2O3, ZnO
+Operations: ground; fired; reground; repelletized; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00275-7
+Target: Sr0.97Ti0.60Fe0.40O3-δ
+Precursors: TiO2, FeC2O4·2H2O, SrCO3
+Operations: powdered; annealed; pressed; sintered; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00289-7
+Target: LiMn2O4
+Precursors: MnCO3, Li2CO3
+Operations: sintered; pre-sintering; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00292-7
+Target: Li3V2(PO4)3
+Precursors: NH4H2PO4, V2O5, Li2CO3
+Operations: ground; grounded; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00293-9
+Target: LiCoO2
+Precursors: Co3O4, Li2CO3
+Operations: ground; pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00296-4
+Target: Zn2SnO4
+Precursors: SnO2, ZnO
+Operations: mixed; milled; milled; mixed; milled; mixing; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00311-8
+Target: LiFePO4
+Precursors: (NH4)2HPO4, FeC2O4·2H2O, Li2CO3
+Operations: ground; mixed; heated; heated; grinding; homogenizing; pressed; annealed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00320-9
+Target: Sr6Ta2O11
+Precursors: Ta2O5, SrCO3
+Operations: mixing; annealed; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00352-0
+Target: Bi2V1-xCuxO5.5-5x2F2x
+Precursors: CuF2, V2O5, Bi2O3
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00357-X
+Target: Zn2-2xTi1+xO4
+Precursors: TiO2, ZnO
+Operations: fired; crushed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00360-X
+Target: Bi2V1-xMgxO5.5-3x2
+Precursors: MgO, V2O5, Bi2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00378-7
+Target: ((ZrO2)1-x(CeO2)x)0.9(Y2O3)0.1
+Precursors: Y2O3, ZrO2, CeO2
+Operations: mixed; milled; drying; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00379-9
+Target: Gd2TiMoO7±δ
+Precursors: MoO2, Gd2O3, TiO2
+Operations: mixed; milled; pressed; sintered; reacted; reacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00380-5
+Target: SrFe1.375Co0.375Ox
+Precursors: Fe2O3, 2CoCO3·3Co(OH)2·xH2O, SrCO3
+Operations: grounded; calcined; grinding; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00386-6
+Target: La10Ge6O27
+Precursors: GeO2, La2O3
+Operations: mixing; mixed; precalcined; pulverized; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00394-5
+Target: La1-xSrxCo1-yFeyO3-δ
+Precursors: SrCO3, Co3O4, Fe3O4, La2O3
+Operations: mixed; pelletized; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00396-9
+Target: SrFeCo0.5Ox
+Precursors: Fe2O3, 2CoCO3·3Co(OH)2·xH2O, SrCO3
+Operations: ground; calcined; grinding; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00401-X
+Target: La0.75Ca0.25CrO3
+Precursors: CaO, La2O3, Cr(NO3)3·9H2O
+Operations: dissolved; heated; crushed; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00403-3
+Target: Ce0.8Sm0.2O2-δ
+Precursors: Sm(NO3)3·6H2O, Ce(NO3)3·6H2O
+Operations: pressed; sintered; annealed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00424-0
+Target: La0.8Sr0.2Ga1-xMxO3
+Precursors: SrCO3, Ga2O3, La2O3, NiO
+Operations: mixing; mixed; precalcined; pulverized; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00425-2
+Target: La0.6Sr0.4Co0.8Fe0.2O3-x
+Precursors: Fe2O3, Co3O4, La2O3, SrCO3
+Operations: milled; calcined; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00427-6
+Target: ((ZrO2)1-x(CeO2)x)(Y2O3)0.08
+Precursors: Y2O3, CeO2, ZrO2
+Operations: milled; dried; sintered; mixing
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00435-5
+Target: LaSrGa3O7
+Precursors: Ga2O3, La2O3, SrO
+Operations: mixing; homogenized; Calcination; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0167-2738(00)00484-7
+Target: Li4SiO4
+Precursors: SiO2, Li2CO3
+Operations: heated
+Conditions: N/A

@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.optmat.2007.07.005
+Target: (Tb1-x-yCexEuy)3Al5O12
+Precursors: Eu2O3, CeO2, Al2O3, Tb4O7
+Operations: milled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.09.003
+Target: (Y0.999Ce0.001)2O2(SO4)
+Precursors: (NH4)2(HSO4)2, Y2O3, CeO2
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.10.007
+Target: Ca1-2xEuxMxWO4
+Precursors: Eu2O3, CaCO3, WO3, K2CO3
+Operations: ground; pre-fired; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.10.008
+Target: Y1.9La0.1O3
+Precursors: Y2O3, La2O3, Nd2O3
+Operations: dissolved; drying; calcining; milled; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.11.006
+Target: Ca10-xPbx(PO4)6(OH)2
+Precursors: PbO, (NH4)2HPO4, CaCO3
+Operations: heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.12.002
+Target: KMGd(PO4)2
+Precursors: SrCO3, Gd2O3, (NH4)2HPO4, K2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.12.010
+Target: 50SiO2-16.7Al2O3-8.3Ga2O3-16.7MgO-8.3TiO2
+Precursors: MgO, TiO2, Al2O3, SiO2, Ga2O3
+Operations: mixed; annealed; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2007.12.012
+Target: NaHo0.01Gd0.99(MoO4)2
+Precursors: Gd2O3, Ho2O3, Na2CO3, MoO3
+Operations: mixed; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.01.007
+Target: SiO2-Al2O3-B2O3-ZnO-Li2O-BaO
+Precursors: Li2CO3, Al2O3, SiO2, H3BO3, BaCO3, ZnO
+Operations: mixed; melted; cooled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.02.005
+Target: YAl3(BO3)4
+Precursors: Bi2O3, Y2O3, Al2O3, H3BO3, Tb4O7
+Operations: added; mixed; fired; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.04.005
+Target: Y2.94Nd0.06Al5O12
+Precursors: Nd2O3, Y2O3, Al2O3
+Operations: pressing; mixed; added; milling; pressed; heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.04.014
+Target: BaZnOS
+Precursors: BaSO4, MnO, ZnO
+Operations: mixed; pressed; firing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.05.004
+Target: Yb0.02Sc1.98O3
+Precursors: Sc2O3, Yb2O3
+Operations: mixing; added; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.05.005
+Target: La1-xTbxAl11Mg1-yMnyO18
+Precursors: MgO, MnCO3, Al2O3, La2O3, Tb4O7
+Operations: homogenized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.05.007
+Target: xZnO-(75-x)Bi2O3-10Li2O-15B2O3
+Precursors: ZnO, H3BO3, Bi2O3, Li2CO3
+Operations: calcinated; melted; agitated; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.06.014
+Target: xB2O3-(80-x)TeO2-10ZnO-10Na2O
+Precursors: Na2CO3, TeO2, B2O3, ZnO
+Operations: mixed; ground; melted; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.07.006
+Target: YAG
+Precursors: Y2O3, Al2O3
+Operations: milled; milling; milling; milling; milled; milling; milling; milling; milling; pressed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.08.004
+Target: xNd2O3-(20-x)Y2O3-20Al2O3-60B2O3
+Precursors: Y2O3, Al2O3, Nd2O3, H3BO3
+Operations: mixed; treated; mixing; heated; melted; pre-heated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.10.024
+Target: (Bi2O3)0.2(PbO)x(B2O3)0.8-2x(GeO2)x
+Precursors: PbO, B2O3, Bi2O3, GeO2
+Operations: mixed; stirred; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2008.12.035
+Target: BaAl2O4
+Precursors: Eu(NO3)3·6H2O, Dy(NO3)3·6H2O, Al2O3, Ba(NO3)2
+Operations: heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.01.009
+Target: LiNbO3
+Precursors: Nb2O5, Li2CO3
+Operations: mixed; calcination
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.02.010
+Target: 70P2O5-15Al2O3-15Na2O(Host)(mol%)70P2O5-15Al2O3-14Na2O-1.0Sm2O370P2O5-15Al2O3-14Na2O-1.0Dy2O370P2O5-15Al2O3-14Na2O-1.0Tm2O3
+Precursors: Na2CO3, Al2O3, Sm2O3, P2O5, Dy2O3, Tm2O3
+Operations: mixed; melted; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.02.011
+Target: Nd0.3Sm0.7NiO3
+Precursors: Sm2O3, Nd2O3, NiO
+Operations: dissolved; mixed; added; added; calcined; annealing; treated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.04.004
+Target: (Ca1-xSrx)0.9Pr0.001Zn0.099TiO3
+Precursors: SrCO3, TiO2, CaCO3, ZnO
+Operations: mixed; calcined; milled; drying; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.05.014
+Target: 40BaO-20TiO2-40SiO2
+Precursors: SiO2, TiO2, BaCO3
+Operations: mixed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.06.015
+Target: La2-xPrxCaB10O19
+Precursors: Pr6O11, CaCO3, La2O3, H3BO3
+Operations: ground; pre-fired; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.06.016
+Target: xNaPO3-(80-x)TeO2-10ZnO-10Na2O-0.5Er2O3
+Precursors: Na2CO3, TeO2, NaPO3, Er2O3, ZnO
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2009.07.008
+Target: (Sr0.95Eu0.02Dy0.03)3Al2O6
+Precursors: Sr(NO3)2, Eu2O3, Al(NO3)3, Dy2O3
+Operations: dissolved; mixed; added
+Conditions: N/A

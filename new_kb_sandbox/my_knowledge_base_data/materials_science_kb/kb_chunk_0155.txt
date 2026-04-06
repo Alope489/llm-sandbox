@@ -1,0 +1,157 @@
+
+
+### Synthesis Record 10.1016/j.ijhydene.2016.11.015
+Target: SrCo0.8Fe0.1Nb0.1O3-δ
+Precursors: Fe2O3, Co3O4, Nb2O5, SrCO3
+Operations: mixed; ground; grinding; calcining; grinding; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2016.11.123
+Target: Ce0.8Sm0.2O1.9
+Precursors: Sm(NO3)3·6H2O, Ce(NO3)3·6H2O
+Operations: dissolved; added; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2016.12.045
+Target: Mg(BH4)2Al
+Precursors: AlH3, Mg(BH4)2
+Operations: mixed; milling; milled; milling; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2016.12.062
+Target: Na(Al(NH2BH3)4)
+Precursors: NH3BH3, NaAlH4
+Operations: milling; mixed; stirred
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.01.105
+Target: AgCuO
+Precursors: CuO, Ag
+Operations: milled; pressed; heated; cooled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.01.182
+Target: La0.2Sr0.8Ti1-xScxO3+δ
+Precursors: TiO2, Sc2O3, La2O3, SrCO3
+Operations: mixed; ground; pressed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.02.110
+Target: Ce0.9Gd0.1O1.95
+Precursors: Gd2O3, Ce(NO3)3·6H2O, Mg(NO3)2·6H2O
+Operations: pressed; sintered; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.02.194
+Target: La0.8Sr0.2Ga0.8Mg0.2O3-δ
+Precursors: Ga2O3, MgO, La2O3, SrCO3
+Operations: milled; drying; pressed; sintered; re-ground; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.03.025
+Target: Li0.3Ni0.9Cu0.07Sr0.03O2-δ
+Precursors: NiCO3·2Ni(OH)2·4H2O, SrCO3, CuCO3·Cu(OH)2·H2O, Li2CO3
+Operations: mixed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.03.126
+Target: BaZrxCe0.8-xY0.2O3
+Precursors: Y2O3, ZrO2, CeO2, BaCO3
+Operations: milled; dried; calcined; mixed; pressed; sintered; conducted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.05.061
+Target: BaFe1-xBixO3-δ
+Precursors: Fe2O3, Bi2O3, BaCO3
+Operations: mixed; milling; drying; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.05.109
+Target: BaZr0.1Ce0.7Y0.2O3
+Precursors: Y2O3, ZrO2, CeO2, BaCO3
+Operations: mixed; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.06.056
+Target: PrBaCo2-xNbxO5+δ
+Precursors: Pr6O11, Co2O3, Nb2O5, BaCO3
+Operations: mixed; milling; dried; pressed; sintered; cooled; reground; re-pelletized; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.06.093
+Target: LaxCa1-xFeO3-δ
+Precursors: Ca(NO3)2·4H2O, Fe(NO3)3·9H2O, La(NO3)3·6H2O
+Operations: dissolved; stirred; aged; dried; ground; calcined; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.06.136
+Target: La0.8Sr0.2Ga0.8Mg0.2O3-δ
+Precursors: MgO, SrCO3, Ga2O3, La2O3
+Operations: powdered; mixed; ground; calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.07.062
+Target: LaxSr2-xMnO4±δ
+Precursors: La2O3, MnCO3, SrCO3
+Operations: diluted; mixed; milled; pre-calcined; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.07.195
+Target: CaZr0.9In0.1O3
+Precursors: In2O3, CaCO3, ZrO2
+Operations: mixed; milled; sintered; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.08.010
+Target: Ce0.8Sm0.2O1.9
+Precursors: Sm(NO3)3·6H2O, Ce(NO3)3·6H2O
+Operations: dissolved; added; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.08.127
+Target: LiNa2AlH6
+Precursors: Na3AlH6, Li3AlH6
+Operations: grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.09.027
+Target: La0.85Sr0.15Ga0.8Mg0.2O3-δ
+Precursors: Ga2O3, MgO, La2O3, SrCO3
+Operations: mixed; fired; milled; dried; de-agglomerated; calcined; milled; dried; added; pressed; pressing; fired; sintered; fired; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.09.159
+Target: BaCe0.8-xZr0.2InxO3-δ
+Precursors: In2O3, ZrO2, CeO2, BaCO3
+Operations: mixed; milled; calcined; pressed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.10.015
+Target: PtNb2O5
+Precursors: Pt, Nb2O5
+Operations: dispersing; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.11.015
+Target: LaCrO3
+Precursors: La2O3, Cr2O3
+Operations: pressed; sintered; calcining; milled; mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.11.024
+Target: La0.8Sr0.2MnO3
+Precursors: MnCO3, SrCO3, La2O3
+Operations: mixed; milling; dried; annealed; milling; mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.11.111
+Target: BaCe0.7Zr0.1Y0.2-xZnxO3-δ
+Precursors: CeO2, Y2O3, BaCO3, ZrO2, ZnO
+Operations: preheated; mixed; milled; heated; grinded; heated; cooling; reground; remixed; pressed; heated; heated; grinding; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2017.12.040
+Target: Ca9Co12O28
+Precursors: CaCO3, Co3O4
+Operations: ground; calcined
+Conditions: N/A

@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.optmat.2016.06.020
+Target: Lu3Al5O12
+Precursors: HNO3, Al(NO3)3, Lu2O3
+Operations: diluted; mixed; added; aged; dried; crushed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.06.022
+Target: x)Zn(PO3)2-xTb2O3
+Precursors: NH4H2PO4, ZnO, Tb2O3
+Operations: quenched; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.07.035
+Target: Y3Al5O12
+Precursors: Y2O3, α-Al2O3
+Operations: added; mixed; milled; added; milled; laminated; calcining; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.08.001
+Target: (CexGd1-x)3(GayAl1-y)5O12
+Precursors: CeO2, Gd2O3, Al2O3, Ga2O3
+Operations: mixed; milling; milling; drying; shaped; treated; sintered; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.08.026
+Target: Y3Al5O12
+Precursors: Pr6O11, Y2O3, Al2O3
+Operations: mixed; milled; dried; pressed; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.08.030
+Target: (MgyCezLu1-y-z)3GaxAl5-xO12
+Precursors: MgCO3, CeO2, β-Ga2O3, Lu2O3, α-Al2O3
+Operations: added; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.032
+Target: Nd0.01Y0.99NbO4
+Precursors: Y2O3, Nd2O3, Nb2O5
+Operations: mixed; pressed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.048
+Target: SrMg2(PO4)2
+Precursors: NH4H2PO4, Eu2O3, 4(MgCO3)·Mg(OH)2·5H2O, SrCO3
+Operations: mixed; sintered; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.052
+Target: (Gd0.998Ce0.002)3(Al4.999-xGaxCr0.001)O12
+Precursors: CeO2, Gd2O3, Al2O3, Ga2O3, Cr2O3
+Operations: mixed; milling; dried; pulverized; compacted; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.054
+Target: MnxNa2Mg1-xSiO4
+Precursors: SiO2, MnCO3, 4MgCO3·Mg(OH)2·5H2O, Na2CO3
+Operations: added; mixed; grinding; heated; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.055
+Target: (80-0.8x)TeO2-(20-0.2x)Sb2O3-xGeO2
+Precursors: GeO2, TeO2, Sb2O3
+Operations: mixed; grinded; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.057
+Target: YAG
+Precursors: Y2O3, Al2O3
+Operations: mixed; mixed; milling; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.073
+Target: CsAlSi2O6
+Precursors: SiO2, Cs2CO3, Al2O3, Eu2O3
+Operations: blended; ground; calcined; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.09.075
+Target: Tb3Al5O12
+Precursors: α-Al2O3, Tb4O7
+Operations: mixed; milled; dried; calcined; pressed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.10.026
+Target: LiGd1-xErx(WO4)2
+Precursors: Gd2O3, Er2O3, WO3, Li2CO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.10.034
+Target: BaZr0.5Ce0.3Y0.2O3-δ
+Precursors: Y2O3, ZrO2, CeO2, BaCO3
+Operations: milling; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.11.032
+Target: BulkGe23.5Ga11.5Se65
+Precursors: Se, Ga, Ge
+Operations: homogenized; quenched; annealed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.12.013
+Target: ((Ce0.01Gd0.99)8AE2)(SiO4)6O2
+Precursors: CeO2, SrCO3, Gd2O3, SiO2
+Operations: mixed; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2016.12.029
+Target: EuAlO3
+Precursors: Al2O3, Eu2O3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.01.033
+Target: Sr4Ca4La2-xCex(PO4)6O2
+Precursors: CeO2, SrCO3, (NH4)2HPO4, CaCO3, La2O3
+Operations: mixed; pre-fired; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.01.035
+Target: CaWO4
+Precursors: Ho2O3, CaCO3, WO3
+Operations: grinding; calcined; cooled; ground; calcined; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.02.018
+Target: EuxCaGd2-x(WO4)4
+Precursors: Gd2O3, CaCO3, Eu2O3, WO3
+Operations: ground; dried; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.02.029
+Target: YAlO3
+Precursors: Y2O3, Al(NO3)3·9H2O
+Operations: dissolved; added; stirred; heated; stirred; heated; stirred; heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.02.037
+Target: GdTaO4
+Precursors: Gd2O3, Ta2O5
+Operations: calcined; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.02.046
+Target: CaGd0.97Dy0.03AlO4
+Precursors: Gd2O3, CaCO3, Al2O3, Dy2O3
+Operations: mixed; shaped; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.02.058
+Target: Lu2.7Gd0.3Al5O12
+Precursors: Gd2O3, Lu2O3, Nd2O3, α-Al2O3
+Operations: mixed; milled; milling; dried; calcined; pressed; treated; conducted; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.02.061
+Target: Lu3(CrxAl1-x)5O12
+Precursors: Lu2O3, α-Al2O3, Cr2O3
+Operations: added; mixed; milling; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2017.03.006
+Target: 60TeO2-20BaO-(20-x)ZnO-xZnF2
+Precursors: TeO2, ZnF2, ZnO, BaO
+Operations: mixed; heated; heated; heated; annealed; cooled
+Conditions: N/A

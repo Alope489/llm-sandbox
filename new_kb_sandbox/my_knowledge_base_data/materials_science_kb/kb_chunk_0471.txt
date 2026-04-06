@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1021/acs.inorgchem.6b00486
+Target: Ag2-xNaxMn2Fe(VO4)3
+Precursors: Na2CO3, MnO, Fe2O3, Ag2O, V2O5
+Operations: ground; pelletized; fired; fired
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b00503
+Target: BiSbO4
+Precursors: Sb2O3, Bi2O3
+Operations: heated; pressed; heated; cooled; pressed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b00610
+Target: NaCrTe2
+Precursors: Na2Te, Cr2Te3
+Operations: heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b00781
+Target: Cs2Mo12Se14
+Precursors: Cs2Mo6Se6, Mo, MoSe2
+Operations: mixing; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b00893
+Target: BaFeCl0.13(2)O2.48(2)
+Precursors: BaCl2·2H2O, α-Fe2O3, BaCO3
+Operations: grinded; heated; grinded; reheated; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b00923
+Target: YCa3(CrO)3(BO3)4
+Precursors: CaCO3, Y2O3, H3BO3, Cr2O3
+Operations: ground; calcined; cooled; ground; reheated; evaporated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01012
+Target: α-CuGaO2
+Precursors: Ga2O3, Cu2O
+Operations: powdered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01040
+Target: Ce0.14Ba3-nY0.86+n(SiO4)n(PO4)3-n
+Precursors: NH4H2PO4, CeO2, Y2O3, SiO2, BaCO3
+Operations: blended; grinding; dried; ground; cooled; reground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01048
+Target: NaCa2GeO4F
+Precursors: GeO2, CaCO3, NaF
+Operations: mixed; grinding; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01078
+Target: Na3Ni2BiO6
+Precursors: Na2CO3, Bi2O3, NiO
+Operations: milled; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01242
+Target: Pb2RNb5O15
+Precursors: PbO, Nb2O5, K2CO3
+Operations: ground; calcined; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01278
+Target: Ba3Si6O12N2
+Precursors: Eu2O3, SiO2, BaCO3, Si3N4
+Operations: ground; dried; fired; cooled; pulverized; sintered; ground; mixed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01282
+Target: Ba3Ce(1-x)(PO4)3
+Precursors: Eu2O3, NH4H2PO4, CeO2, BaCO3
+Operations: mixed; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01361
+Target: β-Gd0.80Bi0.20B3O6
+Precursors: Gd2O3, H3BO3, Bi2O3
+Operations: ground; pressed; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01368
+Target: Ba2xSr2-2xV2O7
+Precursors: SrCO3, V2O5, BaCO3
+Operations: ground; prefired; ground; recalcined
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01373
+Target: ABi7Nb5O24
+Precursors: Bi2O3, Nb2O5, BaCO3
+Operations: mixed; pressed; calcined; reground; repressed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01398
+Target: Hf4AlC3
+Precursors: C, Al, HfH2
+Operations: added; drying; compacted
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01439
+Target: Gd2(WO4)3
+Precursors: Gd2O3, WO3
+Operations: crushed; mixing
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01554
+Target: SrFe1-xCoxO2.75-δ
+Precursors: Co3O4, Fe2O3, SrCO3
+Operations: ground; treated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01639
+Target: YIn1-x-2y-zMnxTiyZnyAlzO3
+Precursors: TiO2, Y2O3, Al2O3, Mn2O3, In2O3, ZnO
+Operations: ground; pressed; calcined; reground; pelleted; heated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01656
+Target: LiY9-xCex(SiO4)6O2
+Precursors: SiO2, Y2O3, CeO2, Li2CO3
+Operations: ground; preheated; cooled; reground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01806
+Target: (Ce1-xGdx)O2-x2
+Precursors: Ce, Gd2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b01855
+Target: Rb2Ba4B20O34Cl2
+Precursors: BaCl2·2H2O, BaCO3, B2O3, Rb2CO3
+Operations: mixing; preheated; reground; reheated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02034
+Target: AgW2O2F9
+Precursors: AgF, WOF4
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02072
+Target: Ba2ZnSe3
+Precursors: ZnSe, BaSe
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02087
+Target: Ca1-xLa2x3TiO3
+Precursors: TiO2, CaCO3, La2O3
+Operations: dried; dried; milled; dried; pressed; heated; reground; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02118
+Target: Pb6Bi2Se9
+Precursors: Se, Pb, Bi
+Operations: heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02140
+Target: KMg4(PO4)3
+Precursors: MgO, NH4H2PO4, Eu2O3, KH2PO4
+Operations: ground; preheated; reground; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02241
+Target: Na3La(PO4)2
+Precursors: Na2CO3, NH4H2PO4, La2O3
+Operations: ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.inorgchem.6b02295
+Target: NaRE1-xEuxMgWO6
+Precursors: Na2CO3, MgWO4, Eu2O3, Gd2O3
+Operations: heated; ground; fired; ground; fired; fired; fired
+Conditions: N/A

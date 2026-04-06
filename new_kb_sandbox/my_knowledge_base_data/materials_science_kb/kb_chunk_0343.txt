@@ -1,0 +1,175 @@
+
+
+### Synthesis Record 10.1016/j.matlet.2007.06.021
+Target: NaEu(MoO4)2
+Precursors: Eu2O3, NaHCO3, (NH4)6Mo7O24·4H2O
+Operations: ground; pre-fired; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.06.030
+Target: Ba4LaTiTa3O15
+Precursors: TiO2, Ta2O5, La2O3, BaCO3
+Operations: milled; dried; calcined; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.06.042
+Target: CaCu3Ti4O12
+Precursors: CuO, TiO2, CaCO3
+Operations: mixed; milled; added; calcined; milling; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.06.073
+Target: Li2TiO3
+Precursors: Ti(C6H6O7)2, LiNO3
+Operations: dried; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.06.075
+Target: TbxNa3Y1-xSi3O9
+Precursors: Na2CO3, SiO2, Y2O3, Tb4O7
+Operations: blended; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.07.002
+Target: BiFeO3
+Precursors: Fe2O3, Bi2O3
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.07.009
+Target: Y3/2Bi3/2Fe5O12
+Precursors: Fe2O3, Y2O3, Bi2O3
+Operations: mixed; mixing; dried; calcined; grinding; calcination; mixed; pressed; sintered; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.07.039
+Target: LaMgAl11O19
+Precursors: MgO, Al2O3, La2O3
+Operations: mixed; calcined; pressed; sintered; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.07.048
+Target: Sr6Ti2M8O30
+Precursors: TiO2, Ta2O5, SrCO3
+Operations: ground; calcined; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.08.028
+Target: MgLaLiSi2O7
+Precursors: MgO, SiO2, Li2CO3, La2O3
+Operations: added; mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.08.055
+Target: Li4SiS4-La2S3
+Precursors: Li2S, SiS2, La2S3
+Operations: heated; quenched; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.08.056
+Target: SrIn2O4
+Precursors: Eu(NO3)3·6H2O, Sr(NO3)2·4H2O, In(NO3)3·4.5H2O
+Operations: dissolved; added; stirred; dried; dried; milled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.08.085
+Target: Sr3Y2(BO3)4
+Precursors: Dy2O3, Y2O3, H3BO3, SrCO3
+Operations: mixed; firing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.09.005
+Target: Ti2AlC
+Precursors: Ti, Al, TiC
+Operations: mixed; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.09.073
+Target: BaFe12O19
+Precursors: BaCO3, Fe2O3
+Operations: mixed; sintered; crushed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.10.030
+Target: NaCaPO4
+Precursors: Na2CO3, CaCO3, NH4H2PO4, Eu2O3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.10.041
+Target: NaSm0.01Ba0.78Sr0.21(PO4)
+Precursors: Na2CO3, SrCO3, (NH4)2HPO4, Sm2O3, BaCO3
+Operations: mixed; ground; heated; mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.11.007
+Target: SrKFeWO6
+Precursors: K2CO3, SrCO3, Fe2O3, WO3
+Operations: mixed; pressed; pulverized; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.11.019
+Target: Ni1-xZnxFe2O4
+Precursors: Fe2O3, NiO, ZnO
+Operations: mixing; ground; calcined; ground; pelletized; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.12.028
+Target: Ca0.8Sm0.4/3TiO3
+Precursors: TiO2, CaCO3, Sm2O3
+Operations: mixed; mixed; ground; calcined; mixed; mixed; re-milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.12.043
+Target: Sr2SiO4
+Precursors: Pr6O11, SrCO3, SiO2
+Operations: mixed; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2007.12.055
+Target: (Na0.5Nd0.5)TiO3
+Precursors: Na2CO3, TiO2, Nd2O3
+Operations: ground; dried; calcined; mixed; re-milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.01.027
+Target: Na1/2Bi1/2TiO3
+Precursors: Na2CO3, TiO2, Bi2O3
+Operations: mixed; heated; mixed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.01.040
+Target: Y3Fe5O12
+Precursors: Y2O3, Fe2O3
+Operations: mixed; added; pressed; sintered; cooling; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.01.102
+Target: Cu60Zr30Ti10
+Precursors: Ti, Cu, Zr
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.01.103
+Target: Bi1-xGdxFeO3
+Precursors: Gd2O3, Fe2O3, Bi2O3
+Operations: mixed; calcined; pressed; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.01.116
+Target: CaRNbMoO8
+Precursors: CaCO3, Y2O3, Nb2O5, (NH4)6Mo7O24
+Operations: mixed; dried; mixing; drying; calcined; mixed; ground; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.01.133
+Target: Ni1/3Co1/3Mn1/3
+Precursors: Mn(CH3COO)2, Co(CH3COO)3, Ni(CH3COO)2, C2H2O4
+Operations: mixed; ground; added; ground; dried; precalcined; heated; grinding; retreated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2008.02.020
+Target: Ca0.6La0.8/3TiO3
+Precursors: TiO2, CaCO3, La2O3
+Operations: ground; dried; calcined; mixed; remilled; pressed; sintered
+Conditions: N/A

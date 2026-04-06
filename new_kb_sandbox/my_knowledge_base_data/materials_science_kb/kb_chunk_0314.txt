@@ -1,0 +1,157 @@
+
+
+### Synthesis Record 10.1016/j.materresbull.2005.07.014
+Target: Ni0.8Co0.1Cu0.1Fe2O4
+Precursors: CuO, CoO, Fe2O3, NiO
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.09.005
+Target: LiCoAsO4
+Precursors: Co3O4, As2O5, Li2CO3
+Operations: ground; heated; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.09.021
+Target: (BaxSr1-x)(Zn1/3Nb2/3)O3
+Precursors: SrCO3, Zn(NO3)2-6H2O, Nb2O5, BaCO3
+Operations: added; milled; dried; pulverized; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.09.026
+Target: Ca2GeO4
+Precursors: GeO2, CaCO3, Tb4O7
+Operations: mixed; triturated; mixing; added; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.10.010
+Target: LaInO3
+Precursors: In2O3, La2O3
+Operations: preheated; ground; heated; sintered; grinding; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.10.016
+Target: Ba(Mg1/3Ta(2-2x)/3Wx3Tix3)O3
+Precursors: TiO2, WO3
+Operations: milled; dried; calcined; grinding; ground; added; pressed; fired; sintered; cooled; annealed; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.10.019
+Target: Mg4(TaNb1-xVx)O9
+Precursors: Ta2O5, MgO, V2O5, Nb2O5
+Operations: mixed; calcined; crushed; ground; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.11.005
+Target: tungsten-bronze-typeBaSm2Ti4O12
+Precursors: TiO2, Sm2O3, BaCO3
+Operations: milled; heated; drying; re-milled; added; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.11.012
+Target: MgNb2O6
+Precursors: MgO, Nb2O5
+Operations: mixed; ground; calcined; mixed; added; calcined; mixed; pressed; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.11.013
+Target: SrBi5-xLaxTi4FeO18
+Precursors: Bi2O3, SrCO3, TiO2, Fe2O3, La2O3
+Operations: mixed; ground; pressed; calcined; crushed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.11.019
+Target: Ca3TaGa3Si2O14
+Precursors: SiO2, Ta2O5, CaCO3, Ga2O3
+Operations: mixing; ground; mixed; pressed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.12.008
+Target: CaTiO3-Ca(Fe0.5Nb0.5)O3
+Precursors: CaCO3, Fe2O3, Nb2O5, CaTiO3
+Operations: milled; calcined; ground; mixed; pressing; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.12.012
+Target: Pb2CuB2O6
+Precursors: PbO, B2O3, CuO
+Operations: mixed; ground; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2005.12.015
+Target: Mg(Ta1-xNbx)2O6
+Precursors: Ta2O5, MgO, Nb2O5
+Operations: milling; mixed; dried; calcined; ground; added; dried; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.01.027
+Target: 45Bi2O3+(55-x)GeO2+xPbO
+Precursors: PbO, Bi2O3, GeO2
+Operations: mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.02.001
+Target: SrZnO2
+Precursors: Eu2O3, SrCO3, ZnO
+Operations: mixing; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.02.002
+Target: 0.90Pb0.95Sr0.05(Zr0.52Ti0.48)O3-0.03Pb(Fe2/3W1/3)O3-0.07Pb(Mn1/3Nb2/3)O3
+Precursors: MnCO3, CeO2, SrCO3, TiO2, Nb2O5, Fe2O3, Pb3O4, WO3, ZrO2
+Operations: mixed; milling; dried; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.03.013
+Target: BaCu(B2O5)
+Precursors: CuO, B2O3, BaO
+Operations: mixed; dried; calcined; mixed; dried; calcined; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.04.001
+Target: Li0.62K0.38CO3
+Precursors: K2CO3, Li2CO3
+Operations: mixing; heating; mixed; milled; drying; heated; quenched; re-grounded; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.04.004
+Target: Pb1-xLa2x3WO4
+Precursors: PbO, H2WO4, La2O3
+Operations: calcined; palletized; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.04.027
+Target: Bi2SrO4
+Precursors: SrO, Bi2O3
+Operations: pressed; heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.05.011
+Target: Ba2-xEuxSiO4
+Precursors: SiO2, Eu2O3, BaCO3
+Operations: added; mixed; sintered; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.05.017
+Target: Nd(Co1/2Ti1/2)O3
+Precursors: TiO2, CoO, Nd2O3
+Operations: mixed; ground; dried; milled; calcined; ground; re-milled; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.06.002
+Target: (1-y)(Mg0.6Zn0.4)1-xCoxTiO3-yCaTiO3
+Precursors: MgCO3, TiO2, CaCO3, CoO, ZnO
+Operations: milled; dried; calcined; re-milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.06.003
+Target: Bi4Ti3O12-SrBi4Ti4O15
+Precursors: TiO2, WO6, Bi2O3, SrCO3
+Operations: mixed; milled; calcined; added; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.materresbull.2006.07.002
+Target: xCr2O3(3-x)Lu2O35Ga2O3
+Precursors: Ga2O3, Cr2O3, Lu2O3
+Operations: homogenized; fired
+Conditions: N/A

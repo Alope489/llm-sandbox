@@ -1,0 +1,187 @@
+
+
+### Synthesis Record 10.1016/j.ijhydene.2017.12.134
+Target: Sr2TiFe0.5Mo0.5O6-δ
+Precursors: TiO2, Fe2O3, MoO3, SrCO3
+Operations: calcining; reground; pelletized; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2018.01.018
+Target: PrBaCo2-xO6-δ
+Precursors: Pr6O11, Co3O4, BaCO3
+Operations: preheated; ground; mixed; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijleo.2008.05.009
+Target: Ba2MgSi2- x Alx O7
+Precursors: MgO, Eu2O3, Al2O3, SiO2, BaCO3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijleo.2015.04.002
+Target: Li4CaB2O6
+Precursors: CaCO3, Pb(NO3)2, H3BO3, Li2CO3
+Operations: mixed; ground; pre-sintered; mixed; heated; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijleo.2015.04.042
+Target: Sr5SiO4Cl6
+Precursors: SiO2, SrCl2, Eu2O3, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijleo.2015.05.063
+Target: LiNbO3
+Precursors: Nb2O5, Li2CO3
+Operations: calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijleo.2015.05.135
+Target: La0.6Y0.4PO4
+Precursors: La2O3, (NH4)H2PO4, Y2O3
+Operations: ground; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2006.05.001
+Target: WC-VC-Co
+Precursors: VC, WC, Co
+Operations: milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2007.02.001
+Target: Mo5Si3
+Precursors: Si, Mo
+Operations: mixed; added; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2007.11.004
+Target: Si3N4-TiC
+Precursors: Si3N4, TiC
+Operations: mixed; dispersed; mixed; milling; dried; pressed; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2009.07.017
+Target: WC-Co
+Precursors: WC, Co
+Operations: mixed; milled; milling; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2009.12.008
+Target: WC-10Co
+Precursors: WC, Co
+Operations: added; milling; milling; milling; dried; milling; mixed; granulated; pressed; Pressing; carried; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2010.06.006
+Target: Si3N4-TiN
+Precursors: TiN, Si3N4
+Operations: added; mixed; dispersed; milled; dried; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2010.11.001
+Target: Al2O3-TiB2
+Precursors: Al, TiO2, H3BO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2011.08.003
+Target: ZrB2-SiC
+Precursors: ZrB2, SiC
+Operations: mixed; milled; heated; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2011.10.005
+Target: CuW-La2O3
+Precursors: La2O3, Cu2O, WO3
+Operations: dissolved; dried; mixed; compressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2011.11.009
+Target: MoSi2-Mo5Si3
+Precursors: Si, Mo
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2012.10.003
+Target: WC-Co
+Precursors: WC, Co
+Operations: milled; dried; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2012.10.005
+Target: (Ti1-xWx)C
+Precursors: C, TiO2, WO3, Ti
+Operations: blended; mixed; milled; milling; milling; milling; mixed; milling; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2012.11.008
+Target: Ti(C0.7N0.3)-WC-Mo2C-TaC-(Co
+Precursors: WC, Ti(C0.7N0.3), Co, Mo2C, TaC
+Operations: milled; dried; added; carried; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2012.12.002
+Target: TiC-WC-Cr3C2
+Precursors: WC, TiC, Cr3C2
+Operations: mixed; milling; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2013.01.015
+Target: WC-MgO
+Precursors: MgO, WC
+Operations: added; mixed; mixed; milled; milling; milling; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2013.04.015
+Target: Al2O3-ZrO2-SiO2
+Precursors: SiO2, Al, ZrO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2013.05.004
+Target: BaF2CaF2
+Precursors: BaF2, CaF2
+Operations: blended; milled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2014.01.012
+Target: HfC-W
+Precursors: W, HfC
+Operations: milled; milling; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2014.03.012
+Target: Ti2AlC
+Precursors: C, Ti, Al
+Operations: mixed; dried; compressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2014.08.006
+Target: ZrB2-SiC
+Precursors: SiC, ZrB2
+Operations: mixed; dried; sintered; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2015.04.013
+Target: MgO-CaO-Al2O3-SiO2
+Precursors: MgO, CaCO3, Al2O3, SiO2
+Operations: mixed; quenched; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2016.02.005
+Target: SiC-B4C-Al
+Precursors: B4C, Al, SiC
+Operations: blended; milled; milling; milling; dispersed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2017.01.009
+Target: Ni3Al
+Precursors: NiAl, Ni
+Operations: milled; pressed; pressed; performed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijrmhm.2017.09.001
+Target: ultrafineW-Y2O3
+Precursors: Y2O3, W
+Operations: milling; milling; milling; added
+Conditions: N/A

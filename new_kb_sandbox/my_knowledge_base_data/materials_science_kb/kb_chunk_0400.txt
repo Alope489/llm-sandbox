@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1016/j.physc.2011.10.003
+Target: YBa2Cu3Oy
+Precursors: CuO, Y2O3, Ba2CO3
+Operations: mixed; grinding; pelletized; calcined; milled; milling; grounded; milling; milling; milling; milling; grounded; milled; grinding; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2012.01.007
+Target: SmBa2Cu3-xFexO7-δ
+Precursors: CuO, Fe2O3, Sm2O3, BaCO3
+Operations: mixed; ground; heated; reground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2012.01.013
+Target: YBa2-xLaxCu3-xAlxOz
+Precursors: CuO, Y2O3, Al2O3, BaCO3, La2O3
+Operations: mixed; ground; calcined; reground; pressed; sintered; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2012.03.013
+Target: GdBa2Cu3Oy
+Precursors: CuO, Gd2O3, BaCO3
+Operations: mixed; ground; calcined; pressed; performed; mixed; calcined; mixed; added; added; added; pressed; evaporated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2012.05.012
+Target: Ba3Cu5O8
+Precursors: CuO, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2012.07.001
+Target: Bi3Sr2Ca2Cu3O10+x
+Precursors: CuO, CaCO3, Bi2O3, SrCO3
+Operations: mixed; heated; quenched; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2012.11.002
+Target: (Cu0.5Tl0.5-xTix)Ba2Ca2Cu3O10-δ
+Precursors: CuO, BaO2, CaO, TiO2, Tl2O3
+Operations: ground; pressed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.01.017
+Target: FeSr2YCu2O6+y
+Precursors: CuO, Fe2O3, Y2O3, SrCO3
+Operations: calcined; grounded; pressed; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.02.002
+Target: Ln4-ySmyNi3-xCuxOz
+Precursors: CuO, Sm2O3, Nd2O3, Ni
+Operations: preheated; dissolved; heated; heated; pressed; fired; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.02.013
+Target: Cu0.5Ba2Ca2(Cu3-xTix)O10-δ
+Precursors: TiO2, Cu, Ba(NO3)2, Ca(NO3)2
+Operations: mixing; fired; cooled; ground; mixed; pelletized; annealed; post-annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.03.021
+Target: Y2Ba4CuWOy(YW2411)
+Precursors: CuO, Y2O3, WO3, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.04.009
+Target: SmBa2Cu3O
+Precursors: SmBa2Cu3O7
+Operations: mixed; milled; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.04.028
+Target: BaCeO3
+Precursors: CeO2, BaO2
+Operations: milling; milled; milled; milled; pressed; treated; heating; cooling; cooling; cooling; grinded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.04.083
+Target: NdBa2Cu3-xZnxO7-y
+Precursors: CuO, Nd2O3, ZnO, BaCO3
+Operations: mixed; pressed; calcinated; pelletized; sintered; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.04.084
+Target: Y1.5Ba2Cu3O
+Precursors: Y2O3, YBa2Cu3O7
+Operations: mixed; milled; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.05.029
+Target: Gd2BaCuO5
+Precursors: CuO, Gd2O3, BaCO3
+Operations: mixed; ground; calcined; pressed; performed; mixed; calcined; mixed; added; added; pressed; evaporated; heated; annealed; pressed; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.06.014
+Target: EuSr2Cu2Nb1-xSnxO8-y
+Precursors: CuO, SnO2, Eu2O3, SrCO3, Nb2O5
+Operations: mixed; sintered; reground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.09.004
+Target: Sr2CuO3
+Precursors: CuO, SrCO3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.10.005
+Target: Mg1-xRuxB2
+Precursors: Ru, Mg, B
+Operations: mixed; pressed; sintered; grinding; repressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2013.12.006
+Target: YBa2Cu3Oy
+Precursors: CuO, Y2O3, Ba2CO3
+Operations: mixing; pelletized; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.02.018
+Target: BaTi2Sb2O
+Precursors: Sb, BaO, Ti
+Operations: pelletized; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.03.011
+Target: Ce1-xNdxO0.5F0.5BiS2
+Precursors: Bi2S3, BiF3, Bi2O3, Nd2S3, Ce2S3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.04.002
+Target: Nb1-xAlx
+Precursors: Nb, Al
+Operations: mixed; milled; milling; added; pressed; sintered; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.04.005
+Target: Fe1.02Te0.5Se0.5-xSx
+Precursors: Te, Se, S, Fe
+Operations: treated; ground; pressed; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.05.008
+Target: EuSr2Cu2Ta1-xSnxO8-y
+Precursors: CuO, SnO2, Eu2O3, SrCO3, Ta2O5
+Operations: mixed; sintered; reground; pressed; sintered; cooled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.05.009
+Target: Y2BaCuO5
+Precursors: CuO, Y2O3, BaCO3
+Operations: mixed; calcined; mixed; heated; heated; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2014.09.005
+Target: Ba8Si46-xAlx
+Precursors: Ba, Si, Al
+Operations: ground; milling; mixed; milling; dried
+Conditions: N/A

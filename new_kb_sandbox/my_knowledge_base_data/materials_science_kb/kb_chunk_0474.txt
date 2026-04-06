@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1021/acs.jpcc.6b00318
+Target: Li1+xAlxTi2-x(PO4)3
+Precursors: TiO2, Al2O3, (NH4)H2PO4, Li2CO3
+Operations: pressed; heated; crushed; homogenized; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b00700
+Target: Nd1-xMxBaInO4-0.5x
+Precursors: SrCO3, Nd2O3, BaCO3, In2O3
+Operations: mixed; pressed; calcined; cooling; reground; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b01494
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: mixing; calcined; added
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b01649
+Target: CaMn7O12
+Precursors: Mn2O3, CaCO3
+Operations: pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b03827
+Target: BiMnO3
+Precursors: Mn2O3, Bi2O3
+Operations: mixed; ground; pelletized; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b05312
+Target: BixLi2Ba1-xP2O7
+Precursors: BaCO3, Bi2O3, (NH4)H2PO4, Li2CO3
+Operations: ground; ground; sintered; pressed; dispersed; dispersed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b05335
+Target: Zn2SnO4
+Precursors: SnO2, ZnO
+Operations: mixed; milling
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b05666
+Target: La2NiO4+δ
+Precursors: Ni(NO3)2, La(NO3)3
+Operations: added; heated; decomposed; annealed; compacted; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b05758
+Target: Na2Ta4-yNbyO11
+Precursors: Na2CO3, Ta2O5, Nb2O5
+Operations: grinding; pressed; heated; quenched; reground; pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b06397
+Target: Y3Al5O12
+Precursors: Y2O3, Al2O3, Eu2O3
+Operations: calcination; annealed; annealing; dried
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b06901
+Target: Sr0.99(La(1-x)Eux)1.01Zn0.99O3.495
+Precursors: Eu2O3, La2O3, ZnO, SrCO3
+Operations: mixed; ground; preheated; reground; calcined; cooling; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b07076
+Target: Y2Ti2-xHfxO7
+Precursors: TiO2, HfO2, Y2O3
+Operations: heated; milled; milling; drying; pressed; sintered; grinding; crushed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b07615
+Target: SrCo0.9Nb0.1O3-δ
+Precursors: Co3O4, Nb2O5, SrCO3
+Operations: milled; calcined; conducted
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b09379
+Target: Cu3Sb1-xGexS4
+Precursors: Sb, Cu, S, Ge
+Operations: milled; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b09730
+Target: LiMnPO4
+Precursors: NH4H2PO4, Li2CO3, MnC2O4·2H2O
+Operations: milled; milling; calcined; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b09806
+Target: Lu1-xPrxNbO4
+Precursors: Pr6O11, Lu2O3, Nb2O5
+Operations: ground; pressed; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b10268
+Target: Li7La3Zr2O12
+Precursors: ZrO2, La2O3, Li2O
+Operations: added; milled; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b10523
+Target: Na3.4Sc2(SiO4)0.4(PO4)2.6
+Precursors: Na2CO3, Sc2O3, NH4H2PO4, SiO2
+Operations: heated; grinding; annealed; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b10961
+Target: AgNbO3
+Precursors: Ag2O, Nb2O5
+Operations: grinding
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b12431
+Target: Li5FeO4
+Precursors: Fe2O3, Li2O
+Operations: mixed; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.6b12501
+Target: 0.94(Bi0.5Na0.5TiO3)-0.06(BaTiO3)
+Precursors: Na2CO3, TiO2, Ba2CO3, Bi2O3
+Operations: dried; milled; milling; drying; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b00019
+Target: Ba2Y(BO3)2Cl
+Precursors: Bi2O3, Y2O3, BaCO3, BaCl2·2H2O, B2O3
+Operations: mixed; prefired; reground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b01121
+Target: yAg2O-(1-y)(xSeO2-(1-x)TeO2)
+Precursors: TeO2, SeO2, AgNO3
+Operations: preheated; quenched; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b01475
+Target: Li4Ti5O12
+Precursors: TiO2, LiOH·H2O
+Operations: mixed; milling; dried; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b01871
+Target: xBi2O3-(100-x)NaPO3
+Precursors: NaPO3, Bi2O3
+Operations: powdered; mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b02036
+Target: Y3Fe5O12
+Precursors: Y2O3, Fe2O3
+Operations: mixed; sintered; added; dispersed; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b02068
+Target: Cu8+xFe3-xSn2S12
+Precursors: Cu, S, Fe, Sn
+Operations: milling; milled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b03325
+Target: KNN
+Precursors: Na2CO3, Nb2O5, K2CO3
+Operations: mixed; calcined; added; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b05164
+Target: K0.9Fe0.9Ti0.1O2
+Precursors: TiO2, K2CO3, Fe2O3
+Operations: mixed; sintered; reground; heated; pressing; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.jpcc.7b05888
+Target: Li2-xZr1-xNbxO3
+Precursors: Nb2O5, Li2CO3, ZrO2
+Operations: ground; calcined; regrinding; calcined
+Conditions: N/A

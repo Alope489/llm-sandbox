@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1016/j.jnoncrysol.2015.09.010
+Target: xBaO-xB2O3-(100-2·)TeO2
+Precursors: TeO2, H3BO3, BaCO3
+Operations: pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2015.10.003
+Target: 50Li2O-xAl2O3-(50-x)P2O5
+Precursors: (NH4)2HPO4, Li2CO3, Al2O3
+Operations: calcined; mixed; heated; quenched; pressing; quenched; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2015.10.021
+Target: 0.01Fe2O3·0.99(xSiO2·(100-x)Bi2O3)
+Precursors: SiO2, Fe2O3, BiO(NO3)·H2O
+Operations: mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2015.10.038
+Target: (60-x)Sb2O3-35P2O5-5MgO-xEr2O3
+Precursors: Sb2O3, MgO, Er2O3, P2O5
+Operations: grounded; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2015.11.023
+Target: xMoO3-50ZnO-(50-x)B2O3
+Precursors: MoO3, B2O3, ZnO
+Operations: mixed; melted; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2015.12.006
+Target: 30PO5/2-25NbO5/2-10WO3-25Na2O-10((1-x)BaO-xSrO)
+Precursors: Na2CO3, SrCO3, Nb2O5, P2O5, WO3, BaCO3
+Operations: mixed; melted; stirred
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.01.013
+Target: xCr2O3-(1-x)(40.7Fe2O3-5.0B2O3-54.3P2O5),%
+Precursors: Fe2O3, H3BO3, NH4H2PO4, Cr2O3
+Operations: heated; melted; annealed; cooled; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.02.003
+Target: Ca2RE8(SiO4)6O2
+Precursors: CaO, Nd2O3, SiO2
+Operations: mixing; quenched; crushed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.02.016
+Target: 14Li2O-9Al2O3-38TiO2-39P2O5
+Precursors: (NH4)H2PO4, TiO2, Al(OH)3, Li2CO3
+Operations: mixed; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.02.022
+Target: P2O5-CaO-B2O3-K2O-MoO3
+Precursors: MoO3, NH4·H2PO4, CaCO3, H3BO3, K2CO3
+Operations: mixed; cooled; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.03.002
+Target: 55P2O5-(45-x)Na2O-xK2O
+Precursors: Na2CO3, K2CO3, P2O5
+Operations: ground; ground; preheated; melted; quenched; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.03.009
+Target: 50Na2O(Li2O)·50P2O5
+Precursors: (NH4)2HPO4, Na2CO3, Li2CO3
+Operations: ground; mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.03.017
+Target: 3Al2O3·2SiO2-LaPO4
+Precursors: LaPO4, Al6Si2O13
+Operations: ground; mixed; pressed; sintered; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.04.019
+Target: (100-x)Pb2P2O7-xNb2O5
+Precursors: PbHPO4, Nb2O5
+Operations: heated; cooled; annealed; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.04.039
+Target: 25Na2O-23CaO-6P2O5-44B2O3-2ZrO2-xEu2O3
+Precursors: Na2CO3, NH4H2PO4, Eu2O3, CaCO3, H3BO3, ZrO2
+Operations: dried; dried; calcined; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.05.035
+Target: Li2O-Al2O3-SiO2
+Precursors: Al2O3, SiO2, Li2CO3
+Operations: mixed; cooled; Calcination; mixing; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.06.040
+Target: (60-x)P2O5-20MgO-20ZnSO4-xSm2O3
+Precursors: ZnSO4·7H2O, MgO, P2O5, Sm2O3
+Operations: ground; mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.07.043
+Target: xAl2O3-(35-x)CaO-65P2O5
+Precursors: CaO, Al2O3, P2O5
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.08.005
+Target: Na2FeP2O7
+Precursors: FeO, NaH2PO4
+Operations: mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.08.009
+Target: (50-x-y)TeO2-30ZnO-10YF3-10NaF-xPr2O3-yYb2O3
+Precursors: Pr2O3, TeO2, ZnO, Yb2O3, NaF, YF3
+Operations: mixing; quenched; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.08.024
+Target: 64Ba1-xY2x/3Nb2O6-36B2O3
+Precursors: B2O3, Y2O3, Nb2O5, BaCO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.08.043
+Target: 0.70TeO2-0.30BaO
+Precursors: TeO2, BaO
+Operations: grounded; ground; quenched; pressed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.09.005
+Target: (60-x)P2O5-20MgO-20ZnSO4-xDy2O3
+Precursors: ZnSO4·7H2O, Dy2O3, P2O5, MgO
+Operations: ground; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.10.019
+Target: CaAl2Si2O8
+Precursors: SiO2, CaCO3, Al2O3
+Operations: mixed; ground; pelletized; treated; cooling; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.10.030
+Target: GaO3/2-GeO2-NaO1/2
+Precursors: Ga2O3, GeO2, Na2CO3
+Operations: mixed; pre-sintered; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.10.040
+Target: (59-x)TeO2-30B2O3-10MgO-1Eu2O3-(x)Mn3O4
+Precursors: MgO, Mn3O4, Eu2O3, TeO2, H3BO3
+Operations: mixed; heated; quenched; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnoncrysol.2016.11.026
+Target: 66SiO2-8B2O3-12Na2O-6NaF-8SrO
+Precursors: Na2CO3, SrCO3, SiO2, H3BO3, NaF
+Operations: mixed; pressed; annealed; treated
+Conditions: N/A

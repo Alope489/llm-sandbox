@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.dyepig.2017.01.013
+Target: Bi4Zr3O12
+Precursors: ZrO2, Bi2O3
+Operations: mixed; calcined; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.01.021
+Target: RE6Mo2O15
+Precursors: RE2O3, (NH4)6Mo7O24·4H2O, Er2O3
+Operations: homogenized; grinding; evaporated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.02.029
+Target: Ca9-x0Eux0(PO4)6O2H2-x0-y0Cuy0
+Precursors: (NH4)2HPO4, CaCO3, CuO, Eu2O3
+Operations: annealed; mixed; ground; annealed; grinding; annealed; regrinding; pressed; annealed; annealing; grinded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.03.007
+Target: K2BaGe8O18
+Precursors: K2CO3, BaCO3, MnO2, GeO2
+Operations: mixed; ground; dried; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.03.029
+Target: Eu0.1Sr1.44Ba0.46SiO4
+Precursors: SiO2, SrCO3, Eu2O3, BaCO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.04.019
+Target: Sr0.95Al2O4
+Precursors: Al2O3, Eu2O3, SrCO3
+Operations: added; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.04.037
+Target: Eu0.08Ca0.92W1-xMoxO4
+Precursors: MoO3, Eu2O3, CaCO3, WO3
+Operations: grinded; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.05.010
+Target: CexKBaY1-xSi2O7
+Precursors: CeO2, Y2O3, SiO2, BaCO3, K2CO3
+Operations: mixed; sintered; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.06.005
+Target: Nd2Si2O7
+Precursors: SiO2, Nd2O3
+Operations: mixed; ground; grinding; ground; milling; ground; mixed; heated; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.06.038
+Target: Sm3-xBixFe5O12
+Precursors: Fe2O3, Sm2O3, Bi2O3
+Operations: mixed; grounded; calcination
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.07.019
+Target: Sr2LaSbO6
+Precursors: Sb2O5, La2O3, Eu2O3, SrCO3
+Operations: mixed; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.08.015
+Target: Sr4Mn2(Cu1-xZnx)O9
+Precursors: CuO, SrCO3, Mn2O3, ZnO
+Operations: mixed; mixed; milling; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.09.065
+Target: BaCdP2O7
+Precursors: NH4H2PO4, CdCO3, Eu2O3, BaCO3
+Operations: mixed; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.10.040
+Target: SrTiO3
+Precursors: TiO2, Y2O3, Eu2O3, SrCO3
+Operations: mixed; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.10.047
+Target: Ca2Y8(SiO4)6O2
+Precursors: SiO2, CaCO3, Y2O3, Sm2O3
+Operations: ground; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.11.003
+Target: LaBWO6
+Precursors: Eu2O3, Tb(NO3)3·6H2O, (NH4)10H2(W2O7)6, H3BO3, La2O3
+Operations: ground; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.11.046
+Target: Ba2Y5(1-x-y-z)B5O17
+Precursors: CeO2, Y2O3, H3BO3, BaCO3
+Operations: mixed; grounding; preheated; re-grounded; sintered; cooled; re-ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.12.051
+Target: Na3Sc2(1-x)(PO4)3
+Precursors: Na2CO3, Ce(NO3)3·6H2O, NH4H2PO4, Sc2O3
+Operations: ground; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.12.059
+Target: EuxLiSr1-xVO4
+Precursors: LiCO3, NH4VO3, Eu2O3, SrCO3
+Operations: mixed; ground; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2017.12.067
+Target: CaGd2(WO4)4
+Precursors: Gd2O3, CaCO3, (NH4)10H2(W2O7)6
+Operations: grinded; cooled; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2018.01.031
+Target: Ca10-xSrx(PO4)6F2
+Precursors: Eu2O3, SrCO3, (NH4)2HPO4, CaCO3, CaF2
+Operations: grinding; sintered; grinding; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2018.02.036
+Target: Ba2(Lu1-xLax)5B5O17
+Precursors: Ba2CO3, H3BO3, Lu2O3, La2O3
+Operations: added; mixed; pre-fired; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2018.02.047
+Target: LiCa3(1-x)MgV3O12
+Precursors: NH4VO3, MgO, Eu2O3, CaCO3, Li2CO3
+Operations: mixed; calcined; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2018.03.005
+Target: Ca3Gd(1-x)(AlO)3(BO3)4
+Precursors: Eu2O3, Gd2O3, CaCO3, Al2O3, H3BO3
+Operations: ground; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2018.03.009
+Target: Gd2ZnTiO6
+Precursors: Gd2O3, TiO2, Yb2O3, ZnO
+Operations: ground; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.dyepig.2018.03.018
+Target: EuxNa2Ca1-xSn2Ge3O12
+Precursors: Na2CO3, SnO2, Eu2O3, GeO2, CaCO3
+Operations: added; mixed; ground; calcined; grind
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.elecom.2003.08.019
+Target: LiMn2-xAlxO4
+Precursors: LiOH·H2O, Al2O3, MnO2
+Operations: milled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.elecom.2004.02.010
+Target: Li3.4V0.6Si0.4O4
+Precursors: SiO2, Li2CO3, V2O5
+Operations: pressed; sintered; pressed; sintered; pressed; post-annealed
+Conditions: N/A

@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.molstruc.2011.06.007
+Target: Ni1-xCuxFe2-yMnyO4
+Precursors: CuO, Mn2O3, α-Fe2O3, NiO
+Operations: sintered; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2011.07.048
+Target: Ca2Gd2W3O14
+Precursors: Gd2O3, CaCO3, WO3, Dy2O3
+Operations: mixed; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2011.08.003
+Target: xGd2O3(40-x)Fe2O360P2O5
+Precursors: Gd2O3, Fe2O3, NH4H2PO4
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2011.12.028
+Target: xCeO2-(20-x)BaO-B2O3
+Precursors: BaO, CeO2, B2O3
+Operations: mixed; annealed; grinded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.01.025
+Target: xNa2SO4-(1-x)(0.4Fe2O3-0.6P2O5)
+Precursors: Na2SO4, Fe2O3, NH4H2PO4
+Operations: mixing; heated; melted; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.04.034
+Target: Na3ZnB5O10
+Precursors: Na2CO3, H3BO3, ZnO
+Operations: ground; heated; ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.04.085
+Target: Ba2-xCaxTiSi2O8
+Precursors: SiO2, TiO2, CaCO3, BaCO3
+Operations: heated; grinded; palletized; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.06.054
+Target: ((CH3)4N)4(SiW12O40)
+Precursors: H4SiW12O40·19H2O, (CH3)4NOH
+Operations: dried; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.09.019
+Target: CoFe2O4
+Precursors: CoO, Fe2O3
+Operations: mixed; ground; sintered; cooled; ground; pressed; sintered; cooled; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.09.037
+Target: 41P2O5-17K2O-8Al2O3-(24-x)ZnF2-10LiF-xEu2O3
+Precursors: ZnF2, Eu2O3, LiF, Al(PO3)3, KH2PO4
+Operations: mixed; melted; quenched; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.09.041
+Target: (30-x)(NaPO3)6+30PbO+40B2O3+xGd2O3
+Precursors: PbO, Gd2O3, H3BO3, (NaPO3)6
+Operations: mixed; ground; ground; quenched; pressing; annealed; powdered; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.10.023
+Target: SrZrO3
+Precursors: SrO, ZrO2
+Operations: mixed; ground; annealed; mixed; grinded; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.11.008
+Target: Sr0.88Al2O4
+Precursors: Eu2O3, SrCO3, Al2O3
+Operations: mixed; mixed; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2012.12.033
+Target: ZnTiO3
+Precursors: TiO2, ZnO
+Operations: mixed; milling; milling; milled; milling; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2013.03.007
+Target: LiPb2B5O10
+Precursors: PbO, H3BO3, Li2CO3
+Operations: mixed; heated; cooled; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2013.03.059
+Target: Ba2-xSrxNiWO6
+Precursors: SrCO3, WO3, BaCO3, NiO
+Operations: dried; heated; regrinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2013.06.051
+Target: Ni0.5Zn0.5Fe2O4
+Precursors: NiO, ZnO, Fe2O3
+Operations: mixed; ground; calcined; grinding; pre-sintering; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2013.06.071
+Target: KPbB5O9
+Precursors: PbO, K2CO3, H3BO3
+Operations: mixed; preheated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2013.08.052
+Target: α-Fe2-xMxO3
+Precursors: Cr2O3, Fe2O3
+Operations: mixed; milled; calcined; cooled; milled; pelletized; sintered; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.01.057
+Target: xTiO2·(60-x)Bi2O3·40SiO2
+Precursors: SiO2, TiO2, Bi2O3
+Operations: mixed; shaken; pressed; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.03.041
+Target: Dy2MgTiO6
+Precursors: TiO2, Dy2O3, MgO
+Operations: mixed; ground; annealed; regrinded; repelletized; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.06.068
+Target: α-Fe2-xZnxO3
+Precursors: Fe2O3, ZnO
+Operations: mixed; heated; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.07.027
+Target: Li0.5+0.5xGexFe2.5-1.5xO4
+Precursors: GeO2, Fe2O3, Li2CO3
+Operations: mixing; presintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.09.047
+Target: 50V2O5·20Bi2O3·30ZnO
+Precursors: Bi2O3, V2O5, ZnO
+Operations: mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.10.050
+Target: K2Ti4O9
+Precursors: TiO2, K2CO3
+Operations: ground; ground; calcinated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2014.10.061
+Target: 20CaO-8B2O3-24Fe2O3-48P2O5+xAs2O3
+Precursors: As2O3, NH4H2PO4, CaO, Fe2O3, H3BO3
+Operations: homogenized; grinding; heated; heated; melted; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2015.02.012
+Target: 50P2O55Al2O320CaO(25-x)Na2OxTiO2
+Precursors: Na2CO3, TiO2, CaCO3, Al2O3, P2O5
+Operations: mixed; melted; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.molstruc.2015.02.021
+Target: xNd2O3-(100-x)(0.1BaO-0.4TeO2-0.5B2O3)
+Precursors: TeO2, Nd2O3, H3BO3, BaCO3
+Operations: mixed
+Conditions: N/A

@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.jnucmat.2012.10.044
+Target: Th1-xMxO2-y
+Precursors: UO2+x, ThO2
+Operations: mixing; heated; mixed; milling; pelletized; sintered; crushed; milled; sintered; treated; added; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2012.12.014
+Target: UO2-Gd2O3
+Precursors: Gd2O3, UO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.04.070
+Target: Ti3AlC2
+Precursors: C, Ti, Al
+Operations: mixed; milling; drying; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.04.093
+Target: Be12Ti
+Precursors: Ti, Be
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.06.024
+Target: Li2TiO3
+Precursors: TiO2, Li2CO3
+Operations: milled; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.07.033
+Target: BaUO4
+Precursors: U3O8, BaCO3
+Operations: mixed; compacted; heated; ground; milled; added; mixed; compacted; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.07.038
+Target: CrUO4
+Precursors: UO2(NO3)2·6H2O, Cr(NO3)3·9H2O
+Operations: mixing; calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.09.003
+Target: UO2-SiC
+Precursors: SiC, UO2
+Operations: mixed; blended; dried; dispersed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.09.062
+Target: Ca1-xUxTi1-2xAl2xSiO5
+Precursors: TiO2, CaCO3, Al2O3, SiO2, UO2(NO3)2·6H2O
+Operations: mixed; milling; calcined; milled; granulated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2013.12.014
+Target: UO2PuO2
+Precursors: PuO2, UO2+x
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2014.01.030
+Target: BaThO3
+Precursors: ThO2, BaCO3
+Operations: mixed; pressed; heated; ground; pressed; reheated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2014.02.003
+Target: CaZrTi2O7
+Precursors: CaO, TiO2, ZrO2
+Operations: mixed; grinding; heated; grinding; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2014.05.068
+Target: Ce1-xPrxPO4
+Precursors: NH4H2PO4, Pr2O3, Ce2(C2O4)3·10H2O
+Operations: ground; calcined; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2014.07.039
+Target: CeO2-MgAl2O4-CeMgAl11O19
+Precursors: MgAl2O4, CeO2, α-Al2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.01.057
+Target: δ-Sc4Ti3O12
+Precursors: TiO2, Sc2O3
+Operations: drying; mixed; milling; pressed; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.06.046
+Target: Ce0.5Pr0.5PO4
+Precursors: Pr6O11, Ce2(C2O4)3·10H2O, NH4H2PO4
+Operations: milled; dried; calcined; ground; pelleted; pressed; pressed; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.06.056
+Target: Ti3SiC2
+Precursors: C, Si, Ti
+Operations: sintered; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.08.034
+Target: Lu2Ti2O7
+Precursors: TiO2, Lu2O3
+Operations: mixed; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.10.010
+Target: Li4+xSi1-xAlxO4
+Precursors: SiO2, γ-Al2O3, LiOH·H2O
+Operations: mixed; milling; calcined; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.10.030
+Target: Ti3SiC2
+Precursors: C, Si, Ti
+Operations: pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2015.11.003
+Target: U0.55Pu0.45O2
+Precursors: PuO2, UO2
+Operations: mixing; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2016.04.016
+Target: Ca1-xZr1-xY2xTi2O7
+Precursors: TiO2, CaCO3, Y2O3, ZrO2
+Operations: heated; dried; homogenized; grinding; pelletized; heated; heated; homogenized; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2016.06.036
+Target: Nd0.20(Zr1-xCex)0.80O1.90
+Precursors: ZrO2, Nd2O3, CeO2
+Operations: ground; pelletized; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2016.08.027
+Target: Lu2-xCexTi2O7
+Precursors: TiO2, Lu2O3, CeO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2016.10.009
+Target: Li4+xSi1-xAlxO4
+Precursors: Li4SiO4, Li5AlO4
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2016.10.043
+Target: Th0.8Ce0.2O2.00
+Precursors: ThO2, CeO2
+Operations: mixed; milling; heated; preheated; milled; sintered; heated; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2017.01.004
+Target: U1-yGdyO2-x
+Precursors: Gd2O3, UO2
+Operations: blended; pressed; sintered; cooled; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2017.01.048
+Target: MgO-PuO2-x
+Precursors: MgO, PuO2
+Operations: mixed; compacted; carried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2017.06.014
+Target: Ni3TeO6
+Precursors: TeO2, NiO
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jnucmat.2017.08.041
+Target: U3Si2
+Precursors: Si, U
+Operations: milled
+Conditions: N/A

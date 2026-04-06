@@ -1,0 +1,187 @@
+
+
+### Synthesis Record 10.1149/1.3621718
+Target: La0.8Sr0.2Ga0.8Mg0.2O2.8
+Precursors: Ga2O3, MgO, La2O3, SrCO3
+Operations: pelletizing; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1149/1.3625282
+Target: (Sr1.9-xBax)SiO4
+Precursors: Eu2O3, SrCO3, SiO2, BaCO3
+Operations: mixed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0011407ssl
+Target: MgAl2O4
+Precursors: MgO, Al2O3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0011408ssl
+Target: MgAl2O4
+Precursors: MgO, Al2O3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0011412jss
+Target: BaCa2Y6O12
+Precursors: Eu2O3, CaCO3, Y2O3, BaO
+Operations: mixed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0011501jes
+Target: LiCoPO4
+Precursors: LiOH·H2O, Co3O4, NH4H2PO4
+Operations: homogenized; precalcined; homogenized; calcined; milling; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0011506jes
+Target: Na15Sn4
+Precursors: Na, Sn
+Operations: milling
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0011508jes
+Target: BaCe1-x-yYbxInyO3-δ
+Precursors: CeO2, Yb2O3, BaCO3, In2O3
+Operations: mixed; milling; dried; calcined; milled; pressed; sintered; mixing; mixing
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.001212jes
+Target: La0.20Sr0.25Ca0.45TiO3
+Precursors: TiO2, CaCO3, La2O3, SrCO3
+Operations: drying; mixed; milling; Calcination; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0021411jes
+Target: LiFe0.08Mn1.5Ni0.42O4
+Precursors: Mn2O3, NiO, Fe3O4, Li2CO3
+Operations: milled; calcined; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0021708jss
+Target: MgGa2O4
+Precursors: MgCO3, Ga2O3
+Operations: mixed; grinded; mixing; cooling; grinded
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.002201jes
+Target: AgY(WO4)2-x(MoO4)x
+Precursors: MoO3, Y2O3, Ag2O, WO3
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.002203jes
+Target: Y2Si3O3N4
+Precursors: Y2O3, Si3N4
+Operations: added; grounded; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.002206jss
+Target: Eu0.20Sr2.8-2yEu0Al2O5Cl2
+Precursors: Eu2O3, SrCO3, Al(OH)3, SrCl2·6H2O
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.003202jes
+Target: Sr1-x-yEuxYbySi2O2N2
+Precursors: Eu2O3, SrCO3, Yb2O3, SiO2, α-Si3N4
+Operations: milled; fired; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0041509ssl
+Target: Sr4Ge2O7F2
+Precursors: GeO2, SrF2, Eu2O3, SrCO3
+Operations: added; mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.004305jss
+Target: Ba1-xEuxCa2MgSi2O8
+Precursors: Eu2O3, CaCO3, SiO2, BaCO3, Mg(OH)2·4MgCO3·6H2O
+Operations: mixing; grinding; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0051501ssl
+Target: EuxBa3-xP4O13
+Precursors: NH4H2PO4, Eu2O3, BaCO3
+Operations: mixed; ground; sintered; re-ground; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0051505ssl
+Target: Ba13Al22Si10O66
+Precursors: Eu2O3, Al2O3, SiO2, BaCO3
+Operations: mixed; ground; sintered; annealing; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0051709jss
+Target: Ca6BaP4O17
+Precursors: NH4H2PO4, CaCO3, Sm2O3, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.005302jss
+Target: CexCa2-2xLi1+xSiO4F
+Precursors: CeO2, LiF, CaCO3, SiO2, Li2CO3
+Operations: ground; fired; fired; cooled; pulverized
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.005402jss
+Target: NaY9(SiO4)6O2
+Precursors: Na2CO3, Y2O3, SiO2
+Operations: blended; fired; crushed
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0061502jes
+Target: Li4Ti5O12
+Precursors: TiO2, Li2CO3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0061603jss
+Target: Sr3(Ti1-xTax)2O7
+Precursors: TiO2, Ta2O5, SrCO3
+Operations: milled; dried; calcined; grinding; treated; treated
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.006204jes
+Target: Y2-xCexSi3O3N4
+Precursors: CeO2, Y2O3, Si3N4
+Operations: added; grounded; calcined; cooled; grounded
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0071408jss
+Target: Li3Sc2(PO4)3
+Precursors: (NH4)2HPO4, Sc2O3, Eu2O3, Li2CO3
+Operations: mixed; ground; added; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.0071601jss
+Target: Ba2Y(BO3)2Cl
+Precursors: CeO2, Y2O3, Yb2O3, H3BO3, BaCO3, BaCl2·2H2O
+Operations: mixed; preheated; cooled; reground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.007203ssl
+Target: Ca3Al2O6
+Precursors: CaCO3, Al2O3, Ce2O3
+Operations: ground; fired; annealing; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.007210jes
+Target: (Zn0.9Y0.1)Nb2O6
+Precursors: Y2O3, Nb2O5, ZnO
+Operations: sintered
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.007301eel
+Target: LiMn2O4
+Precursors: MnCO3, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1149/2.007404eel
+Target: Na2/3Ni1/3Ti2/3O2
+Precursors: Na2CO3, TiO2, NiO
+Operations: added; milling; mixed; fired
+Conditions: N/A

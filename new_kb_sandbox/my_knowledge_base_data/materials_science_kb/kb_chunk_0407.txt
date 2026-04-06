@@ -1,0 +1,145 @@
+
+
+### Synthesis Record 10.1016/j.sna.2004.08.009
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: milled; granulated; pressed; performed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2005.06.002
+Target: Pb1-xLax(Zr0.52Ti0.48)1-x4O3
+Precursors: PbO, TiO2, ZrO2, La2O3
+Operations: mixed; added; milled; evaporated; pressed; pressed; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2005.08.007
+Target: PbNb2O6
+Precursors: PbO, Nb2O5
+Operations: mixed; added; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2006.01.022
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: mixed; milling; dried; reacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2006.05.005
+Target: (1-x)(Pb0.85Sm0.1)(Ti0.98Mn0.02)O3-xSiO2
+Precursors: PbO, TiO2, Sm2O3, SiO2, MnO2
+Operations: mixed; calcined; mixed; milling; dried; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2006.07.029
+Target: BaTiO3
+Precursors: TiO2, BaO
+Operations: mixed; ground; pre-sintering; reground; pelletising; grinding; presintering; added; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2006.10.036
+Target: 0.95(Na0.5K0.5)NbO3-0.05BaTiO3
+Precursors: Na2CO3, TiO2, Nb2O5, BaCO3, K2CO3
+Operations: mixed; dried; calcined; remilling; dried; pressed; sintered; sintered; aged
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2006.11.002
+Target: (1-x)((Na0.5K0.5)NbO3)-xSrTiO3
+Precursors: Na2CO3, SrCO3, TiO2, Nb2O5, K2CO3
+Operations: milled; dried; calcined; pulverization; milled; dried; calcined; pulverized; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2007.05.020
+Target: ((Na0.5K0.5)1-xCax)(Nb1-xTix)O3
+Precursors: Na2CO3, TiO2, CaCO3, Nb2O5, K2CO3
+Operations: milled; dried; calcined; pulverization; milled; dried; calcined; pulverized; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2009.02.004
+Target: (0.05-x)Pb(Mg1/3Nb2/3)O3-xPb(Sb1/3Nb2/3)O3-0.10Pb(Ni1/3Nb2/3)O3-0.85Pb(Zr1/2Ti1/2)O3
+Precursors: MgCO3, TiO2, Nb2O5, Sb2O3, Pb3O4, ZrO2, NiO
+Operations: mixed; calcined; mixed; milled; dried; calcined; grounded; drying; added; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2009.06.003
+Target: 0.2Pb(Mg1/3Nb2/3)O3-0.8Pb(Zr0.475
+Precursors: PbO, MgO, Nb2O5, ZrO2
+Operations: milled; dried; calcined; added; mixed; milling; drying; re-calcined; milling; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2009.12.027
+Target: Bi0.5(Na0.78K0.22)0.5(Ti1-xZrx)O3
+Precursors: Na2CO3, Bi2O3, TiO2, K2CO3, ZrO2
+Operations: milled; pulverized; calcined; milling; added; granulation; crushed; pressed; performed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2010.07.011
+Target: PMN-PT
+Precursors: PbO, TiO2, MgO, Nb2O5
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2011.11.020
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: mixed; calcined; mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2012.05.025
+Target: KTaO3
+Precursors: Ta2O5, K2CO3
+Operations: mixed; dried; cooled; dried; pressed; annealed; grinding; milling; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2012.06.015
+Target: YBa2Cu3-xCaxO7-y
+Precursors: CuO, Y2O3, CaO, BaCO3
+Operations: pressed; calcined; grinding; mixing; pelletizing; heated; oxygenated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2012.10.017
+Target: Ca3TaGa3Si2O14
+Precursors: CaCO3, SiO2, Ta2O5, Ga2O3
+Operations: sintered; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2012.11.022
+Target: (Na0.5K0.5)(Nb0.97Sb0.03)O3
+Precursors: Na2CO3, Sb2O5, Nb2O5, K2CO3
+Operations: mixed; dried; calcined; mixed; dried; milling; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2013.07.024
+Target: ZnNb2O6
+Precursors: Nb2O5, ZnO
+Operations: calcining; milled; calcined; ground; dried; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2013.10.011
+Target: Pb(ZrxTi1-x)O3
+Precursors: TiO2, ZrO2, Pb3O4
+Operations: milled; grinding; calcined; milled; mixed; heated; sintered; sintered; grinded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2014.05.009
+Target: ZnNb2O6
+Precursors: Nb2O5, ZnO
+Operations: mixed; milling; calcined; mixed; milled; dried; grinded; calcined; pressed; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2015.11.015
+Target: Ba(Cu0.5W0.5)O3
+Precursors: CuO, WO3(), BaCO3
+Operations: mixed; dried; calcined; milled; dried; granulated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2015.12.012
+Target: 0.69Pb(Zr0.47Ti0.53)O3-0.31(Pb(Zn0.4Ni0.6)1/3Nb2/3)O3
+Precursors: PbO, TiO2, ZrO2, NiO, ZnO
+Operations: mixed; drying; calcined; re-milled; pressed; sintered; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.sna.2016.06.011
+Target: 0.78Bi0.5Na0.5TiO3-0.22SrTiO3
+Precursors: Na2CO3, TiO2, Bi2O3, SrCO3
+Operations: N/A
+Conditions: N/A

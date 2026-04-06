@@ -1,0 +1,187 @@
+
+
+### Synthesis Record 10.1016/j.corsci.2010.06.011
+Target: CuxNi85-xFe15
+Precursors: Ni, Cu, Fe
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2011.05.058
+Target: CuMoO4
+Precursors: CuO, MoO3
+Operations: ground; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2012.02.004
+Target: Si3Al3O3N5
+Precursors: β-SiAlON, Si, Al
+Operations: milled; dried; fired; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2012.05.020
+Target: Yb2SiO5
+Precursors: Yb2O3, SiO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2012.08.062
+Target: 20BaO.15Nd2O3.35TiO2.30B2O3
+Precursors: TiO2, Nd2O3, BaCO3, B2O3
+Operations: mixed; melted; quenched; pulverized; milling; mixed; milling; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2013.04.037
+Target: ZrB2-SiC(Al)
+Precursors: SiC(Al), ZrB2
+Operations: mixed; milling; milling; milling; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2014.04.005
+Target: SiAlON
+Precursors: AlN, Si3N4, α-Al2O3
+Operations: mixing; homogenised; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2014.04.029
+Target: NbSi2
+Precursors: Nb, Si
+Operations: mixed; blended; milling; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2014.08.009
+Target: BN-ZrO2-SiC
+Precursors: α-SiC, m-ZrO2, h-BN
+Operations: added; milled; milling; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2015.05.011
+Target: CoSb3
+Precursors: Sb, Co
+Operations: melted; quenched; ground; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2015.08.031
+Target: La2(Zr0.7Ce0.3)2O7
+Precursors: ZrO2, La2O3, CeO2
+Operations: compacted; compacted; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2018.01.036
+Target: 1SiY
+Precursors: 3SiY
+Operations: grinding; milling; milling; pressed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.corsci.2018.02.050
+Target: 50P2O5-10Na2O-40SrO
+Precursors: (NH4)2HPO4, NaPO3, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2003.10.062
+Target: CaIn2O4
+Precursors: In2O3, CaCO3
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2004.06.010
+Target: Bi2CaNaTa3O12
+Precursors: Bi2CaTa2O9, NaTaO3
+Operations: grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2004.09.043
+Target: Ga2(TeO3)3
+Precursors: Ga2O3, TeO2
+Operations: mixing; melted; quenched; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2004.10.114
+Target: Na2Ti3O7
+Precursors: Na2CO3, TiO2
+Operations: mixed; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2005.07.009
+Target: (Li0.333Na0.334K0.333)Eu(MoO4)2
+Precursors: Eu2O3, (NH4)6Mo7O24·4H2O, NaHCO3, Li2CO3, K2CO3
+Operations: ground; pre-fired; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2005.10.122
+Target: SrSnO3
+Precursors: SnO2, SrCO3
+Operations: dispersed; oxidized; calcined; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2006.04.033
+Target: Cd1-xPrxSiO3
+Precursors: SiO2, Pr2O3, CdCO3
+Operations: homogenized; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2006.12.088
+Target: Ca10-xEux(Si2O7)3Cl2
+Precursors: SiO2, CaCO3, CaCl2, Eu2O3
+Operations: mixed; grinding; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2007.05.023
+Target: Mg3Y2-yGdyGe3-zSizO12
+Precursors: MgCO3, CeO2, GeO2, Gd2O3, Y2O3, SiO2
+Operations: mixed; grinding; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2007.11.045
+Target: Na0.5Bi1.5VMoO8
+Precursors: Na2CO3, MoO3, NH4VO3, Bi2O3
+Operations: ground; mixed; added; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2008.01.032
+Target: NaGd1-xTbx(PO3)4
+Precursors: Na2CO3, Gd2O3, NH4H2PO4, Tb4O7
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2008.01.033
+Target: Sr2CeO4
+Precursors: CeO2, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2008.10.034
+Target: EuxSr1-xMg2(PO4)2
+Precursors: NH4H2PO4, (MgCO3)4Mg(OH)2·5H2O, Eu2O3, SrCO3
+Operations: ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2009.05.079
+Target: La0.46Eu0.21Ca0.33MnO3
+Precursors: CaCO3, La2O3, Eu2O3, MnO2
+Operations: mixed; ground; calcined; ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2009.06.092
+Target: 15Na2O-85GeO2
+Precursors: Na2CO3, GeO2
+Operations: ground; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2009.11.003
+Target: Sm2InNbO7
+Precursors: In2O3, Sm2O3, Nb2O5
+Operations: ground; dried; pressed; sintered; regrinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2009.11.039
+Target: B2O3+20CaF2+15CaO+15BaO+8Al2O3+xNdF3
+Precursors: CaO, Al2O3, NdF3, H3BO3, BaCO3, CaF2
+Operations: powdered; grinding; quenched; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.cplett.2009.12.096
+Target: 15Na2O-5Al2O3-80B2O3
+Precursors: Na2CO3, Al2O3, H3BO3
+Operations: mixed; melted; pressed
+Conditions: N/A

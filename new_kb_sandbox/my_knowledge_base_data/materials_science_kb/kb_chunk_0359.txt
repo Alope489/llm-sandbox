@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.memsci.2007.05.001
+Target: SrCo0.8Fe0.2O3-δ
+Precursors: Co2O3, Fe2O3, SrCO3
+Operations: mixed; milled; cooling; grinded; added; milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2008.03.034
+Target: La(1-x)SrxFe(1-y)GayO3-δ
+Precursors: Ga2O3, Fe2O3, La2O3, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2008.04.022
+Target: SrCo0.8Fe0.2O3-δ
+Precursors: SrCO3, Fe2O3, Co2O3
+Operations: sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2008.05.065
+Target: BaCo0.7Fe0.3-xNbxO3-δ
+Precursors: Fe2O3, CoCH3COOH, Nb2O5, BaCO3
+Operations: mixed; milling; dried; calcined; ground; milled; drying; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2008.07.002
+Target: SrCo1-yNbyO3-δ
+Precursors: Co2O3, Nb2O5, SrCO3
+Operations: mixed; drying; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2009.03.012
+Target: Sr(Co0.8Fe0.2)1-xTixO3-δ
+Precursors: TiO2, Co2O3, Fe2O3, SrCO3
+Operations: calcined; grinding; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2009.04.033
+Target: Al2O3-Y2O3
+Precursors: Y2O3, Al2O3
+Operations: blended; mixing; dried; treated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2009.05.023
+Target: La0.85Ce0.1Ga0.3Fe0.65Al0.05O3-δ
+Precursors: CeO2, Al2O3, Ga2O3, Fe2O3, La2O3
+Operations: mixed; milled; dried; calcined; grinded; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2009.05.052
+Target: La0.8Sr0.2MnO3-δ
+Precursors: MnO2, La2O3, SrCO3
+Operations: milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2009.08.031
+Target: SrZr0.2Ce0.8O3
+Precursors: ZrO2, CeO2, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2009.12.023
+Target: BaCo0.7Fe0.2Ta0.1O3-δ
+Precursors: Co2O3, Ta2O5, Fe2O3, BaCO3
+Operations: mixed; milled; calcined; quenched; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2010.01.026
+Target: Ba2-3xBixFe2xO2+3x2
+Precursors: Fe2O3, Bi2O3, Ba(NO3)2
+Operations: milled; calcined; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2010.03.001
+Target: La(1-x)SrxFe(1-y)GayO3-δ
+Precursors: Ga2O3, Fe2O3, La2O3, SrCO3
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2010.06.065
+Target: Ba1-xSrxCo0.7Fe0.2Nb0.1O3-δ
+Precursors: SrCO3, Co(CH3COO)2·4H2O, Nb2O5, Fe2O3, BaCO3
+Operations: mixed; milling; drying; calcined; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2010.11.040
+Target: SrCo1-yTayO3-δ
+Precursors: Co2O3, Ta2O5, SrCO3
+Operations: pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2011.08.059
+Target: BaFe1-xYxO3-δ
+Precursors: Y2O3, Fe2O3, BaCO3
+Operations: mixed; milling; drying; calcined; ground; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2011.10.005
+Target: Ba0.5Sr0.5Co0.8Fe0.2O3-δ
+Precursors: SrCO3, Co3O4, Fe2O3, BaCO3
+Operations: shaped; milled; calcined; dried; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2011.11.010
+Target: La0.8Sr0.2Cr0.5Fe0.5O3-δ
+Precursors: SrCO3, Fe2O3, Cr2O3, La2O3
+Operations: milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2012.02.030
+Target: Ba1.0Co0.7Fe0.2Nb0.1O3-δ
+Precursors: Fe2O3, Co3O4, Nb2O5, BaCO3
+Operations: mixed; pressed; calcined; milled; mixed; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2012.03.026
+Target: SrCo0.8Fe0.2O3-δ
+Precursors: Co2O3, Fe2O3, SrCO3
+Operations: mixed; milled; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2012.05.046
+Target: Ba0.9Co0.7Fe0.2Nb0.1O3-δ
+Precursors: Co3O4, Fe2O3, Nb2O5, BaCO3
+Operations: mixed; milling; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2012.11.072
+Target: BaBi0.05Co0.95-xNbxO3-δ
+Precursors: Co(NO3)2·6H2O, Bi(NO3)3·5H2O, Nb2O5, BaCO3
+Operations: mixed; milled; calcined; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2013.05.005
+Target: La5.5WO11.25-δ
+Precursors: La2O3, WO3
+Operations: mixed; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2013.11.038
+Target: La0.8Sr0.2Fe0.7Ga0.3O3-δ
+Precursors: Ga2O3, Fe2O3, La2O3, SrCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2013.12.030
+Target: BaFeO3-δ
+Precursors: Fe2O3, Nb2O5, BaCO3
+Operations: ground; dried; calcined; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2013.12.073
+Target: La0.6Sr0.4Co0.2Fe0.8O3-δ
+Precursors: Fe(NO3)3·9H2O, Sr(NO3)2, La(NO3)3·6H2O, Co(NO3)2·6H2O
+Operations: calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2014.06.005
+Target: BaBixCo1-x-yTayO3-δ
+Precursors: Co2O3, Ta2O5, Bi2O3, BaCO3
+Operations: milled; milling; calcined; cooling; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.memsci.2014.06.060
+Target: SrCo0.8Fe0.2O3-δ
+Precursors: Co2O3, Fe2O3, SrCO3
+Operations: mixed; milled; dried
+Conditions: N/A

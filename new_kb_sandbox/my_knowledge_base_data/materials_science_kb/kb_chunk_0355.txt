@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1016/j.matlet.2015.10.160
+Target: Li4Ti5(1+x)O12
+Precursors: TiO2, Li2CO3
+Operations: milled; dried; calcined; milled; dried; granulated; pressed; sintered; mixing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2015.12.048
+Target: (Ba0.97Ca0.03)(Sn0.06Ti0.94)O3
+Precursors: SnO2, TiO2, CaCO3, BaCO3, Er2O3
+Operations: milled; dried; calcined; remixed; drying; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2015.12.055
+Target: BaZnP2O7
+Precursors: NH4H2PO4, ZnO, BaCO3
+Operations: mixed; ground; grinding; dried; calcined; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.011
+Target: Bi0.5(Na0.78K0.22)0.5TiO3
+Precursors: Na2CO3, TiO2, K2CO3, Bi2O3
+Operations: milled; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.022
+Target: EuxCa9Gd1-x(PO4)7
+Precursors: (NH4)2HPO4, Gd2O3, CaCO3, Eu2O3
+Operations: mixed; milling; re-sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.043
+Target: CaLaAlO4
+Precursors: CaCO3, Al2O3, La2O3
+Operations: calcined; mixed; calcined; ground; pressed; sintered; roasted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.070
+Target: NaScP2O7
+Precursors: Na2CO3, NH4H2PO4, CeO2, Sc2O3
+Operations: mixed; fired; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.113
+Target: La0.4Pr0.1Ca0.5MnO3
+Precursors: Pr2O3, CaCO3, La2O3, MnO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.117
+Target: LaFeO3
+Precursors: Ho2O3, Fe2O3, La2O3
+Operations: mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.01.120
+Target: Bi0.9La0.1Fe1-xNbxO3+x
+Precursors: Nb2O5, Fe2O3, La2O3, Bi2O3
+Operations: mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.02.022
+Target: DyxCaLa1-xNbMoO8
+Precursors: MoO3, CaCO3, Nb2O5, Dy2O3, La2O3
+Operations: mixed; calcined; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.02.031
+Target: LaAlO3
+Precursors: La2O3, CaO, Al2O3, Cr2O3
+Operations: crushed; milled; mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.02.097
+Target: SrBi4-xLaxTi4O15
+Precursors: TiO2, La2O3, Bi2O3, SrCO3
+Operations: milled; dried; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.03.008
+Target: YAG
+Precursors: Y2O3, Al2O3
+Operations: mixed; milled; drying; pressed; pressed; sintered; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.03.089
+Target: (1-x)Bi0.5Na0.5TiO3-xBa0.85Ca0.15Ti0.9Zr0.1O3
+Precursors: Na2CO3, Bi2O3, TiO2, CaCO3, BaCO3, ZrO2
+Operations: mixed; calcined; milled; milling; mixed; dried; granulated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.03.110
+Target: Ba1-xYxTiO3
+Precursors: TiO2, Y2O3, BaCO3
+Operations: mixed; milled; dried; calcined; crushed; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.03.137
+Target: FeSe0.5Te0.5
+Precursors: Se, Te, Fe
+Operations: sintered; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.021
+Target: BaNd1.96La0.04Ti3O10
+Precursors: TiO2, Nd2O5, La2O5, BaCO3
+Operations: mixed; grind; grinding; pre-sintered; grinded; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.034
+Target: Bi3TaTiO9
+Precursors: Ta2O5, Bi2O3, TiO2
+Operations: mixed; calcined; annealed; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.117
+Target: LiAlW2O8
+Precursors: Al2O3, WO3, Li2CO3
+Operations: mixed; dried; calcined; reground; milling; dried; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.141
+Target: La2LiSbO6
+Precursors: Sb2O3, La2O3, Eu2O3, Li2CO3
+Operations: milling; dried; heated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.147
+Target: (1-x)BaSn0.96Sb0.04O3
+Precursors: SnO2, Sb2O3, BaCO3
+Operations: mixed; mixed; milling; calcined; grinded; pressed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.174
+Target: (1-x)BaTiO3-xBiYO3
+Precursors: TiO2, Y2O3, Bi2O3, BaCO3
+Operations: dried; mixed; milling; drying; granulated; pressed; treated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.04.212
+Target: Ba9Y2Si6O24()
+Precursors: SiO2, Y2O3, BaCO3
+Operations: mixed; milled; dried; calcined; milled; added; pressed; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.05.009
+Target: CoTiNb2O8
+Precursors: TiO2, CoO, Nb2O5
+Operations: milled; drying; calcined; mixed; re-milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.05.010
+Target: (1-x)(Ba0.85Ca0.15)(Ti0.9Zr0.1)O3-xBa(Mg1/3Nb2/3)O3
+Precursors: MgO, TiO2, CaCO3, Nb2O5, BaCO3, ZrO2
+Operations: mixed; milling; dried; calcined; remixed; dried; pressed; carried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.matlet.2016.05.051
+Target: xLi2RuO3·(1-x)LiCoO2
+Precursors: Co3O4, RuO2, Li2CO3
+Operations: milled; dried; grinded; fired; cooling; grounded
+Conditions: N/A

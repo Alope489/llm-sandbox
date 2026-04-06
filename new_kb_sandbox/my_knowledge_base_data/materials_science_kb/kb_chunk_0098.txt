@@ -1,0 +1,157 @@
+
+
+### Synthesis Record 10.1016/S0304-8853(02)00052-5
+Target: YSr2(Ru0.8Cu0.2)O6
+Precursors: Ru, Y2O3, CuO, SrCO3
+Operations: mixed; pressed; preheated; cooled; reground; sintered; cooled; re-heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00063-X
+Target: La0.75Ag0.25MnO3
+Precursors: Ag2O, MnCO3, La2O3
+Operations: mixed; ground; pressed; presintered; broken; ground; pressed; sintered; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00102-6
+Target: Ca3FeRhO6
+Precursors: CaCO3, Fe2O3, Rh
+Operations: mixed; pressed; calcined; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00281-0
+Target: Cu1+xGexFe2-2xO4
+Precursors: CuO, Fe2O3, GeO2
+Operations: mixed; grounded; presintered; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00289-5
+Target: La0.7MnO3
+Precursors: La2O3, MnO2
+Operations: heated; heated; grinding; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00359-1
+Target: Mg0.9Mn0.1InxFe2-xO4
+Precursors: Mg0.9Mn0.1Fe2O4, Fe2O3, In2O3
+Operations: crushed; mixed; dried; calcined; crushed; mixed; dried; added; granulated; compressed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00360-8
+Target: Co0.6Zn0.4Fe2O4
+Precursors: CoO, Fe2O3, ZnO
+Operations: mixed; milled; fired; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00364-5
+Target: Ba3Co2Fe23-12xMn12xO41
+Precursors: MnO2, Fe2O3, Co3O4, BaCO3
+Operations: grinding; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00382-7
+Target: Pr0.9Sr0.1CoO3-δ
+Precursors: Pr6O11, Co2O3, SrO2
+Operations: annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00420-1
+Target: Ba2Zn0.6Co0.6Cu0.8-Fe12-xO22-1.5x
+Precursors: CuO, Fe2O3, BaCO3, Co2O3, ZnO
+Operations: mixed; milled; calcined; cooled; ground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00584-X
+Target: La0.7Ca0.3-xBaxMnO3
+Precursors: MnO2, CaCO3, La2O3, BaCO3
+Operations: mixed; fired; sintered; regrinding; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)00978-2
+Target: La0.75Ca0.25Mn1-xAlxO3
+Precursors: CaO, La2O3, Al2O3, MnO2
+Operations: mixed; ground; pre-sintered; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01173-3
+Target: Co0.2Zn0.8Fe2-xGaxO4
+Precursors: Ga2O3, Fe2O3, Co3O4, ZnO
+Operations: mixed; grinded; pelletized; sintered; cooled; regrinded; sinter
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01235-0
+Target: La0.67Sr0.33MnO3
+Precursors: SrCO3, La2O3, MnO2
+Operations: ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01341-0
+Target: LaMn1-xTixO3+δ
+Precursors: TiO2, MnC2O4·2H2O, La2O3
+Operations: ground; heated; cooled; reground; heated; pelletized; sintered; cooling; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01343-4
+Target: La1-xCdxMnO3
+Precursors: CdO, MnCO3, La2O3
+Operations: ground; calcined; ground; pelletized; sintered; regrinding; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01387-2
+Target: BaFe12-2xRuxZnxO19
+Precursors: RuO2, Fe2O3, BaCO3, ZnO
+Operations: mixed; ground; compressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01413-0
+Target: (La0.7Sr0.3)Mn1-xTixO3
+Precursors: MnO2, TiO2, La2O3, SrCO3
+Operations: calcined; grinding; heated; pressed; sintered; grinding; repelleting; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01430-0
+Target: La2/3Ba1/3MnO3
+Precursors: BaCO3, La2O3, MnO2
+Operations: ground; milled; pressed; heated; pulverized; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01498-1
+Target: Ba3Co2-xFe24+xO41
+Precursors: Fe2O3, Co3O4, BaCO3
+Operations: mixed; dried; calcined; crushed; shaped; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01545-7
+Target: Li0.5-0.5xMgxFe2.5-0.5xO4
+Precursors: MgO, Fe2O3, Li2CO3
+Operations: annealed; sintering; cooled; done
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01565-2
+Target: La0.67Sr0.33MnO3
+Precursors: MnO2, La2O3, SrCO3
+Operations: mixing; mixed; dried; calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01571-8
+Target: La0.67Sr0.33Mn1-xAlxO3
+Precursors: SrCO3, Al2O3, La2O3, MnO2
+Operations: ground; milled; pressed; heated; pulverized; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(02)01573-1
+Target: CdFe2O4
+Precursors: CdO, Fe2O3
+Operations: calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(03)00112-4
+Target: SmxBi1-xFeO3
+Precursors: Fe2O3, Sm2O3, Bi2O3
+Operations: mixed; milled; presintered; grinding; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0304-8853(03)00134-3
+Target: Ba2Zn2-2x-2yCo2xCu2yFe12O22
+Precursors: CuO, Fe2O3, BaCO3, Co2O3, ZnO
+Operations: mixed; calcined; milled; pressed; sintered; cooled
+Conditions: N/A

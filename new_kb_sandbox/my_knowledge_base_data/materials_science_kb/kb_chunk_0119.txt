@@ -1,0 +1,187 @@
+
+
+### Synthesis Record 10.1016/j.apcatb.2011.01.038
+Target: La0.6Sr0.4(Co0.18Fe0.72X0.1)O3-δ
+Precursors: SrCO3, Co3O4, Fe2O3, La2O3, ZnO
+Operations: mixed; milled; dried; crushed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2011.10.024
+Target: RbCa2Ta3O10
+Precursors: Ta2O5, CaCO3, Rb2CO3
+Operations: mixed; pre-calcined; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2011.12.012
+Target: TiO2-ZrO2
+Precursors: TiO2, ZrO2
+Operations: mixing; dried; calcined; ground; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2011.12.042
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: milled; milling; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2012.09.031
+Target: g-C3N4SmVO4
+Precursors: g-C3N4, SmVO4
+Operations: mixed; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2013.02.022
+Target: K2O·2SiO2
+Precursors: SiO2, K2CO3
+Operations: mixed; heated; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2014.12.021
+Target: Sn(Nb1-xTax)2O6
+Precursors: Ta2O5, SnO, Nb2O5
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2015.02.010
+Target: SrNb0.1Co0.9-xFexO3-δ
+Precursors: Co2O3, Fe2O3, Nb2O5, SrCO3
+Operations: mixed; drying; calcined; milling; calcination
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2015.04.002
+Target: CuxCo3-xO4
+Precursors: Cu(NO3)2·3H2O, Co(NO3)2·6H2O
+Operations: dissolved; evaporated; decomposed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2015.07.033
+Target: K3ZnB5O10
+Precursors: K2CO3, H3BO3, ZnO
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2016.03.057
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: mixed; grinding; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2016.07.049
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: mixed; calcined; grinding; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2017.01.016
+Target: K3ZnB5O10
+Precursors: K2CO3, H3BO3, ZnO
+Operations: grounded; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2017.03.040
+Target: ZnRh2O4
+Precursors: Rh2O3, ZnO
+Operations: milled; milling; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2017.05.092
+Target: K2SrTa2O7
+Precursors: Sr(NO3)2, Ta2O5, K3C6H5O7·H2O
+Operations: ground; heated; cooled; ground; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2017.06.012
+Target: Bi3TiNbO9
+Precursors: TiO2, Nb2O5, Bi2O3
+Operations: mixed; pretreated; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcatb.2018.01.042
+Target: WO3Bi2O3
+Precursors: H2WO4, Bi(NO3)3·5H2O
+Operations: added; grounded; heated; calcined; cooled; milled; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apenergy.2007.07.015
+Target: YAG
+Precursors: Y2O3, Al2O3, Yb2O3
+Operations: calcining; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apenergy.2015.01.131
+Target: LiFePO4C
+Precursors: FeC2O42H2O, LiH2PO4
+Operations: mixed; milled; pre-sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apenergy.2015.04.020
+Target: Ca0.75Sr0.25MnO3
+Precursors: CaCO3, Mn3O4, SrCO3
+Operations: mixing; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apenergy.2016.02.135
+Target: β-K2Zr2O5
+Precursors: K2CO3, ZrO2
+Operations: mixed; milling; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apenergy.2016.04.046
+Target: CaMnO3
+Precursors: CaCO3, Mn3O4
+Operations: mixing; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apenergy.2017.07.072
+Target: Li4SiO4
+Precursors: SiO2, LiNO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apgeochem.2006.09.012
+Target: Lu2Si2O7
+Precursors: SiO2, Lu2O3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.applthermaleng.2012.07.046
+Target: La0.7Ca0.3-xSrxMnO3
+Precursors: MnO2, CaCO3, La2O3, SrCO3
+Operations: pre-heated; dried; ground; dried; fired; pressed; sintered; cooled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.applthermaleng.2016.05.146
+Target: Mg2-xAgxSi0.4Sn0.6
+Precursors: Si, Mg, Ag, Sn
+Operations: added; mixed; grinded; compacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.applthermaleng.2017.06.003
+Target: Li2ZrO3
+Precursors: ZrO2, Li2CO3
+Operations: mixed; grounded; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apradiso.2013.11.029
+Target: LiSr4(BO3)3
+Precursors: SrCO3, H3BO3, CeO2, Li2CO3
+Operations: mixed; ground; heated; cooling; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apradiso.2014.03.011
+Target: Sc2TiO5
+Precursors: TiO2, Sc2O3
+Operations: mixing; mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apradiso.2017.01.015
+Target: 2Bi2O3-3GeO2SiO2
+Precursors: SiO2, GeO2, Bi2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apradiso.2018.04.023
+Target: BaAl2O4
+Precursors: Al2O3, BaCO3
+Operations: mixed; calcined; cooling; added
+Conditions: N/A

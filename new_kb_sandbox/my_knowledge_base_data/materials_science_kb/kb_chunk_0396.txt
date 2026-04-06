@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1016/j.physc.2006.04.093
+Target: Bi1.6Pb0.4Sr2Ca2-xSmxCu3Oy
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaO, Sm2O3
+Operations: ground; calcined; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2006.05.056
+Target: Sm1.85Ce0.15CuO4-y
+Precursors: CuO, Sm2O3, CeO2
+Operations: ground; reacted; milled; milled; pressed; fired; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2006.05.101
+Target: Bi1.75Pb0.35Sr2Ca2Cu3O10
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaCO3
+Operations: dissolved; dried; calcinated; grinding; mixing; pressed; sintered; cooled; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2006.08.002
+Target: Y0.95Pr0.05Ba2(Cu1-xMnx)3O7-δ
+Precursors: Pr6O11, CuO, Y2O3, BaCO3, MnO2
+Operations: mixed; calcined; grinding; ground; mixed; pelletized; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2006.08.004
+Target: Bi1.6Pb0.4Sr2Ca2Cu3Oδ
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaCO3
+Operations: mixed; ground; calcined; sintering; reground; added; mixing; grinding; ground; dry; heated; sintered; pelletized; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2006.11.011
+Target: Bi4Sr3Ca3Cu6Ox
+Precursors: CuO, CaCO3, Bi2O3, SrCO3
+Operations: mixed; ground; calcined; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2006.12.011
+Target: (Bi0.8Pb0.2)4Sr3Ca3Cu4Ox
+Precursors: PbO, CuO, Sr(NO3)2, Bi(NO3)·5H2O, CaCO3
+Operations: mixed; calcinated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.01.033
+Target: YBa2Cu3Oy
+Precursors: CuO, Y2O3, Ba2CO3
+Operations: mixing; pressed; calcined; grinding; added; mixing; grinding; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.043
+Target: Sr2-xPrxCoO4
+Precursors: Pr6O11, Co3O4, SrCO3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.070
+Target: Ca2CuO2Cl2
+Precursors: CuO, CaCl2, Ca2CuO3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.097
+Target: La2-xSmxCuO4
+Precursors: CuO, La2O3, Sm2O3
+Operations: mixed; ground; quenched; drying
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.107
+Target: Bi2+xSr2CuOy
+Precursors: CuO, Bi2O3, SrCO3
+Operations: ground; calcined; sintered; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.153
+Target: Ba2Cax-1YxCu2O6
+Precursors: BaCuO1.997, Y2Cu2O5, CaCu2O3, Y1.4BaCu1.6O5
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.288
+Target: Li2TiO3
+Precursors: TiO2, Li2CO3
+Operations: dried; grounded; pressing; heated; grinding; sintered; grounded; pressed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.398
+Target: La2CuO4
+Precursors: CuO, La2O3
+Operations: mixed; ground; fired; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.03.445
+Target: Bi1.6Pb0.4Sr2Ca2-xCdxCu3O10
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaCO3, CdO
+Operations: mixing; reground; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.012
+Target: (Nd0.925Ce0.075)2CuO4
+Precursors: CuO, Nd2O3, CeO2
+Operations: calcined; pressed; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.016
+Target: Dy1-xTbxBa2Cu3Oy
+Precursors: CuO, BaCO3, Dy2O3, Tb4O7
+Operations: mixed; calcined; mixing; calcining; pressed; added; heated; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.043
+Target: YBa2(Cu3-xScx)Oy
+Precursors: CuO, Sc2O3, Y2O3, BaCO3
+Operations: sintered; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.046
+Target: Y(1-x)CexBa2Cu3O7
+Precursors: CuO, Y2O3, CeO2, BaCO3
+Operations: pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.074
+Target: Bi2Sr2Ca2Cu3O10+x
+Precursors: CuO, CaCO3, Bi2O3, SrCO3
+Operations: mixed; melted; quenched; heated; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.231
+Target: BaCeO3
+Precursors: CeO2, BaCO3
+Operations: mixed; milling; dried; calcined; milled; milling; milling; mixed; milling; dried; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.234
+Target: Y1Ba2Cu3O7-x
+Precursors: CuO, Y2O3, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.244
+Target: RuSr2(Nd1-xDyxCe1.8Sr0.2)Cu2O
+Precursors: CuO, CeO2, SrCO3, RuO2, Nd2O3, Dy2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.04.324
+Target: Nd1.85Ce0.15Cu1-xMnxO4
+Precursors: CuO, Nd2O3, CeO2, MnO2
+Operations: mixed; grinding; calcinated; pressed; sintered; quenched; annealed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.05.001
+Target: YBa2Cu3O7-x
+Precursors: CuO, Y2BaCuO5(211), BaCuO2(011)
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.physc.2007.05.043
+Target: Tl0.5Pb0.5Sr2-yYbyCaCu2O7
+Precursors: CuO, PbO, SrCO3, CaO, Yb2O3, Tl2O3
+Operations: mixed; ground; calcined; added; mixed; pressed; heated
+Conditions: N/A

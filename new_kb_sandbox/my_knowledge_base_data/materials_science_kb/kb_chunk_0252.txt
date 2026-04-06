@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.jpowsour.2004.06.030
+Target: LiCoPO4
+Precursors: CoO, LiH2PO4
+Operations: mixed; heated; crushed; ground; pressed; fired; crushed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2004.07.006
+Target: LixNiVO4
+Precursors: NiO, V2O5, Li2CO3
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2004.08.044
+Target: Li(Ni0.8Co0.2)O2
+Precursors: LiOH, (Ni0.8Co0.2)(OH)2
+Operations: mixed; heated; heated; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2004.11.001
+Target: Li6BaLa2Ta2O12
+Precursors: Ta2O5, LiOH·H2O, La2O3, Ba(NO3)2
+Operations: heated; annealed; milled; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2004.12.013
+Target: LiCoPO4
+Precursors: CoC2O4·2H2O, NH4H2PO4, Li2CO3
+Operations: mixed; mixing; heated; crushed; ground; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2004.12.036
+Target: LiCoPO4
+Precursors: NH4CoPO4, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.01.004
+Target: LiFePO4-C
+Precursors: FeC2O4·2H2O-LiH2PO4
+Operations: heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.01.032
+Target: La0.8Sr0.2Ga0.8Mg0.15Co0.05O3-δ
+Precursors: MgO, SrCO3, Ga2O3, CoO, La2O3
+Operations: mixed; milled; calcined; re-ground; mixed; casted; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.02.006
+Target: LiNi0.5Mn0.5-xCoxO2
+Precursors: LiOH·H2O, Ni(OH)2, Mn(CH3COO)2·4H2O, CoO
+Operations: dispersed; mixed; ground; mixed; pressed; sintered; cooled; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.02.008
+Target: SrBi4Ti4O15
+Precursors: Bi2O3, SrCO3, TiO2
+Operations: ground; calcination; calcination; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.02.040
+Target: BaCeO3
+Precursors: CeO2, BaCO3
+Operations: ground; mixed; milled; calcined; mixed; pressed; pressed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.012
+Target: LiCoO2
+Precursors: Co(CH3COO)2·4H2O, LiCH3COO·2H2O
+Operations: dissolved; heated; dried; treated; grinding; dried; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.037
+Target: Li(LixAlyMn2-x-y)O4-zFz
+Precursors: LiOH, Al(OH)3, Mn3O4, LiF
+Operations: precalcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.061
+Target: LiTi2(PO4)3
+Precursors: TiO2, P2O5, Li2CO3
+Operations: mixed; heated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.066
+Target: La1/3NbO3
+Precursors: La2O3, Nb2O5
+Operations: heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.067
+Target: LiNi0.5Ti0.5O2
+Precursors: Ni(NO3)2·6H2O, TiO2, LiOH·H2O
+Operations: added; stirred; dried; mixed; milled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.104
+Target: Li2MnO3
+Precursors: MnCO3, Li2CO3
+Operations: grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.117
+Target: LiFePO4
+Precursors: LiOH·H2O, NH4H2PO4, (CH3COO)2Fe
+Operations: calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.122
+Target: (1-2x)LiNi1/2Mn1/2O2·xLi(Li1/3Mn2/3)O2·xLiCoO2
+Precursors: Co(CH3COO)2·4H2O, Ni(CH3COO)2·4H2O, LiCH3COO·2H2O, Mn(CH3COO)2·4H2O
+Operations: mixed; ground; decomposed; ground; cooling; pelletized; calcined; quenched; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.173
+Target: La0.75Sr0.25CuO2.5-δ
+Precursors: CuO, La2O3, SrCO3
+Operations: mixed; milling; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.179
+Target: LiNi0.5Mn1.5O4
+Precursors: MnO2, NiO, Li2CO3
+Operations: ground; milled; heated; cooled; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.03.193
+Target: Li1+xMn1-xO2-yFy
+Precursors: Mn2O3, LiF, LiOH·H2O
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.06.021
+Target: La0.65Sr0.35MnO3
+Precursors: MnO, La2O3, SrCO3
+Operations: heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.07.071
+Target: Li2AlZr(PO4)3
+Precursors: (NH4)2HPO4, ZrO2, Al2O3, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.08.002
+Target: LiNi1/3Mn1/3Co1/3O2-xFx
+Precursors: LiF, CoO, γ-MnOOH, LiOH·H2O, Ni(OH)2
+Operations: ground; mixed; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.09.047
+Target: Li(Ni1/3Co1/3Mn1/3)O2
+Precursors: LiOH, (Ni1/3Co1/3Mn1/3)(OH)2
+Operations: annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.10.021
+Target: Nd0.6Sr0.4Co1-yMnyO3-δ
+Precursors: Mn2O3, Co3O4, Nd2O3, SrCO3
+Operations: grinding; pressing; sintering; regrinding; repelletizing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jpowsour.2005.10.073
+Target: LiSrxMn2-xO4
+Precursors: Sr(NO3)2, Mn(CH3COO)2, LiNO3
+Operations: heated
+Conditions: N/A

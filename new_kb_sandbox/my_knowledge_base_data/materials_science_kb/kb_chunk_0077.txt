@@ -1,0 +1,193 @@
+
+
+### Synthesis Record 10.1016/S0022-3093(00)00233-7
+Target: xPbF2·(100-y-x)PbO·ySiO2
+Precursors: PbO, α-PbF2, SiO2
+Operations: calcined; melted; added; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(00)00397-5
+Target: 25CaO·12Al2O3·60SiO2·3Na2O
+Precursors: SiO2, CaCO3, Na2CO3, Al2O3
+Operations: blended; melted; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(00)00410-5
+Target: xPbO(1-x)GeO2
+Precursors: Pb3O4, GeO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(00)00416-6
+Target: xEu2O3(1-x)Na2B4O7
+Precursors: Na2B4O710H2O, Eu2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(00)00440-3
+Target: Li4SiO4
+Precursors: SiO2, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(01)00486-0
+Target: (PbO)1-x(SiO2)x
+Precursors: PbO, SiO2
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(01)00614-7
+Target: Na2O·1.2SiO2·1.2B2O3
+Precursors: SiO2, Na2B4O7, Na2CO3
+Operations: added
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(01)00668-8
+Target: xSnO(1-x)GeO2
+Precursors: GeO2, SnC2O4
+Operations: mixed; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(01)00720-7
+Target: Na2O-B2O3-SiO2
+Precursors: SiO2, B2O3, Na2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(01)00773-6
+Target: xM2O-(100-x)TeO2
+Precursors: TeO2, Li2CO3
+Operations: quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(01)00872-9
+Target: 56(K2O·2TiO2·P2O5)·44P2O5
+Precursors: TiO2, (NH4)2HPO4, K2CO3
+Operations: added; quenched; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)00971-7
+Target: Zr0.15Sn0.30Ti0.55O2-δ
+Precursors: TiO2, ZrO2, SnO2
+Operations: milled; preheated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)01378-9
+Target: LiVTeO5
+Precursors: TeO2, V2O5, Li2CO3
+Operations: mixing; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)01572-7
+Target: (0.1PbO-0.9Bi2O3)-CaO-SrO-CuO
+Precursors: PbO, CuO, Sr(NO3)2, Bi2O3, CaCO3
+Operations: mixed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)01638-1
+Target: 30BaO·15TiO2·55GeO2
+Precursors: GeO2, TiO2, BaCO3
+Operations: mixed; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)01770-2
+Target: xLi2O·(100-x)V2O5
+Precursors: V2O5, Li2CO3
+Operations: mixed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)01883-5
+Target: ((V2O5)x(Na2O)0.30(SiO2)0.70-x)
+Precursors: SiO2, Na2O, V2O5
+Operations: annealed; cooled; evaporated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(02)01969-5
+Target: Bi4(SiO4)3
+Precursors: Bi(NO3)3, SiO2
+Operations: powdered; decomposed; ground; homogenized; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(03)00018-8
+Target: vanadium(50-x)V2O5-xBi2O3-50TeO2oxide
+Precursors: Bi2O3, V2O5
+Operations: grinding; preheated; ground; stirred; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(03)00178-9
+Target: 50Li2O·xTiO2·(50-x)P2O5
+Precursors: TiO2, NH4H2PO4, Li2CO3
+Operations: quenched; pressing; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(03)00362-4
+Target: MoO3-Fe2O3-P2O5
+Precursors: MoO3, FePO4
+Operations: added; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(03)00473-3
+Target: (PbO)x(V2O5)1-x
+Precursors: PbO, V2O5
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(99)00597-9
+Target: 43Na2O-57SiO2
+Precursors: Na2CO3, SiO2
+Operations: melted; stirred; quenched; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(99)00647-X
+Target: SiO2-Li2O-K2O-ZnO-P2O5
+Precursors: Li3PO4, SiO2, Li2CO3, K2CO3, ZnO
+Operations: granulated; dried; ground; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(99)00700-0
+Target: ((V2O5)0.6-x(P2O5)0.4(CuO)x)
+Precursors: CuO, P2O5, V2O5
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(99)00709-7
+Target: xDy2O3(1-x)Na2B4O7
+Precursors: Dy2O3, Na2B4O710H2O
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3093(99)00957-6
+Target: 31SiO2-11P2O5-(58-x)CaO-xMgO
+Precursors: Ca(H2PO4)2, CaCO3, SiO2, MgO
+Operations: mixed; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3115(00)00057-X
+Target: Li2TiO3
+Precursors: TiO2, Li2CO3
+Operations: milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3115(00)00364-0
+Target: Li2SiO3
+Precursors: SiO2, Li2CO3
+Operations: milled; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3115(01)00609-2
+Target: MgUO4
+Precursors: MgO, UO2
+Operations: heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3697(00)00008-1
+Target: La1-xSrxCoO3
+Precursors: CoO, La2O3, SrCO3
+Operations: ground; calcined; ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0022-3697(00)00017-2
+Target: Bi2-yTeySr1-yKyNb2O9
+Precursors: Bi2O3, SrCO3, TeO2, Nb2O5, K2CO3
+Operations: mixed; quenched; reground
+Conditions: N/A

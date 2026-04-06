@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.jlumin.2011.12.048
+Target: Mg3Ca3(PO4)2
+Precursors: MgCO3, CaCO3, NH4H2PO4, Eu2O3
+Operations: grinding; grinding; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2011.12.056
+Target: 40B2O3+30TeO2+15MgO+15K2O+xEr2O3
+Precursors: TeO2, H3BO3, Er2O3, K2CO3, Mg2CO3
+Operations: mixed; ground; quenched; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2011.12.083
+Target: ZnO-SiO2-B2O3
+Precursors: SiO2, H3BO3, ZnO
+Operations: added; annealed; cooled; powdered; treated; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.01.042
+Target: EuxIn2-x(MoO4)3
+Precursors: In2O3, MoO3, Eu2O3
+Operations: grounded; blended; preheated; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.01.043
+Target: Ca6Sr4(Si2O7)3Cl2
+Precursors: Eu2O3, SrCO3, CaO, SiO2, CaCl2
+Operations: mixed; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.02.008
+Target: Li2SiO3
+Precursors: SiO2, Li2CO3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.02.013
+Target: SrLaAlO4
+Precursors: Eu2O3, SrCO3, Al2O3, La2(CO3)3
+Operations: mixed; fired; added; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.02.019
+Target: 60B2O3+30CaO+10Li2O
+Precursors: CaCO3, B2O3, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.02.022
+Target: SiO2-CaO-Na2O-K2O
+Precursors: Na2CO3, CaCO3, SiO2, K2CO3
+Operations: mixed; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.02.036
+Target: SrMgAl10O17
+Precursors: MgO, SrCO3, Al2O3
+Operations: mixed; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.02.039
+Target: Ba10-xBix(PO4)6Cl2
+Precursors: (NH4)2HPO4, NH4Cl, Bi2O3, BaCO3
+Operations: mixed; added; mixed; calcined; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.03.022
+Target: SmxBa1-xZn2(PO4)2
+Precursors: NH4H2PO4, BaCO3, Sm2O3, ZnO
+Operations: mixed; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.04.016
+Target: Ba1-xMg2Al6Si9O30
+Precursors: Al2O3, SiO2, MgO, BaCO3
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.04.022
+Target: (40-x)B2O3+30TeO2+15MgO+15K2O+xEu2O3
+Precursors: Eu2O3, TeO2, H3BO3, K2CO3, Mg2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.04.037
+Target: Sr5SiO4Cl6
+Precursors: SrCO3, SrCl2, SiO2, Dy2O3
+Operations: mixed; ground; crushed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.04.052
+Target: Ce0.25Dy0.75
+Precursors: Ce(NO3)4, C2H5OH, Dy(NO3)3
+Operations: mixed; spread; fired; crushed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.04.055
+Target: (Ba1-x-ySryEux)9Sc2Si6O24
+Precursors: Eu2O3, SrCO3, Sc2O3, SiO2, BaCO3
+Operations: mixed; grounded; pressed; sintered; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.05.008
+Target: (59.5-x)P2O5-MgO-xAgCl-0.5Er2O3
+Precursors: Er2O3, MgO, P2O5, AgCl
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.05.022
+Target: Na5La1-xEux(WO4)4
+Precursors: Na2CO3, La2O3, Eu2O3, WO3
+Operations: mixed; sintered; cooled; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.05.036
+Target: NaSrPO4
+Precursors: Na2CO3, SrCO3, (NH4)2HPO4, Tb4O7
+Operations: added; added; mixed; heated; crushed; pulverized
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.06.006
+Target: M2SiO4
+Precursors: BaCO3, SiO2
+Operations: added; mixed; grinding; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.06.018
+Target: BaAl2B2O7
+Precursors: CeO2, Al2O3, H3BO3, BaCO3, Tb4O7
+Operations: mixed; blended; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.07.003
+Target: CaO-SiO2-B2O3
+Precursors: CeO2, CaCO3, Sm2O3, SiO2, H3BO3, Tb4O7
+Operations: mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.07.018
+Target: 5Li2O-18Y2O3-29Al2O3-48SiO2
+Precursors: Y2O3, Al2O3, SiO2, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.08.023
+Target: Lu0.8Sc0.2BO3
+Precursors: CeO2, Sc2O3, H3BO3, Lu2O3
+Operations: ground; pressed; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.08.025
+Target: Na6CaP2O9
+Precursors: Na2CO3, CaCO3, NH4H2PO4
+Operations: grounded; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.08.030
+Target: Ba3Y2WO9
+Precursors: Y2O3, WO3, BaCO3
+Operations: grounded; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.08.049
+Target: Ba2Ca0.9MoxW1-xO6
+Precursors: MoO3, Eu2O3, CaCO3, WO3, BaCO3
+Operations: milled; heated; ground; heated; reheated; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.08.057
+Target: Ca3Si2O7
+Precursors: nano-SiO2, CaCO3
+Operations: ground; drying; fired; cooling; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jlumin.2012.09.006
+Target: Sr1.7Mg0.3SiO4-xFx
+Precursors: MgCO3, SrF2, Eu2O3, SrCO3, SiO2
+Operations: mixed; grinding; fired
+Conditions: N/A

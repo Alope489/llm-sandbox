@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1016/j.solidstatesciences.2003.09.001
+Target: CeNbO4+δ
+Precursors: Nb2O5, CeO2
+Operations: mixed; heated; cooled; milled; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2003.09.007
+Target: Ba6MgMn4O15
+Precursors: MgO, BaCO3, MnO2
+Operations: annealing; Pressed; calcinated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2003.10.001
+Target: Ce1-xYxO2-δ
+Precursors: Y2O3, CeO2
+Operations: ground; dried; pressed; sintered; cooling; aged
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2003.10.008
+Target: BaSrTa2O7
+Precursors: Ta2O5, SrCO3, BaCO3
+Operations: dried; mixed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2003.12.006
+Target: Ba1-xNaxSn1-xNbxO3
+Precursors: Na2CO3, SnO2, Nb2O5, BaCO3
+Operations: dried; cooled; mixed; heated; milled; added; drying; pressed; sintered; ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2003.12.007
+Target: Ca9Fe(PO4)7
+Precursors: CaCO3, Fe2O3, Ca2P2O7
+Operations: annealing; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.02.003
+Target: Y7ReO14-δ
+Precursors: Y2O3, ReO2
+Operations: mixed; cooling; annealing; annealed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.02.007
+Target: Sr2Fe3/4T1/4MoO6
+Precursors: MoO3, SrCO3, Co3O4, Fe2O3
+Operations: mixed; ground; calcinated; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.03.013
+Target: Ce1-xGdxO2-δ
+Precursors: CeO2, Gd2O3
+Operations: mixing; milling; added; mixed; dried; decomposed; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.03.019
+Target: LaAlSiO5
+Precursors: Al2O3, SiO2, La2O3
+Operations: homogenized; pressed; sintered; mixed; heated; quenched; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.03.027
+Target: Fe5Si3
+Precursors: Si, Fe
+Operations: annealed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.04.002
+Target: Sb2-xAsxMoO6
+Precursors: Sb2O3, As2O3, MoO3
+Operations: heated; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.04.005
+Target: Pr0.2Sr0.8MnO3
+Precursors: Sr(NO3)2, Pr(NO3)3, Mn(NO3)2
+Operations: calcined; ground; milling; pressed; heated; heated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.05.002
+Target: SrFeO2.5+δ
+Precursors: Fe2O3, SrCO3
+Operations: milled; pressed; sintered; heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.05.003
+Target: RbZrOAsO4
+Precursors: ZrO2, NH4H2AsO4, Rb2CO3
+Operations: ground; fired; regrinding; heated; cooled; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.05.004
+Target: Bi2TeO5
+Precursors: TeO2, Bi2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.05.006
+Target: Li2xCa0.5-xTaO3
+Precursors: Ta2O5, CaCO3, Li2CO3
+Operations: mixed; pressed; heated; grinding; pressed; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.06.003
+Target: La0.8Sr0.2MnO3
+Precursors: La2O3, MnO2, SrCO3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.07.005
+Target: YCa2Cu3O7-δ
+Precursors: CuO, CaCO3, Y2O3
+Operations: heated; mixed; ground; grinding; dried; heated; ground; retreated; reground; pressed; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.07.015
+Target: SmBa2Cu3-xAlxO6+δ
+Precursors: CuO, Al2O3, Sm2O3, BaO2
+Operations: mixed; pressed; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.07.020
+Target: La1.2Sr2.7RuO7+δ
+Precursors: RuO2, La2O3, SrCO3
+Operations: dried; ground; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.10.014
+Target: Ca10(SiO4)3(SO4)3Cl2
+Precursors: CaO, SiO2, CaCl2, CaSO4
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.10.016
+Target: La1-xEuxBaFeCuO5+δ
+Precursors: CuO, Eu2O3, BaCO3, Fe2O3, La2O3
+Operations: mixed; fired; ground; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.10.036
+Target: Bi2Sr2CaCu2OyFx
+Precursors: CuO, Bi2O3, SrCO3, CaCO3, CaF2
+Operations: milled; calcined; ground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.10.040
+Target: BiCd2AsO6
+Precursors: CdO, As2O5, Bi2O3
+Operations: ground; heated; melted; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.10.041
+Target: LiMn2-yTiyO4
+Precursors: TiO2, Mn2CO3, Li2CO3
+Operations: homogenized; pressed; pre-fired; quenched; powdered; heated; cooled; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2004.10.044
+Target: K3Ce(PO4)2
+Precursors: CePO4, K3PO4
+Operations: N/A
+Conditions: N/A

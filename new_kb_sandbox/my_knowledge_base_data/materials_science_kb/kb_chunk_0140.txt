@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.electacta.2012.09.058
+Target: Na0.74CoO2
+Precursors: Na2CO3, CoCO3
+Operations: grounded; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.09.115
+Target: LiCoPO4
+Precursors: NH4H2PO4, Li2CO3, CoCO3
+Operations: milled; heated; calcined; grinding; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.10.073
+Target: Li1+xAlxTi2-x(PO4)3
+Precursors: (NH4)H2PO4, TiO2, Al2O3, Li2CO3
+Operations: milled; milled; pressed; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.11.002
+Target: Ba0.5Sr0.5Co0.8Fe0.2O3-δ
+Precursors: Sr(NO3)2, Ba(NO3)2, Fe(NO3)3·9H2O, Co(NO3)2·6H2O
+Operations: dissolved; added; dissolved; heated; calcined; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.11.038
+Target: Na3V2(PO4)3
+Precursors: V2O3, NaH2PO4
+Operations: mixed; calcined; regrinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.11.078
+Target: Ni3.5Sn4
+Precursors: Ni, Sn
+Operations: mixed; pressed; sintered; crushed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.11.126
+Target: Li3V2(PO4)3C
+Precursors: NH4VO3, NH4H2PO4, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.12.027
+Target: LiMn0.7Fe0.3PO4C
+Precursors: HOC(COOH)(CH2COOH)2, NH4H2PO4, Mn0.7Fe0.3C2O4·2H2O, Li2CO3
+Operations: added; heated; cooled; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.12.035
+Target: LiCoO2
+Precursors: Co2O3, Li2CO3
+Operations: milled; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2012.12.069
+Target: LiNi0.5Mn1.5O4
+Precursors: MnCO3, NiCO3, Li2CO3
+Operations: mixed; pelletized; heated; reground; pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.01.118
+Target: Li4Ti5O12
+Precursors: TiO2, Li2CO3
+Operations: mixed; milled; calcinated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.01.156
+Target: La0.9M0.1YbO3-δ
+Precursors: Yb2O3, BaCO3, La2O3
+Operations: mixed; annealed; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.02.066
+Target: nano-LiFePO4C
+Precursors: FeC2O4·2H2O, LiH2PO4
+Operations: milled; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.02.118
+Target: Li3V2(PO4)3
+Precursors: (NH4)2HPO4, Li2CO3, V2O5
+Operations: ground; calcined; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.03.006
+Target: Li4-xCaxTi5O12
+Precursors: CaO, TiO2, Li2CO3
+Operations: mixed; milling; drying; calcined; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.03.196
+Target: La0.1Sr0.9Co1-yFeyO3-δ
+Precursors: Co3O4, Fe2O3, La2O3, SrCO3
+Operations: mixed; milling; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.04.029
+Target: Li6Zr2O7
+Precursors: LiOH·H2O, ZrO2
+Operations: mixed; ground; reacted; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.04.036
+Target: Li2FeP2O7C
+Precursors: FeC2O4·2H2O, (NH4)2HPO4, Li2CO3
+Operations: dispersed; milled; sintered; reground; sintered; added; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.04.054
+Target: Ba1-xCo0.7Fe0.2Nb0.1O3-δ
+Precursors: Co2O3, Fe2O3, Nb2O5, BaCO3
+Operations: mixed; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.05.034
+Target: BaCe0.85Ln0.15O3-δ
+Precursors: CeO2, Yb2O3, BaCO3
+Operations: calcined; mixed; milled; dried; calcined; pressed; grinding; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.05.059
+Target: LiFePO4C
+Precursors: NH4H2PO4, FeC2O4·2H2O, LiOH·H2O
+Operations: dispersed; added; milled; dried; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.06.058
+Target: LiFePO4
+Precursors: FePO4, C2H3LiO2·2H2O
+Operations: mixed; ground; heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.06.071
+Target: Li3V1.9M0.1(PO4)3C
+Precursors: NH4VO3, NH4H2PO4, Ni(CH3COO)2·4H2O, Li2CO3
+Operations: mixed; milled; dried; calcining; cooling; added; milled; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.06.130
+Target: α-LiFeO2
+Precursors: β-FeOOH, LiOH·H2O
+Operations: ground; heated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.07.034
+Target: LiNi0.5Mn1.5O4
+Precursors: Li2CO3, Ni2O3, MnO2
+Operations: mixed; milling; milling; calcinated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.07.058
+Target: Li4Ti5O12
+Precursors: TiO2, Li2CO3
+Operations: dispersed; mixed; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.07.164
+Target: Li4Ti5O12-xFx
+Precursors: anataseTiO2, LiF, Li2CO3
+Operations: mixed; milling; dried; sintered; annealing; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.electacta.2013.07.212
+Target: LiMn2O4
+Precursors: Mn3O4, Li2CO3
+Operations: mixed; milled; preheated; treated; mixed; pressed; crushed; ground; treated
+Conditions: N/A

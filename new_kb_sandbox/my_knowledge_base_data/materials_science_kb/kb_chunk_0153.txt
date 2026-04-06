@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.ijhydene.2014.03.160
+Target: La0.75Mg0.25Ni3.3Co0.5
+Precursors: Mg, Ni, Co, La
+Operations: crushed; mixed; milled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.03.219
+Target: Ba(Ce0.51Zr0.30Y0.15Zn0.04)O3-δ
+Precursors: CeO2, ZnO, BaCO3, ZrO2, Y2O3
+Operations: mixed; calcined; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.04.042
+Target: La0.8-xPrxSr0.2FeO3-δ
+Precursors: Sr(NO3)2, La(NO3)3·6H2O, Pr(NO3)3·6H2O, Fe(NO3)3·4H2O
+Operations: dissolved; added; heated; calcined; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.04.185
+Target: Li0.44Ni0.56O2
+Precursors: NiCO3·2Ni(OH)2·4H2O, Li2CO3
+Operations: mixed; ground; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.04.206
+Target: YBaCo3.2Ga0.8O7+δ
+Precursors: Co2O3, Y2O3, Ga2O3, BaCO3
+Operations: mixed; milling; dry; pressed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.05.072
+Target: spinel-Li4Ti5O12
+Precursors: TiO2, Na, Li2CO3
+Operations: added; mixed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.05.080
+Target: BaCe0.9Y0.1O3-δ
+Precursors: Ce(NO3)3·6H2O, Y2O3, BaCO3
+Operations: carried; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.05.150
+Target: SrCo0.8Fe0.2O3-δ
+Precursors: Fe2O3, Co3O4, SrCO3
+Operations: ground; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.06.018
+Target: BaCe0.9Y0.1O3-δ
+Precursors: CeO2, Y2O3, BaCO3
+Operations: mixed; milling; milling; calcined; calcined; calcined; milled; pelletized; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.06.070
+Target: La0.2Sr0.8TiO3
+Precursors: SrCO3, TiO2, La2O3
+Operations: mixed; mixing; calcining; mixed; mixed; laminated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.06.113
+Target: La0.9Sr0.1Yb0.8In0.2O3-δ
+Precursors: In2O3, SrCO3, La2O3, Yb2O3
+Operations: mixed; annealed; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.06.115
+Target: Ce0.6Mn0.3Fe0.1O2-δ
+Precursors: Mn(NO3)2·6H2O, Fe(NO3)3·9H2O, Ce(NO3)3·6H2O
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.06.134
+Target: Ce0.8Sm0.2O1.9
+Precursors: Sm(NO3)3·6H2O, Ce(NO3)3·6H2O
+Operations: dissolved; added; calcined; pelletized; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.08.110
+Target: La2-xBixMo2-xNbxO9-δ
+Precursors: MoO3, Nb2O5, La2O3, Bi2O3
+Operations: mixing; calcinated; mixed; milled; calcinated; milled; compacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.09.019
+Target: BaCe0.9Gd0.1O3-δ
+Precursors: Ce(NO3)3·6H2O, Gd(NO3)3·6H2O, Ba(NO3)2
+Operations: annealed; milled; compacted; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.09.041
+Target: PrBaxCo2O5+δ
+Precursors: Pr6O11, Co2O3, BaCO3
+Operations: pre-heated; mixed; ground; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.09.091
+Target: Gd0.2Ce0.8O1.9
+Precursors: Gd2O3, CeO2
+Operations: milled; added; dried; pressed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.09.092
+Target: La9.67Si6O26.5
+Precursors: SiO2, La2O3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.10.119
+Target: Al0.10NixZn0.9-xO
+Precursors: Al2NO3·9H2O, NiCO3, Zn(NO3)2·6H2O
+Operations: mixed; ground; ground; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2014.12.046
+Target: BaZr0.8Y0.2O3-δ
+Precursors: Y2O3, ZrO2, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.01.002
+Target: (Li-Na)2CO3
+Precursors: Na2CO3, Li2CO3
+Operations: mixed; milled; dried; calcined; pressed; carried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.01.040
+Target: La0.8Sr0.2MnO3+d
+Precursors: MnO2, La2O3, SrCO3
+Operations: sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.01.046
+Target: AgTaO3
+Precursors: Ta2O5, Ag
+Operations: mixed; ground; pressed; calcined; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.05.020
+Target: BaCe0.5Zr0.3Y0.08Yb0.08Cu0.04O3-δ
+Precursors: CuO, CeO2, Y2O3, Yb2O3, BaCO3, ZrO2
+Operations: calcination; milled; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.05.098
+Target: (Bi2O3)1-x-y(Tb4O7)x(Eu2O3)y
+Precursors: Eu2O3, Bi2O3, Tb4O7
+Operations: mixed; heated; pressing; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.05.195
+Target: (Bi0.4Sr0.6)xCo0.3Fe0.7O3-δ
+Precursors: Co(NO3)2.6H2O, Sr(NO3)2, Fe(NO3)3.9H2O, Bi(NO3)3.5H2O
+Operations: mixed; milled; evaporated; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.07.121
+Target: Ce0.5Zr0.5O2
+Precursors: ZrO(NO3)2·2H2O, Ce(NO3)3·6H2O
+Operations: dissolved; milled; added; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ijhydene.2015.09.006
+Target: Sm0.2Ce0.8O2-δ
+Precursors: Sm2O3, CeO2
+Operations: calcined; pressed; sintered
+Conditions: N/A

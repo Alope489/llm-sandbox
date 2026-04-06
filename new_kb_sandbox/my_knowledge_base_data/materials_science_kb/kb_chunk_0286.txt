@@ -1,0 +1,175 @@
+
+
+### Synthesis Record 10.1016/j.jssc.2011.01.039
+Target: NaPbB5O9
+Precursors: PbO, Na2CO3, H3BO3
+Operations: mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.02.012
+Target: LaNb1-xMxO4-δ
+Precursors: Nb2O5, H3BO3, La2O3
+Operations: calcined; mixed; dry; pressed; fired; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.02.015
+Target: Y2WO6
+Precursors: Y2O3, WO3
+Operations: grounded; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.012
+Target: (Ca(1-2x)CexLix)m2Si12-(m+n)Alm+nOnN16-n
+Precursors: AlN, CeO2, Al2O3, Li2CO3, α-Si3N4
+Operations: ground; fired; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.019
+Target: LiMn2O4
+Precursors: MnO2, Li2CO3
+Operations: heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.033
+Target: LiFe5O8
+Precursors: Fe2O3, Li2CO3
+Operations: mixed; compacted; heated; cooled; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.034
+Target: Bi2-ySryIr2O7
+Precursors: Bi2O3, IrO2, SrCO3
+Operations: heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.044
+Target: Pb1-xBi4+xTi4-xMnxO15
+Precursors: PbO, Bi2O3, TiO2, Mn2O3
+Operations: mixed; ground; heated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.045
+Target: Sr2MgMoO6
+Precursors: MoO3, MgO, SrCO3
+Operations: calcined; ground; dried; calcined; regrinding; sintered; calcination; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.03.048
+Target: Ba4-zMzSi8O20-3xN2x
+Precursors: SrCO3, SiO2, BaCO3, Si3N4
+Operations: mixed; pressed; fired; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.04.007
+Target: Bi2(GaxAl1-x)4O9
+Precursors: Ga2O3, α-Al2O3, Bi2O3
+Operations: milled; milled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.04.028
+Target: BiFeO3
+Precursors: Fe2O3, Bi2O3
+Operations: re-grindings; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.007
+Target: K3CdB5O10
+Precursors: CdO, KNO3, H3BO3
+Operations: mixed; heated; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.026
+Target: La0.33Sr0.67MnO3
+Precursors: MnO2, La2O3, SrCO3
+Operations: mixed; heated; reground; pressed; heated; grinding; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.032
+Target: Cu3.21Ti1.16Nb2.63O12
+Precursors: CuO, TiO2, Nb2O5
+Operations: dried; mixed; fired; regrinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.034
+Target: Yb2-xYxSi2O7
+Precursors: Y(NO3)3·4H2O, Si(OC2H5)4, Yb(NO3)3·5H2O
+Operations: added; dissolved; stirred; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.045
+Target: PrBaCo2O5+δ
+Precursors: Pr6O11, Co3O4, BaCO3
+Operations: pretreated; ground; pelletized; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.046
+Target: LiLnW2O8
+Precursors: Y2O3, WO3, Li2CO3
+Operations: ground; heated; quenched; regrinding; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.05.054
+Target: Ho2-yNdyZr2O7
+Precursors: Ho2O3, ZrO2, Nd2O3
+Operations: mixed; fired; re-ground; ground; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.06.005
+Target: MWO4
+Precursors: WO3, ZnO
+Operations: homogenized; milling; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.06.009
+Target: Ca2(ZnxFe2-x)O5
+Precursors: CaCO3, Fe2O3, ZnO
+Operations: mixed; dried; pressed; calcined; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.06.015
+Target: Ba2MWO6
+Precursors: BaCO3, ZnO, WO3
+Operations: ground; heated; heating; grinding; heated; grinding; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.06.025
+Target: RFe0.5V0.5O3
+Precursors: Nd2O3, V2O3, Fe2O3
+Operations: ground; pressed; fired; re-ground; pelletized; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.07.005
+Target: CuRh1-xMgxO2
+Precursors: Rh2O3, MgO, Cu2O
+Operations: mixed; pressed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.07.006
+Target: GaFeO3
+Precursors: α-Fe2O3, β-Ga2O3, Mn2O3
+Operations: calcining; ground; mixed; sintered; mixing; calcined; ground; mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.07.007
+Target: Li2CuO2
+Precursors: CuO, LiOH·H2O
+Operations: ground; ground; mixed; pressed; calcined; added; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.07.014
+Target: (Bi1-xLax)0.5Pb0.5Fe0.5Ti0.5O3
+Precursors: PbO, Bi2O3, TiO2, Fe2O3, La2O3
+Operations: mixed; ground; calcined; reground; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.07.022
+Target: MgNb2O6
+Precursors: MgO, Nb2O5
+Operations: added; mixed; pressed; heated; crushed; pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jssc.2011.07.029
+Target: LiIn1-xEuxW2O8
+Precursors: Eu2O3, WO3, Li2CO3, In2O3
+Operations: preheated; ground; fired
+Conditions: N/A

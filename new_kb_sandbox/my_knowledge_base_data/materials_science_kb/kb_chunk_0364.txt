@@ -1,0 +1,205 @@
+
+
+### Synthesis Record 10.1016/j.msea.2007.04.009
+Target: Ti3AlC2
+Precursors: C, Ti, Al
+Operations: mixed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.05.048
+Target: NiAl
+Precursors: Ni, Al
+Operations: milled; added; milling; milling; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.06.080
+Target: Al2O3-Y2O3
+Precursors: Y2O3, Al2O3
+Operations: mixing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.08.075
+Target: TiC-Al2O3-Al
+Precursors: C, TiO2, Al
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.09.023
+Target: WC-10Co
+Precursors: WC, Co
+Operations: mixing; blended; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.09.052
+Target: YAG
+Precursors: Y2O3, Al2O3
+Operations: milling; milled; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.10.025
+Target: α-SiAlON
+Precursors: AlN, Al2O3, O2, Si3N4
+Operations: milled; milling; dried; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.11.036
+Target: Ym3Si12-(m+n)Al(m+n)OnN16-n
+Precursors: AlN, Y2O3, Al2O3, Si3N4
+Operations: milled; mixing; dried; pressed; heated; heated; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2008.10.011
+Target: Al50Ti40Si10
+Precursors: Si, Ti, Al
+Operations: Milling; milling; compacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2009.04.002
+Target: Li5La3Ta2O12Al
+Precursors: Li5La3Ta2O12, Al
+Operations: mixed; milling; shaped; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2009.08.035
+Target: Al2O3-WC
+Precursors: WC, Al2O3
+Operations: mixing; milling; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2010.05.059
+Target: Dy1/3Si10Al2ON15
+Precursors: AlN, Al2O3, Si3N4, Dy2O3
+Operations: mixed; dried; pressed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2010.12.039
+Target: Cr2AlC
+Precursors: C, Al, Cr
+Operations: milled; dried; compacted; pressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2011.01.003
+Target: ZrW2O8
+Precursors: ZrO2, WO3
+Operations: blended
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2011.01.095
+Target: Li6Si2O7
+Precursors: SiO2, Li2CO3
+Operations: ground; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2011.04.062
+Target: TiAl
+Precursors: Ti, Al
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2011.06.017
+Target: Mg97Y2Zn1
+Precursors: Zn, Mg, Y
+Operations: milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2011.10.075
+Target: (W0.6Al0.4)C0.5-Ni
+Precursors: (W0.6Al0.4)C0.5, Ni
+Operations: mixed; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2011.12.046
+Target: Cu50Zr40Ti10
+Precursors: Ti, Cu, Zr
+Operations: heated; crushed; milled; mixed; pre-compacted; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2012.01.104
+Target: Cu-xNb
+Precursors: Cu, Nb
+Operations: blended; Milling; milled; annealed; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2012.06.042
+Target: Ni3Al
+Precursors: Al, Ni
+Operations: dry; mixed; compacted; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2012.08.076
+Target: Al100-xFex
+Precursors: Al, Fe
+Operations: milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2012.10.059
+Target: WC-Si3N4
+Precursors: WC, Si3N4
+Operations: mixed; milling; milling; milling; milling; conducted; sintered; cooled; heated; cooled; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2013.02.019
+Target: TiB2Cu
+Precursors: TiB2, Cu
+Operations: blended; pressed; distributed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2013.05.079
+Target: ZrB2-SiC-BN
+Precursors: B4C, β-SiC, Si3N4, ZrH2
+Operations: added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2014.02.045
+Target: WSi2-NbSi2
+Precursors: Si, Nb, W
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2014.03.095
+Target: Mg2Al4Si5O18-MgAl2O4
+Precursors: SiO2, MgO, Al2O3
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2014.06.009
+Target: Ti2AlC
+Precursors: C18H36O2, Al, Ti
+Operations: mixed; milling; added; milling; milling; performed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2014.09.077
+Target: Al0.6CoNiFe
+Precursors: Ni, Al, Co, Fe
+Operations: milling; milled; milling; dry; drying; cooled; grounded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2015.07.091
+Target: MgAl2O4
+Precursors: Al, Mg
+Operations: mixed; milling; mixed; compressed; added; heated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2015.09.125
+Target: Ce0.9M0.1O1.95
+Precursors: Ce(NO3)3·6H2O, Er(NO3)3·6H2O
+Operations: calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2015.12.037
+Target: TiAl3
+Precursors: Ti, Al
+Operations: milled; pre-sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2016.01.047
+Target: Al3Ti
+Precursors: Ti, Al
+Operations: blended; compacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2016.05.053
+Target: TiC-TiB2-Ni
+Precursors: TiB2, TiC, Ni
+Operations: mixed; milling; pressed; pressed
+Conditions: N/A

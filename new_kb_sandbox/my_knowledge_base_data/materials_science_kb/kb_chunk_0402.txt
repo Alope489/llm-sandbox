@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.poly.2017.02.038
+Target: Sr2CaWO6
+Precursors: Eu2O3, Sr2CO3, CaCO3, WO3
+Operations: mixed; annealing; grinded; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.poly.2017.05.058
+Target: Gd2MoO6
+Precursors: Gd2O3, MoO3, Eu2O3
+Operations: mixed; ground; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.poly.2017.11.055
+Target: Sr9Lu(PO4)7
+Precursors: NH4H2PO4, SrCO3, Lu2O3
+Operations: added; mixed; ground; preheated; reground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.polymdegradstab.2013.09.009
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: mixed; mixed; mixing; dried; pressed; calcined; cooling; ground; milled; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.polymer.2010.09.025
+Target: CaCu3Ti4O12
+Precursors: CuO, TiO2, CaCO3
+Operations: mixed; calcined; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2005.02.004
+Target: β-Ln2TiO5
+Precursors: Gd2O3, TiO2
+Operations: milled; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2005.10.004
+Target: (Mn0.79Zn0.17Fe2+0.04)Fe3+2O4
+Precursors: Fe2O3, MnO, ZnO
+Operations: prefired; milled; granulated; compacted; firing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2007.05.013
+Target: FeSbO4
+Precursors: FeOOH, Sb2O5
+Operations: mixed; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2007.05.017
+Target: LiFePO4
+Precursors: LiOH·H2O, FePO4·4H2O
+Operations: ballmilled; mixed; presintered; reground; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2007.07.035
+Target: NaxCo2O4
+Precursors: Co(NO3)2, NaNO3
+Operations: dissolved; heated; fire; grinded; compacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2007.09.002
+Target: nano-LiFePO4C
+Precursors: LiOH·H2O, FeC2O4·2H2O, NH4H2PO4
+Operations: ballmilled; mixed; stirred; dried; calcined; Cooling; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2007.09.006
+Target: NbCr2
+Precursors: Cr, Nb
+Operations: milled; milling; Milling; milling; milling; milling; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2008.07.002
+Target: tungstenfromWO3+3Zn+kNaCl
+Precursors: Zn, NaCl, WO3
+Operations: ground; mixed; milling; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2009.03.008
+Target: NiZnFe2O4
+Precursors: Fe2O3, NiO, ZnO
+Operations: milling; annealing; heated; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2009.07.017
+Target: K0.5Na0.5NbO3
+Precursors: Na2CO3, K2CO3, Nb2O5
+Operations: ground; mixed; milling; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2010.01.020
+Target: NaBaPO4
+Precursors: Na2CO3, NH4H2PO4, Eu2O3, BaCO3
+Operations: heated; mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2010.03.043
+Target: Bi0.5Na0.5TiO3
+Precursors: Na2CO3, TiO2, Bi2O3
+Operations: added; ground; ground; heated; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2010.08.011
+Target: Sr2MgSi2O7
+Precursors: SiO2, 4Mg(OH)2·MgCO3, Eu2O3, SrCO3
+Operations: mixed; grinding; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2010.08.028
+Target: Pb(ZrxTi1-x)O3
+Precursors: PbO, TiO2, ZrO2
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2010.08.068
+Target: SrTiO3
+Precursors: TiO2, Sr(NO3)2
+Operations: mixed; ground; heated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2011.02.017
+Target: LiMn2O4
+Precursors: LiOH, MnCO3
+Operations: mixing; calcining
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2011.03.019
+Target: Bi0.5Na0.5TiO3
+Precursors: Na2CO3, TiO2, Bi2O3
+Operations: added; ground; ground; heated; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2011.05.010
+Target: Ba0.6Sr0.4TiO3
+Precursors: TiO2, SrCO3, BaCO3
+Operations: milled; milling; milling; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2011.07.034
+Target: Li4Ti5O12
+Precursors: Ti, Li2CO3
+Operations: added; mixed; grinding; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2011.08.001
+Target: Ce0.8Gd0.2O1.9
+Precursors: Gd2O3, CeO2
+Operations: mixed; milling; milling; dried; deagglomerated; milling; dispersed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2012.02.021
+Target: Bi4Ti3O12
+Precursors: TiO2, Bi2O3
+Operations: mixed; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2012.04.017
+Target: SrTi(1-x)FexO(3-δ)
+Precursors: SrCO3, TiO2, Fe2O3
+Operations: mixed; ground; calcinated; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2012.10.002
+Target: NiAlxFe2-xO4
+Precursors: Fe2O3, Al2O3, NiO
+Operations: mixed; calcined; milling; compacted; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2013.12.047
+Target: Ca2-x-yMg0.5AlSi1.5O7
+Precursors: MgO, CeO2, CaCO3, Al2O3, SiO2
+Operations: added; mixed; grinding; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.powtec.2014.02.058
+Target: CaCl2-LiCl
+Precursors: CaCl2, LiCl
+Operations: mixed; added; heated; added; dispersed; stirred; dried; broken; heated; cooling; dried
+Conditions: N/A

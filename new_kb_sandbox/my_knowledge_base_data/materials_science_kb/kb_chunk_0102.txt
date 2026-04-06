@@ -1,0 +1,151 @@
+
+
+### Synthesis Record 10.1016/S0921-4534(00)01517-3
+Target: Tb2Ba2Cu2Ti2O11
+Precursors: CuO, TiO2, BaCO3, Tb2O3
+Operations: calcinated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01520-3
+Target: YBa2Cu3Ox
+Precursors: CuO, Y2O3, BaCO3
+Operations: dried; ground; added; treated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01530-6
+Target: Y1-xCaxBa2Cu3O7-δ
+Precursors: CuO, CaCO3, Y2O3, Ba(NO3)2
+Operations: mixing; annealed; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01531-8
+Target: NdBa2Cu3O7-δ
+Precursors: CuO, Nd2O3, BaCO3
+Operations: ground; reground; powdered; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01549-5
+Target: YBa1.8La0.2Cu3O
+Precursors: CuO, Y2O3, BaCO3, La2O3
+Operations: mixed; ground; ground; calcined; reground; sintered; pelletized; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01556-2
+Target: RuSr2GdCu2Oy
+Precursors: CuO, SrCO3, Gd2O3, RuO2
+Operations: ground; reground; pulverized; pressed; calcined; grinding; cooled; sintered; sintered; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01574-4
+Target: La2-xSrxCuO4
+Precursors: CuO, SrO2, La2O3
+Operations: mixed; ground; calcined; cooled; ground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01593-8
+Target: Bi2Sr2CaCu2Ox
+Precursors: CuO, CaCO3, Bi2O3, SrCO3
+Operations: mixed; treated; mixing; pulverized; calcined; pulverized; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01648-8
+Target: YBa2Cu3-xZnxO7-δ
+Precursors: CuO, Y2O3, ZnO, BaCO3
+Operations: mixed; calcined; grinding; pelletized; sintered; cooled; pulverized; sintered; annealed; quenched; oxygenated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01659-2
+Target: (In2/3Cu1/3)(Ho1/3Ce2/3)3Sr2Cu2Ox
+Precursors: CuO, SrO, CeO2, In2O3, Ho2O3
+Operations: mixed; pressed; preheated; cooled; reground; pressed; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01738-X
+Target: Nd1-xPrxBa2Cu3O7-δ
+Precursors: CuO, Pr6O11, Nd2O3, BaCO3
+Operations: pressed; calcinated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01748-2
+Target: YBa2-xDxCu3O7-δ
+Precursors: CuO, SrCO3, Y2O3, BaCO3
+Operations: mixing; ground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01750-0
+Target: La1.85Sr0.15Cu1-xMxO4
+Precursors: CuO, SrCO3, La2O3, ZnO
+Operations: dried; ground; pre-heated; grinding; reground; pressed; sintered; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01769-X
+Target: Bi2Sr2CaCu2O8+δ
+Precursors: CuO, CaCO3, Bi2O3, SrCO3
+Operations: milled; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(00)01770-6
+Target: (Bi1-xPb.5xSn.5x)2Sr2CaCu2Oy
+Precursors: CuO, PbO, SnO2, Bi2O3, SrCO3, CaCO3
+Operations: mixed; sintered; added; reacted; cooled; ground; pressed; sintered; ground; re-pressed; annealed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00025-9
+Target: PrBa2Cu3O7-δ
+Precursors: Pr6O11, CuO, BaCO3
+Operations: ground; calcined; regrinding; sintered; annealing; fired; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00081-8
+Target: BaCeO3
+Precursors: CeO2, BaCO3
+Operations: pressed; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00089-2
+Target: HgCaO2
+Precursors: CaO, HgO
+Operations: calcinated; homogenized; pelletized; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00091-0
+Target: Bi1.64Pb0.36Sr2Ca2Cu3Oy
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaCO3
+Operations: mixed; reacted
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00101-0
+Target: Bi2.1Sr2.1Ca0.8((CuO)1-x(NiS)x)2O8+δ
+Precursors: CuO, Bi2O3, SrCO3, NiS, CaCO3
+Operations: mixed; dried; powdered; pelletized; calcined; cooled; cooled; reground; pelletized
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00104-6
+Target: (Y1-xCax)SrBaCu2.80(PO4)0.20Oy
+Precursors: CuO, NH4H2PO4, SrCO3, CaCO3, Y2O3, BaO
+Operations: mixed; ground; annealed; reground; pelletized; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00116-2
+Target: Sr2HoHfO5.5
+Precursors: HfO2, Ho2O3, SrCO3
+Operations: mixed; dried; compacted; calcined; cooled; powdered; compacted; sintered; cooled; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00131-9
+Target: HgBa2Cu1-xMxO4+δ
+Precursors: CuO, HgO, CoO, BaO
+Operations: mixed; pulverized; dried; pressed; heated; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00151-4
+Target: Sr2(Gd1.5Ce0.5)Cu2Oz
+Precursors: Gd2O3, Sr(CO3)2, CuO, CeO2
+Operations: mixing; reground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0921-4534(01)00162-9
+Target: Pb2Sr3-xLaxCu3Oz
+Precursors: PbO, CuO, SrCO3, La2O3
+Operations: firing; ground; ground; pressed; quenched; pulverized; reground; pelletized; sintered; quenched
+Conditions: N/A

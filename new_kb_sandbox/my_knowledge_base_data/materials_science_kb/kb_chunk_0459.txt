@@ -1,0 +1,187 @@
+
+
+### Synthesis Record 10.1016/j.ssnmr.2003.09.001
+Target: Na3AlF6
+Precursors: AlF3, NaF
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ssnmr.2004.03.009
+Target: Pr2-xCexCuO4
+Precursors: Pr6O11, CeO, CuO
+Operations: pressed; sintered; sintering; grinding; annealing; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ssnmr.2004.06.010
+Target: xNa2O·(1-x)TeO2
+Precursors: Na2CO3, TeO2
+Operations: mixed; quenched; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ssnmr.2005.09.003
+Target: SnNb2O6
+Precursors: SnO, Nb2O5
+Operations: ground; mixed; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.ssnmr.2015.05.002
+Target: Li6.6La3Zr1.6Ta0.4O12
+Precursors: Ta2O5, ZrO2, La(OH)3, Li2CO3
+Operations: mixed; calcinated; milled; pelletized; sintered; quenched; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.supflu.2012.05.014
+Target: CeZrO2
+Precursors: NH4OH, ZrO(NO3)2·2H2O, Ce(NO3)3·6H2O
+Operations: aged; dried; calcined; dispersed; pressed; crushed; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2005.07.045
+Target: MgTiO3
+Precursors: TiO2, MgO
+Operations: mixed; ground; dried; calcined; sintered; ground; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2005.08.006
+Target: TiO2-ZnFe2O4
+Precursors: TiO2, ZnFe2O4
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2005.08.131
+Target: La1-xSrxMnO3
+Precursors: La2O3, MnCO3, SrCO3
+Operations: milled; ground; milled; drying; granulated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2005.12.033
+Target: MgTiO3
+Precursors: TiO2, MgO
+Operations: mixed; ground; dried; calcined; sintered; ground; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2006.04.016
+Target: Nd2Ce2O7
+Precursors: Nd2O3, CeO2
+Operations: calcined; milled; dried; heated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2007.04.049
+Target: InTaO4
+Precursors: In2O3, Ta2O5
+Operations: mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2008.03.033
+Target: NiCrAlCoW
+Precursors: Co, Cr, Al, W, Ni
+Operations: added; blending; blended; agitated; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2009.04.007
+Target: BaCoTiFe10O19
+Precursors: TiO2, Fe2O3, Co3O4, BaCO3
+Operations: homogenized; drying; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2009.09.009
+Target: BaLa2Ti3O10
+Precursors: TiO2, La2O3, BaCO3
+Operations: milled; drying; calcined; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2009.12.023
+Target: TiAl3-Al
+Precursors: Al, Ti
+Operations: premixed; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2010.04.044
+Target: La2(Zr0.7Ce0.3)2O7
+Precursors: ZrO2, La2O3, CeO2
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2011.03.047
+Target: LaTi2Al9O19
+Precursors: TiO2, Al2O3, La2O3
+Operations: milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2011.05.010
+Target: ZrW2O8
+Precursors: ZrO2, WO3
+Operations: milled; pressed; calcined; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2011.08.056
+Target: Pb(Zr0.52Ti0.48)O3
+Precursors: PbO, TiO2, ZrO2
+Operations: mixed; added; calcinated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2011.10.052
+Target: La2Zr2O7
+Precursors: La2O3, ZrO2
+Operations: mixed; mixed; dried; blended; compacted; calcinated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2012.02.028
+Target: La0.5Sr0.5CoO3
+Precursors: La2O3, CoCO3, SrCO3
+Operations: mixing; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2012.03.024
+Target: Nd(Co1/2Ti1/2)O3
+Precursors: TiO2, CoO, Nd2O3
+Operations: dried; calcined; sintered; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2012.03.064
+Target: Ni3Al
+Precursors: Al, Ni
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2012.07.070
+Target: Yb2Si2O7
+Precursors: Yb2O3, SiO2
+Operations: heated; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2012.10.035
+Target: Bi0.9Nd0.1FeO3
+Precursors: O2, Bi2O3, Nd2O3, Fe3O4
+Operations: added; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2013.01.011
+Target: Er2SiO5
+Precursors: SiO2, Er2O3
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2013.01.048
+Target: Mg2TiO4
+Precursors: TiO2, MgO
+Operations: mixed; milled; drying; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2013.12.024
+Target: Yb2SiO5
+Precursors: SiO2, Yb2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2014.07.051
+Target: (Gd0.9Yb0.1)2Zr2O7
+Precursors: Gd2O3, ZrO2, Yb2O3
+Operations: mixed; dissolved; milled; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.surfcoat.2014.09.037
+Target: NiAl
+Precursors: Ni, Al
+Operations: ground; evaporated; mixed; crushed; dried; compacted; compacted
+Conditions: N/A

@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1021/acs.chemmater.5b05041
+Target: Li2MnO3
+Precursors: MnCO3, Li2CO3
+Operations: mixed; milling; dried; pelletized; calcined; powdered; pressed; annealed; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00038
+Target: Li7La3Zr2O12
+Precursors: Li2CO3, ZrO2, La2O3
+Operations: mixed; pressed; heated; calcinated; ground; milled; drying; pressed; heated; sintered; ground; grinding; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00071
+Target: La0.8Sr1.2Fe0.9Co0.1O4-δ
+Precursors: Fe2O3, Co3O4, La2O3, SrCO3
+Operations: calcined; milled; pressed; calcined; breaking; milling; calcined; milled; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00288
+Target: Ti1-xTaxSe2
+Precursors: Se, Ta, Ti
+Operations: ground; pelletized; heated; reground; repelletized; sintered; heated; mixed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00319
+Target: LiFexCo1-xPO4
+Precursors: NH4H2PO4, Li2CO3, Fe2(C2O4)3, Co2(C2O4)3
+Operations: milling; pelletized; heated; heated; heated; cooled; reheated; heated; cooled; reheated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00447
+Target: PbPdO2
+Precursors: PbCO3, PdO
+Operations: ground; pressed; reground; reheated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00579
+Target: Li6.4Al0.2-xGaxLa3Zr2O12
+Precursors: Al2O3, Ga2O3, Li2CO3, ZrO2, La2O3
+Operations: ground; pressed; heated; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b00604
+Target: Na2.5Fe1.75(SO4)3
+Precursors: Na2SO4, FeSO4·7H2O
+Operations: dried; mixed; milling; dried; treated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01053
+Target: LiVO3
+Precursors: Li2CO3, V2O5
+Operations: mixed; annealed; cooling; crushed; milled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01160
+Target: Bi1-xPbxNiO3
+Precursors: Ni, PbO2, Bi2O3
+Operations: dissolved; heated; mixed; treated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01306
+Target: Ba4(La1-xNdx)0.67Nb10O30
+Precursors: La2O3, Nd2O3, Nb2O5, BaCO3
+Operations: dried; homogenized; heated; quenched; powdered; milled; milled; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01341
+Target: LiY(WO4)2
+Precursors: Y2O3, WO3, Li2CO3
+Operations: treated; mixed; heated; reground; compressed; sintered; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01550
+Target: (Ca1-xPrx)Nb2O6
+Precursors: Pr6O11, CaCO3, Nb2O5
+Operations: ground; dried; calcined; reground; pressed; heated; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01566
+Target: Ba14Mn1.75Ta10.5O42
+Precursors: Ta2O5, MnCO3, BaCO3
+Operations: mixed; calcined; ground; pressed; fired; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01756
+Target: LiNa5Mo9O30
+Precursors: Na2CO3, MoO3, Li2MoO4
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b01935
+Target: Na0.67Ni0.3Mn0.7O2
+Precursors: Na2CO3, Mn2O3, NiO
+Operations: mixing; pressed; calcining
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b02146
+Target: CaMn2O4
+Precursors: CaCO3, MnO2
+Operations: ground; pelletized; grinding; repelletizing; ground
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b02509
+Target: Pb2Ti2O6-δF2δ
+Precursors: PbO, TiO2, PbF2
+Operations: pelletized; treated
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b02516
+Target: Li7-3xFexLa3Zr2O12
+Precursors: Fe2O3, La2O3, ZrO2, Li2CO3
+Operations: added; mixed; ground; pressed; heated; sintered; ground; milled; pressed; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b02539
+Target: Na2MgPO4F
+Precursors: MgCO3, Na2PO3F
+Operations: mixed; milled; annealing; milled; mixed; milled; heated; heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b02783
+Target: InFeO3
+Precursors: In2O3, Fe2O3
+Operations: ground; treated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b03032
+Target: Li2MnO3
+Precursors: LiOH·H2O, MnCO3
+Operations: dissolved; calcined; drying
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b03062
+Target: ScVO4
+Precursors: Sc2O3, Bi2O3, NH4VO3
+Operations: mixing
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b03471
+Target: Li13.9Sr0.1Zn(GeO4)4
+Precursors: GeO2, Li2CO3, ZnO, SrCO3
+Operations: milled; dried; calcined; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b03625
+Target: Bi2Ga4O9
+Precursors: Ga2O3, Bi2O3
+Operations: ground; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b04181
+Target: KFeF3
+Precursors: KF, FeF2
+Operations: mixed; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1021/acs.chemmater.6b04769
+Target: Na2/3Ni1/3-xCuxMn2/3O2
+Precursors: Na2CO3, CuO, NiO, MnO2
+Operations: mixed; milling; added; pressed; heated
+Conditions: N/A

@@ -1,0 +1,163 @@
+
+
+### Synthesis Record 10.1016/j.actamat.2013.03.031
+Target: (Fe1-xNix)4Sb12
+Precursors: Sb, Fe, Ni
+Operations: mixing; mixed; added; heating; melted; quenched; ground; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.03.036
+Target: EuxSr2-xV2O7
+Precursors: NH4VO3, Eu2O3, SrCO3
+Operations: mixed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.06.007
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: ground; milling; milling; dried; calcined; milled; dried; pre-pressed; pressed; sintered; annealed; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.07.027
+Target: Nd2Zr2O7
+Precursors: ZrO2, Nd2O3
+Operations: mixed; dried; pressed; sintered; sintering
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.07.032
+Target: Fe0.2Co3.8Sb12-xTex
+Precursors: Sb, Fe, Co, Te
+Operations: mixed; melted; annealed; ground; milled; pressed; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.08.060
+Target: CaIn2O4
+Precursors: In2O3, Ho2O3, CaCO3, Yb2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.09.006
+Target: FeSb2+xTe1-x
+Precursors: Sb, Fe, Te
+Operations: heated; quenched; annealed; ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.10.011
+Target: Ca3Co4O9
+Precursors: CaCO3, Co3O4
+Operations: mixed; milled; drying; calcined; regrinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.10.027
+Target: ZnO-In2O3
+Precursors: In(NO3)3, Zn(NO3)2
+Operations: dissolved; mixing; heating; mixed; dried; drying; grinding; calcined; sintered; annealed; annealed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.11.002
+Target: Ti3AlC2
+Precursors: C, Ti, Al
+Operations: mixed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.11.014
+Target: BaZr0.8Y0.2O3-δ
+Precursors: Y2O3, ZrO2, BaCO3
+Operations: milled; calcined; reground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2013.11.043
+Target: xBiFeO3-(1-x)PbTiO3
+Precursors: PbO, TiO2, Fe2O3, Bi2O3
+Operations: mixing; milled; milled; dried; calcined; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.02.022
+Target: 7.5Li2O-2.5Na2O-20Ga2O3-35GeO2-35SiO2
+Precursors: Na2CO3, GeO2, SiO2, Ga2O3, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.03.002
+Target: Ni1-xZnxFe2O4
+Precursors: Fe2O3, NiO, ZnO
+Operations: mixed; milled; dried; heated; grinding; pressed; heated; sintered; grinding; performed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.04.006
+Target: (Cr2/3Ti1/3)3AlC2
+Precursors: TiC, Cr2AlC
+Operations: pulverized; mixed; milling; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.04.008
+Target: Ca3Co4O9
+Precursors: CaCO3, Co3O4
+Operations: mixed; milling; dried; calcined; ground; milling; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.04.036
+Target: Ge1-xPbxTe0.5Se0.5
+Precursors: Se, Te, Pb, Ge
+Operations: mixed; heated; cooled; quenched; powdered; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.05.019
+Target: YbxCo4Sb12
+Precursors: Sb, Yb, Co
+Operations: heated; quenched; shaken; milled; milling; milled; pressed; pressed; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.05.023
+Target: (1-x)Bi(Mg1/2Zr1/2)O3-xPbTiO3
+Precursors: PbO, MgO, Bi2O3, TiO2, ZrO2
+Operations: mixing; mixed; dried; calcined; sintered; crushed; annealed; crushing; dried; firing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.05.038
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: mixed; preheated; mixed; drying; pressed; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.06.005
+Target: (1-x)Ba(Zr0.2Ti0.8)O3-x(Ba0.7Ca0.3)TiO3
+Precursors: TiO2, CaCO3, BaZrO3, BaCO3
+Operations: milled; dried; calcined; milled; dried; broken; compacted; carried; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.06.065
+Target: (PbTe)(0.9-x)(PbSe)0.1(PbS)x
+Precursors: PbS, Te, PbSe, Pb
+Operations: mixing; added; heated; quenched; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.07.058
+Target: (1-x)Ba(Zr0.2Ti0.8)O3-x(Ba0.7Ca0.3)TiO3
+Precursors: TiO2, CaCO3, ZrO2, BaCO3
+Operations: mixed; added; milling; milled; dried; calcined; milled; pressed; sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.09.012
+Target: MgNi2
+Precursors: Ni, Mg
+Operations: mixed; compacted; pressing; sintered; quenched; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.09.058
+Target: BiFeO3
+Precursors: Fe2O3, Sm2O3, Bi2O3
+Operations: milling; milled; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2014.10.068
+Target: Ti3AlC2
+Precursors: TiC, Ti2AlC
+Operations: milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2015.01.018
+Target: MgAg0.97-xCuxSb0.99
+Precursors: Ag, Mg, Sb, Cu
+Operations: milling; milling; added; milling; pressed; pressed; annealed
+Conditions: N/A

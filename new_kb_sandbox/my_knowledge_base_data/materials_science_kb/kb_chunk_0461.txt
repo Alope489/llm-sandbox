@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.tca.2011.08.008
+Target: Bi1.7Pb0.3Ca2Sr2Cu3O10
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaCO3
+Operations: heating; ground; heated; reground; pressed; sintered; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2011.12.018
+Target: (Ni1-xMx)Mn2O4
+Precursors: Mn2O3, NiO, ZnO
+Operations: mixed; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2012.11.015
+Target: LiF-LuF3
+Precursors: LiF, LuF3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2013.01.031
+Target: Ca7ZrAl6O18
+Precursors: CaCO3, Al2O3, ZrO2
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2013.08.010
+Target: Ba2Fe2O5
+Precursors: Fe2O3, BaCO3
+Operations: mixed; drying; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.01.001
+Target: REBaCo2O6-δ
+Precursors: Co, Gd2O3, BaCO3
+Operations: calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.01.007
+Target: BaCeO3
+Precursors: CeO2, BaCO3
+Operations: mixed; milling; ground; palletized; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.03.016
+Target: Cr2TeO6
+Precursors: TeO2, Cr2O3
+Operations: mixed; pelletized; heated; cooled; re-ground; re-pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.08.004
+Target: TiNb2O7
+Precursors: TiO2, Nb2O5
+Operations: mixed; pelletized; heated; heated; grinding; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.08.028
+Target: SiO2P2O5K2OMgOCaO
+Precursors: MgO, CaCO3, H3PO4, SiO2, K2CO3
+Operations: grinded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.08.038
+Target: CuZnP2O7
+Precursors: CuO, (NH4)2HPO4, ZnO
+Operations: homogenized; milling; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.10.011
+Target: Ca7ZrAl6O18
+Precursors: CaCO3, Al2O3, ZrO2
+Operations: grinding; homogenized; pressed; calcined; cooling; crushed; ground; sintered; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2014.12.002
+Target: (Bi0.4Sr0.45Co0.15)Sr2CoO5-δ
+Precursors: Co2O3, Bi2O3, SrCO3
+Operations: mixed; calcined; homogenized; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2015.01.011
+Target: Bi0.8-xPrxBa0.2FeO3
+Precursors: Pr6O11, Fe2O3, Bi2O3, BaCO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2015.04.019
+Target: 68.0SiO2-15.0BaF2-13.0K2O-2.75La2O3-1.0Sb2O3-0.25Eu2O3
+Precursors: Eu2O3, SiO2, Sb2O3, BaF2, K2CO3, La2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2015.05.007
+Target: BaMg2-xCoxSi2O7
+Precursors: MgO, Co3O4, SiO2, BaCO3
+Operations: heated; powdered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2015.09.011
+Target: InVO4-NiO
+Precursors: In2O3, 2NiCO33Ni(OH)24H2O, V2O5
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2015.09.019
+Target: Bi24Co2O39-δ
+Precursors: Co2O3, Bi2O3
+Operations: mixed; calcined; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2016.04.018
+Target: LiCoO2
+Precursors: Co3O4, Li2CO3
+Operations: mixed; calcined; reground; homogenized; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2017.06.003
+Target: Sr0.8Gd0.2CoO3-δ
+Precursors: Gd2O3, Co3O4, SrCO3
+Operations: ground; pressed; calcined; annealed; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tca.2017.12.001
+Target: Ca7ZrAl6O18
+Precursors: CaO, Al2O3, ZrO2
+Operations: mixed; homogenized; pressed; calcined; sintering; grinding; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tet.2016.03.057
+Target: La0.6Sr0.4MnO3
+Precursors: SrCO3, La2O3, MnO2
+Operations: mixed; ground; heated; ground; pressed; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2003.12.062
+Target: CdWO4
+Precursors: CdO, WO3
+Operations: heating; ground; mixed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2004.07.055
+Target: Ba6-3xNd8+2xTi18O54
+Precursors: TiO2, Nd2O3, BaCO3
+Operations: sintered; cooled; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2004.08.016
+Target: Bi3TiNbO9
+Precursors: TiO2, Nb2O5, Bi2O3
+Operations: added; mixed; milling; preheated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2004.10.055
+Target: Sr2CoO4
+Precursors: Co3O4, SrCO3
+Operations: evaporated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2004.10.060
+Target: Ca12-xMgxAl14O33
+Precursors: CaCO3, Al2O3, MgO
+Operations: mixed; dried; pelletized; fired; cooled; reground; pressed; fired; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2004.10.064
+Target: (Bi1-xPbx)2Ba1.8Co2.2O8+δ
+Precursors: PbO2, Co3O4, Bi2O3, BaO2
+Operations: sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2004.11.231
+Target: NaxCoO2
+Precursors: Na2CO3, Co3O4
+Operations: ground; heated; cooled; dried; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.tsf.2005.03.005
+Target: Bi3.40Sm0.70Ti3O12
+Precursors: TiO2, Sm2O3, Bi2O3
+Operations: compacted; calcining; sintering; annealed
+Conditions: N/A

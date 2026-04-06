@@ -1,0 +1,139 @@
+
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.04.047
+Target: (1-x)BaTiO3-xBi(Mg0.5Zr0.5)O3
+Precursors: MgO, Bi2O3, TiO2, BaCO3, ZrO2
+Operations: dried; cooled; milled; calcined; cooling; re-milled; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.05.025
+Target: Y2O3-Al2O3-SiO2
+Precursors: Y2O3-22, Al2O3-65.82, SiO2
+Operations: dried; Drying; annealed; mixed; ground; homogenized; evaporated; drying; melted; quenched; treated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.05.026
+Target: Sr(Y0.05Yb0.05Zr0.9)O2.95
+Precursors: Y2O3, ZrO2, Yb2O3, SrCO3
+Operations: pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.05.046
+Target: La2-xLuxZr2O7
+Precursors: Lu2O3, ZrO2, La2O3
+Operations: mixed; milling; grinding; dried; pressed; pressed; pre-sintered; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.06.005
+Target: BaSnxTi1-xO3
+Precursors: TiO2, SnO2, BaCO3
+Operations: dried; shaped; pressing; grounded; pressed; sintered; cooled; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.06.010
+Target: A0.5Ti0.5NbO4
+Precursors: TiO2, ZnO, Nb2O5
+Operations: grounding; dried; calcined; remilled; dried; pressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.06.016
+Target: GdSmZr2O7
+Precursors: Gd2O3, Sm2O3, ZrO2
+Operations: calcined; mixed; pressed; pressing; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.06.033
+Target: (K0.45Na0.55)0.94Li0.06·TaxNb1-xO3
+Precursors: Na2CO3, Nb2O5, Ta2O5, Li2CO3, K2CO3
+Operations: dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.07.001
+Target: Ca1-xZr1-xSm2xTi2O7
+Precursors: TiO2, CaCO3, ZrO2, Sm2O3
+Operations: heated; dried; homogenized; pressed; heated; cooled; crushed; pelletized; heated; crushed; homogenized; pressed; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.07.017
+Target: x)Bi(Mg1/2Ti1/2)O3-xPb(Mg1/3Nb2/3)O3-0.3PbTiO3
+Precursors: PbO, Bi2O3, TiO2, Nb2O5, (MgCO3)4·Mg(OH)2·5H2O
+Operations: milled; calcined; milled; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.07.034
+Target: (Na0.52K0.44Li0.04)(Nb0.89Sb0.05Ta0.06)O3
+Precursors: Na2CO3, Nb2O5, Sb2O3, Ta2O5, Li2CO3, K2CO3
+Operations: dried; drying; mixed; milling; calcined; milling; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.08.015
+Target: B2O3-Bi2O3-SiO2-ZnO
+Precursors: Bi2O3, SiO2, B2O3, ZnO
+Operations: quenched; dried; crushed; milled; mixed; drying; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.08.027
+Target: Cu0.5Ti0.5NbO4
+Precursors: CuO, TiO2, Nb2O5
+Operations: mixed; grounded; dried; calcined; remilled; dried; mixed; pressed; pressing; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.08.033
+Target: (K0.5Na0.5)(Nb1-xMx)O3-x
+Precursors: Na2CO3, TiO2, Nb2O5, K2CO3
+Operations: milling; mixed; milling; dried; calcined; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.09.042
+Target: (Ho0.005Y0.995)2O3
+Precursors: Ho2O3, Y2O3
+Operations: mixed; milled; milling; milling; dried; calcining; pressed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.11.015
+Target: (1-x)Ba(Mg1/2W1/2)O3-xBa(RE2/3W1/3)O3
+Precursors: MgO, Y2O3, WO3, BaCO3
+Operations: milled; milling; dried; calcined; pulverized; milling; drying; mixing; granulated; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.11.020
+Target: Ti2AlN
+Precursors: 1.03Al, Ti, TiN
+Operations: mixed; milling; dried; heated; cooled; heated; re-sintered; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.11.028
+Target: Na1/3Ca1/3Bi1/3Cu3Ti4O12
+Precursors: Na2CO3, CuO, Bi2O3, TiO2, CaCO3
+Operations: milled; dried; calcined; evaporating; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.12.003
+Target: La2Ti2O7
+Precursors: TiO2, La2O3
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.12.019
+Target: BaTiO3
+Precursors: TiO2, BaCO3
+Operations: homogenized; milled; dried; calcined; ground; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2014.12.036
+Target: (1-x)BNT-xBT
+Precursors: Na2CO3, Bi2O3, TiO2, BaCO3
+Operations: milling; dried; calcined; re-milled; dried; mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2015.01.002
+Target: LaNb1-xMoxO4
+Precursors: MoO3, La2O3, Nb2O5
+Operations: mixed; drying; pre-fired; milled; milling; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.jeurceramsoc.2015.01.012
+Target: BaCe0.4Zr0.4Y0.2O3-δ
+Precursors: nano-CeO2, ZrO2, Y2O3, BaCO3
+Operations: mixed; milling; calcined; sintered
+Conditions: N/A

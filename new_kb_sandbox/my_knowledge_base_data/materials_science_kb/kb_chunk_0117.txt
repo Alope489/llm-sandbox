@@ -1,0 +1,175 @@
+
+
+### Synthesis Record 10.1016/j.actamat.2015.07.043
+Target: Ti2AlC
+Precursors: C, Ti, Al
+Operations: mixed; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2015.07.053
+Target: MgNi2
+Precursors: Ni, Mg
+Operations: compacted; pressing; sintered; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2015.08.022
+Target: Cu1.94A0.02Se
+Precursors: Se, Cu, Al
+Operations: heated; pulverized; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2015.11.055
+Target: Ti3SiC2
+Precursors: C, Si, Ti
+Operations: milling; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2015.12.004
+Target: Ti2AlC
+Precursors: Ti, Al, TiC
+Operations: mixed; milling; sintered; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2015.12.016
+Target: 33CaO-9MgO-13AlO1.5-45SiO2
+Precursors: MgO, CaCO3, Al2O3, SiO2
+Operations: mixing; milled; dried; heated; ground; fired; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.03.021
+Target: Cr2AlC
+Precursors: Cr, Al, C
+Operations: sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.04.052
+Target: Ce1-xNbxO2
+Precursors: Nb2O5, CeO2
+Operations: treated; crushing; milling; added; sintered; cooled; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.05.044
+Target: BaHfxTi1-xO3
+Precursors: HfO2, TiO2, BaCO3
+Operations: milled; calcined; added; compacted; sintered; sintered; sintered; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.10.011
+Target: 0.92(Na0.5K0.5)NbO3-0.02(Bi0.5Li0.5)TiO3-0.06BaZrO3
+Precursors: Na2CO3, Li2CO3, Bi2O3, TiO2, Nb2O5, BaCO3, K2CO3, ZrO2
+Operations: milled; calcined; milled; pressed; carried; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.11.001
+Target: SrBi2(Nb0.2Ta0.8)2O9
+Precursors: Bi2O3, SrCO3, Nb2O5, Ta2O5
+Operations: milled; milling; calcined; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.11.064
+Target: (1-x)Ba(Zr0.2Ti0.8)O3-x(Ba0.7Ca0.3)TiO3
+Precursors: TiO2, CaCO3, BaZrO3, BaCO3
+Operations: mixed; milling; drying; calcinated; grinded; shaped
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2016.12.049
+Target: NaNbO3
+Precursors: Na2CO3, Nb2O5
+Operations: compacted; sintered; heated; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2017.01.066
+Target: Ti3AlC2
+Precursors: C, Ti, Al
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2017.10.064
+Target: (YxYb1-x)2SiO5
+Precursors: SiO2, Y2O3, Yb2O3
+Operations: mixed; milling; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2017.11.008
+Target: Ti2AlN
+Precursors: Ti, Al, TiN
+Operations: mixed; milled; mixed; milled; pressed; pressed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2017.12.003
+Target: Sr2.996Sm0.004Sn2O7
+Precursors: SnO2, SrCO3, Sm2O3
+Operations: mixed; pre-fired; ground; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2017.12.044
+Target: Dy2Ti2O7
+Precursors: TiO2, Dy2O3
+Operations: mixed; pressed; heated; reground; pressed; heated; pressed; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2018.01.054
+Target: (Bi0.5(Na0.82-xK0.18Lix)0.5)(1-y)Sry(Ti1-zTaz)O3
+Precursors: Na2CO3, Bi2O3, SrCO3, TiO2, Ta2O5, Li2CO3, K2CO3
+Operations: milled; calcined; mixed; pressed; sintered; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2018.02.043
+Target: (Bi1-xNdx)FeO3
+Precursors: Bi2O3, Nd2O3, Fe2O3
+Operations: mixed; milling; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actamat.2018.03.016
+Target: (Nb0.5Al0.5)xTi1-xO2
+Precursors: TiO2, Al2O3, Nb2O5
+Operations: mixing; calcined; pressed; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actbio.2009.07.017
+Target: P2O5-SiO2-CaO-MgO-Na2O-K2O
+Precursors: Ca3(PO4)2, (NH4)2HPO4, SiO2, K2HPO4, Na3PO4·12H2O, Mg3(PO4)2·8H2O
+Operations: ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.actbio.2015.11.050
+Target: Mg2.5Sr0.5(PO4)2
+Precursors: MgHPO4·3H2O, Mg(OH)2, SrCO3
+Operations: mixed; sintered; sintered; crushed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.aej.2012.02.004
+Target: YBa2Cu3O7-δ
+Precursors: Ba, Y2O3, CuO
+Operations: dried; Calcination; Mixing; grinding; Drying; cooled; heated; Cooling; reground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcata.2003.10.028
+Target: La2Ni0.9Co0.1O4+δ
+Precursors: La2O3, Ni(NO3)·6H2O, Co(NO3)2·6H2O
+Operations: annealed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcata.2004.09.030
+Target: 12CaO·7Al2O3
+Precursors: γ-Al2O3, CaCO3
+Operations: crushed; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcata.2005.02.020
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: mixing; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcata.2005.06.022
+Target: NiO-MgO
+Precursors: MgO, NiO
+Operations: calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.apcata.2006.01.018
+Target: Cu20Mn80Ox
+Precursors: CuO, Mn2O3
+Operations: pressed; annealed
+Conditions: N/A

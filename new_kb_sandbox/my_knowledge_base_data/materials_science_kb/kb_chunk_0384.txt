@@ -1,0 +1,169 @@
+
+
+### Synthesis Record 10.1016/j.optmat.2013.01.040
+Target: Eu0.02Ba3.98(Si3O8)2
+Precursors: Eu2O3, SiO2, BaCO3
+Operations: added; mixed; milled; sintered; cooled; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.01.042
+Target: EuxBa3-xSi6O9N4
+Precursors: SiO2, Si3N4, Eu2O3, BaCO3
+Operations: mixed; milled; dried; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.02.008
+Target: Ca2SnO4
+Precursors: CaCO3, SnO2
+Operations: mixed; calcined; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.04.019
+Target: Sr3SiO5
+Precursors: SiO2, SrCO3
+Operations: mixed; heated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.04.025
+Target: Ca10Na(PO4)7
+Precursors: Na2CO3, CaCO3, (NH4)2HPO4, Eu2O3
+Operations: mixed; grinding; pre-fired; annealed; cooling; pulverized
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.05.028
+Target: TbxKSr1-xPO4
+Precursors: Tb4O7, KH2PO4, SrCO3
+Operations: mixed; milled; drying; sintered; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.05.030
+Target: Ca1.99Eu0.01SiO4
+Precursors: SiO2, CaCO3, Eu2O3
+Operations: mixed; calcined; grounded; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.05.031
+Target: Eu0.1MgY3.9Si3O13
+Precursors: MgCO3, Eu2O3, Y2O3, H2SiO3
+Operations: mixed; ground; pre-heated; reground; reheated; cooling; regrinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.05.034
+Target: (Gd1-x-yLaxTby)2O(WO4)2
+Precursors: Gd2O3, La2O3, WO3, Tb(NO3)3·6H2O
+Operations: mixed; mixed; calcined; calcined; reground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.06.002
+Target: TbxNaSr1-xPO4
+Precursors: Na2CO3, NH4H2PO2, Tb4O7, SrCO3
+Operations: mixed; milled; drying; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.06.004
+Target: 55P2O5-(29-x)Li2O-10.5Al2O3-0.5Er2O3-5Yb2O3-xTiO2
+Precursors: NH4H2PO4, TiO2, Al2O3, Yb2O3, Li2CO3, Er2O3
+Operations: mixed; melted; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.06.008
+Target: Li2Ca2ScV3O12
+Precursors: NH4VO3, CaCO3, Sc2O3, Li2CO3
+Operations: mixed; calcined; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.06.012
+Target: DyxNa3Sr1-xB5O10
+Precursors: Na2CO3, Dy2O3, H3BO3, SrCO3
+Operations: mixed; heated; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.06.013
+Target: xLi2O-(40-x)Bi2O3-20CdO-40B2O3
+Precursors: CdO, H3BO3, Bi2O3, Li2CO3
+Operations: calcinated; melted; agitated; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.06.026
+Target: LiYMo2O8
+Precursors: MoO3, Y2O3, Yb2O3, Li2CO3, Er2O3
+Operations: ground; treated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.07.018
+Target: K4SrSi3O9
+Precursors: SiO2, Sr(NO3)2, K2CO3·1.5H2O, Eu2O3
+Operations: mixed; heated; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.08.008
+Target: (Cu2O)x(Al2O3)0.05-x(B2O3)0.20(PbO)0.75
+Precursors: PbO, B2O3, Al2O3, Cu2O
+Operations: mixed; heated; stirred; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.08.010
+Target: Ba2LiNb5O15
+Precursors: Li2CO3, Nd2O3, Nb2O5, BaCO3
+Operations: grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.08.015
+Target: La2-xEuxMoO6
+Precursors: MoO3, La2O3, Eu2O3
+Operations: mixed; grinding; added; heated; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.08.025
+Target: EuxLa2-xSi6O3N8
+Precursors: Eu2O3, Si3N4, La2O3
+Operations: mixed; conducted; grinding; ground; post-annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.09.013
+Target: NaLu1-xYbxP2O7
+Precursors: Na2CO3, (NH4)2HPO4, Yb2O3, Lu2O3
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.09.021
+Target: 20ZnO·(80-x)Bi2O3·xSiO2
+Precursors: SiO2, Bi2O3, ZnO
+Operations: stirred; pressed; annealed; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.10.012
+Target: (LuxGd3-x)(GayAl5-y)O12
+Precursors: CeO2, Gd2O3, Al2O3, Ga2O3, Lu2O3
+Operations: mixed; ground; reacted; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.10.027
+Target: ZnO-TiO2
+Precursors: TiO2, Yb2O3, ZnO, Er2O3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.11.004
+Target: Zn2GeO4
+Precursors: Mn, ZnO, GeO2
+Operations: added; milled; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.11.007
+Target: La0.2Ce0.05Gd1.75Si2O7
+Precursors: Gd2O3, SiO2, La2O3SiO2, CeO2
+Operations: mixed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.11.010
+Target: CexK2Ca2-xSi2O7
+Precursors: SiO2, CaCO3, K2CO3, CeO2
+Operations: mixed; fired; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.optmat.2013.12.008
+Target: β'-Tb2(MoO4)3
+Precursors: MoO3, Tb4O7
+Operations: annealed; mixed; homogenized; grinding; firing; cooling
+Conditions: N/A

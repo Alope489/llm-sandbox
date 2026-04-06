@@ -1,0 +1,151 @@
+
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.04.011
+Target: Sr1-xNaxRuO3
+Precursors: Na2CO3, RuO2, SrCO3
+Operations: mixed; homogenized; calcinated; reground; pressed; performed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.04.018
+Target: Bi2SrV2O9
+Precursors: (NH4)2VO3, Bi2(CO3)3, SrCO3
+Operations: sintering; ground; ground; firing; reground; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.05.014
+Target: LaBaNi1-xCoxTaO6
+Precursors: Co3O4, Ta2O5, BaCO3, La2O3, NiO
+Operations: mixed; ground; preheated; fired; calcined; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.05.023
+Target: xGd2O3-60B2O3-10MoO3-(30-x)Bi2O3
+Precursors: MoO3, Bi2O3, Gd2O3, B2O3
+Operations: mixed; grinding; added; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.06.002
+Target: SrxBa1-xFeO3-y
+Precursors: BaCO3, Fe2O3, SrCO3
+Operations: ground; heated; grinding; heated; grinding; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.06.007
+Target: La0.5Gd0.5CrO3
+Precursors: Gd2O3, La2O3, Cr2O3
+Operations: heated; cooled; grounded; pelletized; sintered; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.06.015
+Target: Ca2CoNbO6
+Precursors: Nb2O3, CaCO3, Co3O4
+Operations: mixing; heated; grinding; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.07.019
+Target: SrFe1-xScxO3-δ
+Precursors: Sc2O3, Fe2O3, SrO2
+Operations: mixed; pressed; heated; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.07.023
+Target: Li3V2(PO4)3
+Precursors: NH4VO3, LiH2PO4
+Operations: dispersed; milled; evaporated; pre-heated; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.08.028
+Target: Co1-xCuxWO4
+Precursors: CuWO4, CoWO4
+Operations: mixing; dried; ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.09.001
+Target: YBaCo4O7+δ
+Precursors: Co2O3, Y2O3, Ba(CH3COO)2
+Operations: mixing; heated; calcined; cooled; grounded; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.09.003
+Target: (inmol%)(100-x)(7.52Al2O3·15.04K2O·1.88Na2O·6BaF2·69.63SiO2)·xBaO
+Precursors: Na2CO3, SiO2, Al(OH)3, BaF2, BaCO3, K2CO3
+Operations: added; milled; stirred
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.09.012
+Target: CuAlxFe2-xO4
+Precursors: CuO, Fe2O3, Al2O3
+Operations: mixed; ground; blending; dried; pressed; pre-sintered; cooled; powdered; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.09.013
+Target: K2RE2(BO3)2O
+Precursors: Nd2O3, H3BO3, K2CO3
+Operations: mixed; heated; sintered; grinded
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.09.020
+Target: Ca8Mg(SiO4)4Cl2
+Precursors: Ca2SiO4, Eu2O3, MgCl2
+Operations: mixed; calcined; mixed; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.10.003
+Target: Pb0.9Ag0.1Se2
+Precursors: Se, Ag2Se, Pb
+Operations: ground; mixed; reground; pressed; heated; cooled; dissolved; heating
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.10.020
+Target: (La0.9Sr0.1)xGa0.8Mg0.2O3-δ
+Precursors: Sr(NO3)2, La(NO3)3·6H2O, Mg(NO3)2·6H2O, Ga
+Operations: dissolved; dissolved; mixed; added; calcined; milled; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.11.011
+Target: Y2FeSbO7
+Precursors: Sb2O5, Y2O3, Fe2O3
+Operations: dried; mixed; pressed; calcination
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.11.012
+Target: YBaCo4O7+δ
+Precursors: Co2O3, Y2O3, Ba(CH3COO)2
+Operations: pressing; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.11.021
+Target: Pr4O4(AsO4)Br
+Precursors: Pr6O11, NH4H2AsO4, NH4Br
+Operations: heated; mixed; fired; annealing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.11.039
+Target: 40B2O3-20CdO-(40-x)Bi2O3-xLi2O
+Precursors: H3BO3, CdO, Bi2O3, Li2CO3
+Operations: agitated; pressed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.12.019
+Target: Ca2SnO4
+Precursors: CaCO3, SnO2
+Operations: homogenized; calcined; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.12.023
+Target: CuO-Fe2O3
+Precursors: CuO, Fe2O3
+Operations: sintered; mixed; ground; dried; pressed; pre-sintered; cooled; powdered; pressed; sintered; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2010.12.029
+Target: SrMoO4
+Precursors: MoO3, SrCO3, Sm2O3
+Operations: added; mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.solidstatesciences.2011.01.013
+Target: Ca2Sb2O7
+Precursors: Sb2O3, CaCO3
+Operations: ground; heated
+Conditions: N/A

@@ -1,0 +1,181 @@
+
+
+### Synthesis Record 10.1016/j.msea.2003.10.156
+Target: Fe2O3-Li2O-B2O3
+Precursors: Fe2O3, H3BO3, Li2CO3
+Operations: mixed; pressed; calcined; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2003.11.026
+Target: Al2NiO4
+Precursors: γ-Al2O3, Ni2O3
+Operations: mixed; milled; pelletized; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2004.05.032
+Target: PbxFe1-x
+Precursors: Fe, Pb
+Operations: milling; milled; milling; added; milling; milling; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2004.10.035
+Target: CuAl2O3
+Precursors: Cu, Al2O3
+Operations: milling; milling; milling; milling; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2005.06.005
+Target: Al6Si2O13
+Precursors: SiO2, Al2O3
+Operations: mixed; homogenized; milling; crushed; pressing; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2005.12.051
+Target: (Pb1-xBax)ZrO3
+Precursors: PbO, ZrO2, BaCO3
+Operations: mixed; milling; drying; calcined; reground; milling; dried; crushed; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2005.12.060
+Target: LaxFeCo3Sb12
+Precursors: Sb, Fe, Co, La
+Operations: blended; milling; milling; pressed; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.01.095
+Target: Pb(Ni1/2W1/2)O3-Pb(Mn1/3Sb2/3)O3-Pb(Ti1/2Zr1/2)O3
+Precursors: TiO2, Sb2O3, Pb3O4, WO3, ZrO2, NiO, MnO2
+Operations: milled; calcined; ground; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.01.134
+Target: Li1+xMn2-xO4
+Precursors: MnOOH, Li2CO3
+Operations: ground; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.01.141
+Target: Ca1-xSrxTiO3
+Precursors: TiO2, CaCO3, SrCO3
+Operations: grinding; pressing; firing; regrinding; repressing
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.01.145
+Target: (La1-xAx)2Mo2O9-δ
+Precursors: MoO3, K2CO3, La2O3
+Operations: calcined; calcined; grinding; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.02.109
+Target: BaZr0.35Ti0.65O3
+Precursors: TiO2, ZrO2, BaCO3
+Operations: mixed; drying; calcined; mixed; dried; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.02.249
+Target: (Li1-xNax)2B4O7
+Precursors: Li2B4O7, Na2B4O7
+Operations: mixed; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.02.305
+Target: Ti50Cu28Ni15Sn7
+Precursors: Cu, Sn, Ni, Ti
+Operations: milling; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.02.385
+Target: La0.7Sr0.3Ga0.6Fe0.4O3-δ
+Precursors: Ga2O3, Fe2O3, La2O3, SrCO3
+Operations: mixed; calcined; compressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.06.095
+Target: Ba(SnxTi1-x)O3
+Precursors: BaTiO3, BaSnO3
+Operations: milled; dried; ground; mixed; pressed; heated; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.06.110
+Target: Ce1-xHfxO2
+Precursors: HfO2, CeO2
+Operations: dried; mixing; pressed; grinding; reground; mixed; pelletized; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.06.130
+Target: Mg2Si
+Precursors: Si, Mg
+Operations: blended; milling; milled; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.07.056
+Target: Ti3SiC2
+Precursors: C, Si, Ti
+Operations: pressing; mixed; milled; dried; pulverized; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.09.049
+Target: La0.8Sr0.2MnO3
+Precursors: La2O3, Sr(NO3)2, MnO2
+Operations: calcining; milled; calcined; mixed; pressed; heated; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.10.018
+Target: Ba3La2Ti2Nb2O15
+Precursors: TiO2, Nb2O5, BaCO3, La2O3
+Operations: milled; drying; heated; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.12.042
+Target: W(Al)-Ni
+Precursors: Al50W50, Ni
+Operations: milled; milling; added
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.12.061
+Target: Mg65NixSi35-x
+Precursors: Si, Ni, Mg
+Operations: mixed; milling; milling; milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.12.062
+Target: LaMnO3
+Precursors: Mn2O3, La2O3
+Operations: mixed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.12.114
+Target: 2MoSi2-SiC
+Precursors: Si, Mo2C
+Operations: milled; Milling; distributed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2006.12.205
+Target: Pr0.55Ca0.45MnO3
+Precursors: Pr2O3, Mn3O4, CaCO3
+Operations: mixed; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.01.038
+Target: Mg2Si
+Precursors: Si, Mg
+Operations: blended; milling; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.01.109
+Target: Al2O3-NiAl
+Precursors: Al2O3, NiAl
+Operations: milled; milling; performed
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.02.003
+Target: La2Zr2O7
+Precursors: ZrO2, La2O3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/j.msea.2007.03.092
+Target: Al70Cu20Fe10
+Precursors: Al, Cu, Fe
+Operations: milled; milling; added; annealed
+Conditions: N/A

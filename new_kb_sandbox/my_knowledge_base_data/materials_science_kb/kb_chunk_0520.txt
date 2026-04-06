@@ -1,0 +1,145 @@
+
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02863.x
+Target: (1-x)(Na0.5K0.5)NbO3-xBiScO3
+Precursors: Na2CO3, Bi2O3, Sc2O3, Nb2O5, K2CO3
+Operations: milled; calcined; ground; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02871.x
+Target: (Na0.52K0.48-x)(Nb1-x-ySby)O3-xLiTaO3
+Precursors: Na2CO3, Nb2O5, Sb2O3, Ta2O5, Li2CO3, K2CO3
+Operations: mixing; drying; calcined; milling; compacted; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02880.x
+Target: Hf3AlN
+Precursors: AlN, Hf
+Operations: mixed; milled; compacted; heated; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02884.x
+Target: Bi3.63Pr0.3Ti3O12
+Precursors: Pr6O11, TiO2, Bi2O3
+Operations: added; mixed; milling; calcined; fired; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02885.x
+Target: BaZr0.10Ti0.90O3
+Precursors: TiO2, ZrO2, BaCO3
+Operations: milled; drying; calcination; milled; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02895.x
+Target: Bi1.6Pb0.5Sr2-xLaxCa1.1Cu2.1Oy
+Precursors: PbO, CuO, Bi2O3, SrCO3, CaCO3, La2O3
+Operations: mixed; ground; calcined; grinding; pelletized; treated; treated
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02900.x
+Target: YBa2Cu3O7-x
+Precursors: CuO, Y2O3, BaCO3
+Operations: firing
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02917.x
+Target: Sr3LaNb3O12
+Precursors: SrCO3, Nb2O5, La2O3
+Operations: milled; dried; calcined; ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02920.x
+Target: SrTiO3
+Precursors: TiO2, SrCO3
+Operations: milling; milling; added; milled; calcined; milled; milling
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02921.x
+Target: K3Li2Nb5O15
+Precursors: K2CO3, Nb2O5, Li2CO3
+Operations: mixed; milling; dried; calcined; ground; milled; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2008.02936.x
+Target: EuxCa2-xB5O9Cl
+Precursors: CaCO3, Eu2O3, H3BO3, CaCl2·6H2O
+Operations: mixed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02931.x
+Target: (Ca1+xSm1-x)(Al1-xTix)O4
+Precursors: TiO2, CaCO3, Sm2O3, Al2O3
+Operations: blended; milling; drying; calcined; mixed; pelletized; sintered; cooled; cooled
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02933.x
+Target: (Mg1-xMnx)2TiO4
+Precursors: TiO2, MgO, MnO
+Operations: fired; mixed; milling; dried; calcined; dried; milled; granulated; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02946.x
+Target: La0.9Sr0.1Ga0.8Mg0.2O3-δ
+Precursors: Ga2O3, MgO, La2O3, SrCO3
+Operations: calcined; milled; dried; crushed; pressed; compressed; sintered; cooling
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02952.x
+Target: La1.98R0.02CuO4
+Precursors: CuO, Nb2O5, La2O3
+Operations: mixed; milling; dried; calcined; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02955.x
+Target: (Ni1-xZnx)Nb2O6
+Precursors: Nb2O5, NiO, ZnO
+Operations: mixed; ground; reground; compacted; fired; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02972.x
+Target: Li2TiO3
+Precursors: TiO2, Li2CO3
+Operations: mixed; dried; calcined; milled; milled; crushed; milled
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02973.x
+Target: (1-x)(0.4BiScO3-0.6BaTiO3)-x(K1/2Bi1/2)TiO3
+Precursors: BaTiO3, Bi2O3, TiO2, Sc2O3, K2CO3
+Operations: mixed; dried; calcined; milled; added; granulated; pressing; sintered; pressed; fired
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.02998.x
+Target: Li2MgSiO4
+Precursors: SiO2, Li2CO3, (MgCO3)4·Mg(OH)2·5H2O
+Operations: mixed; milled; dried; calcined; added; dried; ground; pressed; sintered; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.03007.x
+Target: BaFe12O19
+Precursors: Fe2O3, BaCO3
+Operations: homogenized; drying; calcined; milled; preheated; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.03025.x
+Target: Bi2Zn2/3-x/3Nb4/3-2x/3TixO7
+Precursors: TiO2, Nb2O5, ZnO, Bi2O3
+Operations: mixed; calcined; pressed; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.03034.x
+Target: (1-x)(Bi0.5Na0.5)TiO3-xBa(Zr0.05Ti0.95)O3
+Precursors: Na2CO3, Bi2O3, TiO2, BaCO3, ZrO2
+Operations: mixed; milled; milling; calcined; ground; milled; mixed; crushed; granulation; pressed; sintered; fired
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.03043.x
+Target: 0.94Na0.5Bi0.5TiO3-0.06BaTiO3
+Precursors: Na2CO3, BaTiO3, Bi2O3, TiO2
+Operations: mixed; calcined; mixed; milling; added; mixed; added; mixed; dried; heated; pre-reacted; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1111/j.1551-2916.2009.03060.x
+Target: Mg2(Ti1-xSnx)O4
+Precursors: TiO2, MgO, SnO2
+Operations: fired; ground; dried; calcined; dried; milled; granulated; pressed
+Conditions: N/A

@@ -1,0 +1,175 @@
+
+
+### Synthesis Record 10.1016/S0378-7753(00)00650-9
+Target: β-Zn4Sb3
+Precursors: Zn, Sb
+Operations: heated; quenched; ground; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00549-3
+Target: LiMn2O4
+Precursors: MnCO3, Li2CO3
+Operations: heating; pressed; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00553-5
+Target: LiMn2O4
+Precursors: MnO2, Li2CO3
+Operations: milling; milling
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00631-0
+Target: LiMPO4
+Precursors: Li2CO3, P2O5(NH4)2HPO4, NiO
+Operations: pre-sintered; grinding; quenched
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00632-2
+Target: LiCoyNi1-yVO4
+Precursors: LiCO3, NiO, V2O5, CoO
+Operations: ground; annealing; annealed; grounded
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00685-1
+Target: LiMn2O4
+Precursors: MnO2, Li2CO3
+Operations: mixed; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00753-4
+Target: Li1+xMn2-xO4
+Precursors: Li2CO3, Mn2O2
+Operations: pulverized; mixed; calcinated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00762-5
+Target: Mn0.95-xMxCr0.05O2
+Precursors: Mn2O3, Al(OH)3, Cr2O3
+Operations: mixed; pressed; fired; cooling; grinded; dried; treated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00765-0
+Target: Li(Mn2-xCox)O4
+Precursors: MnO2, Co3O4, Li2CO3
+Operations: ground; heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00775-3
+Target: LiMgyMn2-yO4
+Precursors: LiOH·H2O, MgO, MnO2
+Operations: heated; grinding
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00780-7
+Target: LiNi0.8-xFexCo0.2O2
+Precursors: LiOH·H2O, Fe(NO3)3·9H2O, Ni(NO3)2·6H2O, Co(NO3)2·H2O
+Operations: mixed; dried; pressed; calcined; ground; pressed; reacted; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00900-4
+Target: LiNi1-xMxO2
+Precursors: TiO2, LiOH, Ni(OH)2
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(01)00916-8
+Target: LiCoO2
+Precursors: LiOH·H2O, Co(OH)2
+Operations: milling; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00025-3
+Target: LiNi0.5Co0.5O2
+Precursors: NiCO3, LiNO3, Co(NO3)2·6H2O
+Operations: mixing; milled; pre-heated
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00035-6
+Target: LiMn2O4
+Precursors: MnO2, Li2CO3
+Operations: N/A
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00169-6
+Target: LiNiO2
+Precursors: Ni(CH3COO)2·4H2O, LiCH3COO·2H2O
+Operations: mixed; ground; decomposed; ground; cooling; heated; ground; cooling; pelletized; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00365-8
+Target: 14Li2O-9Al2O3-38TiO2-39P2O5
+Precursors: NH4H2PO4, TiO2, Al(OH)3, Li2CO3
+Operations: dried; dried; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00400-7
+Target: LiZnyNi0.8-yCo0.2O2
+Precursors: LiOH·H2O, Co3O4, NiO, ZnO
+Operations: ground; pressed; fired; cooled; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00476-7
+Target: Cr0.5Nb1.5(PO4)3
+Precursors: NH4H2PO4, Nb2O5, Cr2O3
+Operations: mixed; heated; heated; grinding; mixed; pressed; ground; pressed; dried
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(02)00544-X
+Target: 14Li2O-9Al2O3-38TiO2-39P2O5
+Precursors: NH4H2PO4, TiO2, Al(OH)3, Li2CO3
+Operations: milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00010-7
+Target: LiMyNi0.5-yMn1.5O4
+Precursors: Fe2O3, Li2CO3, NiO, MnO2
+Operations: ground; pelletized; fired; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00110-1
+Target: LiTiO2
+Precursors: TiO2, Li2CO3
+Operations: ground; added; cooled; ground; quenched; crushed; annealed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00152-6
+Target: LiFeO2
+Precursors: LiOH·H2O, γ-FeOOH
+Operations: ground; calcined
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00177-0
+Target: LiMnxCoyNi1-x-yO2
+Precursors: OMG, Co3O4, Mn2O3, Li2CO3, NiO
+Operations: mixed; milling; dried; dried; sintered
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00198-8
+Target: LiAl0.01Co0.99O2
+Precursors: Al(OH)3, Co3O4, Li2CO3
+Operations: ground; calcined; grinding; milled
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00229-5
+Target: LiMn2O4
+Precursors: Li2O2, Mn2O3
+Operations: fired
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00240-4
+Target: LiFePO4
+Precursors: FeC2O4·2H2O, NH4H2PO4, CH3COOLi
+Operations: ground; pressed; heated; cooling; ground; pressed; heated; cooling; ground
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00243-X
+Target: LiFePO4
+Precursors: NH4H2PO4, Li2CO3, Fe(CH3COO)2, SoekawaFe(CH3CHOHCOO)2·2H2O
+Operations: dispersed; mixed; dried; pressed
+Conditions: N/A
+
+### Synthesis Record 10.1016/S0378-7753(03)00400-2
+Target: Li6.16V0.61Si0.39O5.36
+Precursors: SiO2, V2O5, Li2CO3
+Operations: mixing; heated; calcinated; milled; compressed
+Conditions: N/A
