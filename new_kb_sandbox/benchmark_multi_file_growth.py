@@ -27,6 +27,7 @@ Pillar compliance:
 import argparse
 import os
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -54,6 +55,39 @@ _DEFAULT_KB_DIR = (
 _DEFAULT_QUERIES_FILE = Path(__file__).resolve().parent / "prompts" / "kb_benchmark_queries.txt"
 _DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "results" / "multi_file"
 _VS_NAME_PREFIX = "kb-bench-multi"
+
+
+def make_get_files_for_step(
+    chunks: list[Path],
+) -> Callable[[int, Path], list[Path]]:
+    """Return the file-step callable for the multi-file growth regime.
+
+    At each step N the returned callable returns the first N source chunk
+    paths directly, with no concatenation or temp file creation.  Because
+    the returned paths are not under ``tmp_dir``, ``run_benchmark`` will not
+    attempt to delete them during cleanup.
+
+    Args:
+        chunks: Ordered list of source chunk paths (e.g. from
+            ``collect_chunk_paths``).
+
+    Returns:
+        Callable ``(step: int, _tmp_dir: Path) -> list[Path]`` returning
+        ``chunks[:step]``; none of the returned paths are under ``tmp_dir``.
+
+    Examples:
+        >>> get_files = make_get_files_for_step(chunks)
+        >>> file_paths = get_files(3, tmp_dir)
+        >>> len(file_paths)
+        3
+
+    Complexity:
+        O(step) per call — list slice of length step.
+    """
+    def _get_files(step: int, _tmp_dir: Path) -> list[Path]:
+        return chunks[:step]
+
+    return _get_files
 
 
 def _parse_args() -> argparse.Namespace:
@@ -155,7 +189,7 @@ def main() -> None:
         confirm_run(estimates)
 
     run_dir = run_benchmark(
-        lambda step, _: chunks[:step],
+        make_get_files_for_step(chunks),
         runs=args.runs,
         max_files=args.max_files,
         queries=queries,

@@ -124,7 +124,7 @@ def build_growing_file(chunks: list[Path], step: int, tmp_dir: Path) -> Path:
 
     Returns:
         Path to the newly created concatenated file inside ``tmp_dir``.
-        The file name is ``growing_{step:04d}.bin``.
+        The file name is ``growing_{step:04d}.txt``.
 
     Raises:
         IndexError: If ``step`` exceeds ``len(chunks)``.
@@ -149,7 +149,7 @@ def build_growing_file(chunks: list[Path], step: int, tmp_dir: Path) -> Path:
     Complexity:
         Θ(B) where B = sum of byte sizes of ``chunks[:step]``.
     """
-    out_path = tmp_dir / f"growing_{step:04d}.bin"
+    out_path = tmp_dir / f"growing_{step:04d}.txt"
     with out_path.open("wb") as out_fh:
         for chunk in chunks[:step]:
             with chunk.open("rb") as in_fh:
@@ -871,7 +871,7 @@ def run_benchmark(
                     tmp_files = [p for p in file_paths if p.parent == tmp_dir]
 
                     kb_size_bytes = sum(f.stat().st_size for f in file_paths)
-                    expected_kb_size = step * chunks[0].stat().st_size
+                    expected_kb_size = sum(c.stat().st_size for c in chunks[:step])
                     assert kb_size_bytes == expected_kb_size, (
                         f"kb_size_bytes mismatch at run={run} step={step}: "
                         f"{kb_size_bytes} != {expected_kb_size}"

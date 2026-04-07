@@ -27,6 +27,7 @@ Pillar compliance:
 import argparse
 import os
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -55,6 +56,41 @@ _DEFAULT_KB_DIR = (
 _DEFAULT_QUERIES_FILE = Path(__file__).resolve().parent / "prompts" / "kb_benchmark_queries.txt"
 _DEFAULT_OUTPUT_DIR = Path(__file__).resolve().parent / "results" / "single_file"
 _VS_NAME_PREFIX = "kb-bench-single"
+
+
+def make_get_files_for_step(
+    chunks: list[Path],
+) -> Callable[[int, Path], list[Path]]:
+    """Return the file-step callable for the single-file growth regime.
+
+    At each step N the returned callable concatenates the first N source
+    chunks into one growing file inside ``tmp_dir`` and returns it as a
+    single-element list.  The temp file is created by ``build_growing_file``
+    and lives in ``tmp_dir`` so that ``run_benchmark`` can identify and clean
+    it up in the ``finally`` block.
+
+    Args:
+        chunks: Ordered list of source chunk paths (e.g. from
+            ``collect_chunk_paths``).
+
+    Returns:
+        Callable ``(step: int, tmp_dir: Path) -> list[Path]`` whose single
+        returned path always has ``path.parent == tmp_dir``, making it safe
+        for temp-file cleanup inside ``run_benchmark``.
+
+    Examples:
+        >>> get_files = make_get_files_for_step(chunks)
+        >>> file_paths = get_files(3, tmp_dir)
+        >>> len(file_paths)
+        1
+
+    Complexity:
+        O(step) per call — dominated by binary concatenation of step chunks.
+    """
+    def _get_files(step: int, tmp_dir: Path) -> list[Path]:
+        return [build_growing_file(chunks, step, tmp_dir)]
+
+    return _get_files
 
 
 def _parse_args() -> argparse.Namespace:
@@ -156,7 +192,7 @@ def main() -> None:
         confirm_run(estimates)
 
     run_dir = run_benchmark(
-        lambda step, tmp: [build_growing_file(chunks, step, tmp)],
+        make_get_files_for_step(chunks),
         runs=args.runs,
         max_files=args.max_files,
         queries=queries,

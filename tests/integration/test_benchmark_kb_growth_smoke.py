@@ -48,6 +48,12 @@ from _shared import (  # noqa: E402
     run_benchmark,
     write_csv,
 )
+from benchmark_single_file_growth import (  # noqa: E402
+    make_get_files_for_step as single_get_files,
+)
+from benchmark_multi_file_growth import (  # noqa: E402
+    make_get_files_for_step as multi_get_files,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -552,14 +558,12 @@ def test_single_file_growth_smoke(tmp_path: Path) -> None:
     """
     from src.llm_pipeline_telemetry import get_openai_client  # noqa: PLC0415
 
-    from _shared import build_growing_file, collect_chunk_paths, load_queries  # noqa: PLC0415
-
     client = get_openai_client()
     queries = load_queries(_QUERIES_FILE)
     chunks = collect_chunk_paths(_KB_DIR, max_files=2)
 
     run_dir = run_benchmark(
-        lambda step, tmp: [build_growing_file(chunks, step, tmp)],
+        single_get_files(chunks),
         runs=1,
         max_files=2,
         queries=queries,
@@ -607,14 +611,12 @@ def test_multi_file_growth_smoke(tmp_path: Path) -> None:
     """
     from src.llm_pipeline_telemetry import get_openai_client  # noqa: PLC0415
 
-    from _shared import collect_chunk_paths, load_queries  # noqa: PLC0415
-
     client = get_openai_client()
     queries = load_queries(_QUERIES_FILE)
     chunks = collect_chunk_paths(_KB_DIR, max_files=2)
 
     run_dir = run_benchmark(
-        lambda step, _: chunks[:step],
+        multi_get_files(chunks),
         runs=1,
         max_files=2,
         queries=queries,
