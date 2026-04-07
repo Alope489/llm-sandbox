@@ -631,6 +631,77 @@ def confirm_run(estimates: dict) -> None:
         raise SystemExit("Benchmark cancelled by user.")
 
 
+_TERMINAL_BATCH_STATUSES: frozenset[str] = frozenset({"completed", "failed", "cancelled"})
+
+
+def _poll_batch_until_terminal(
+    client: "OpenAI",
+    *,
+    batch_id: str,
+    vector_store_id: str,
+    timeout_seconds: float,
+    initial_sleep_seconds: float = 2.0,
+    max_sleep_seconds: float = 30.0,
+) -> object:
+    """Poll a file batch by ID until its status reaches a terminal value.
+
+    The OpenAI SDK's ``upload_and_poll`` exits its internal loop as soon as
+    ``batch.file_counts.in_progress`` drops to zero, which can happen before
+    the batch-level ``status`` field is promoted to ``"completed"``.  This
+    helper closes that race window by re-fetching the batch from the API at
+    exponentially increasing intervals until the status is terminal or the
+    deadline elapses.
+
+    Args:
+        client: Authenticated ``openai.OpenAI`` client.
+        batch_id: ID of the file batch to poll (``VectorStoreFileBatch.id``).
+        vector_store_id: ID of the parent vector store (required by the
+            ``file_batches.retrieve`` endpoint).
+        timeout_seconds: Maximum total wall-clock seconds to wait before
+            giving up and returning the last-seen batch object.
+        initial_sleep_seconds: First sleep duration in seconds before the
+            first ``retrieve`` call. Default ``2.0``.
+        max_sleep_seconds: Upper bound on the per-iteration sleep.  Actual
+            sleep doubles each iteration up to this cap. Default ``30.0``.
+
+    Returns:
+        The last ``VectorStoreFileBatch`` object retrieved.  Its ``status``
+        attribute is terminal (``"completed"``, ``"failed"``, or
+        ``"cancelled"``) unless the timeout expired, in which case it may
+        still be ``"in_progress"``.
+
+    Postconditions:
+        - If the function returns before the deadline, ``batch.status`` is in
+          ``{"completed", "failed", "cancelled"}``.
+        - If the deadline elapses, a ``WARNING`` is emitted via
+          ``_logger`` and the last-seen batch (possibly ``"in_progress"``) is
+          returned — callers must not assume a terminal status.
+
+    Complexity:
+        O(log(timeout_seconds / initial_sleep_seconds)) retrieve calls in the
+        normal case (exponential backoff); O(timeout_seconds / max_sleep_seconds)
+        calls at the cap.
+    """
+    deadline = time.monotonic() + timeout_seconds
+    sleep_s = initial_sleep_seconds
+    batch = None
+    while time.monotonic() < deadline:
+        time.sleep(sleep_s)
+        batch = client.vector_stores.file_batches.retrieve(
+            batch_id, vector_store_id=vector_store_id
+        )
+        if str(getattr(batch, "status", "")) in _TERMINAL_BATCH_STATUSES:
+            return batch
+        sleep_s = min(sleep_s * 2, max_sleep_seconds)
+    _logger.warning(
+        "upload_with_retry: batch %s still non-terminal after %.0f s; "
+        "returning last-seen status",
+        batch_id,
+        timeout_seconds,
+    )
+    return batch
+
+
 def upload_with_retry(
     client: "OpenAI",
     *,
@@ -638,6 +709,7 @@ def upload_with_retry(
     file_paths: list[Path],
     max_retries: int,
     retry_sleep_seconds: float,
+    poll_timeout_seconds: float = 70.0,
 ) -> str:
     """Upload files to an existing vector store with automatic retry on failure.
 
@@ -647,6 +719,14 @@ def upload_with_retry(
     On non-final-attempt failure, sleeps for ``retry_sleep_seconds × (attempt+1)``
     before retrying (linear back-off).
 
+    After ``upload_and_poll`` returns, the batch status is checked against the
+    terminal set ``{"completed", "failed", "cancelled"}``.  If the status is
+    not terminal (the SDK's internal ``poll`` loop can exit early when
+    ``file_counts.in_progress`` drops to zero before the batch-level ``status``
+    field is promoted), ``_poll_batch_until_terminal`` is invoked to continue
+    polling via direct ``retrieve`` calls until a terminal status is observed
+    or ``poll_timeout_seconds`` elapses.
+
     Args:
         client: Authenticated ``openai.OpenAI`` client.
         vector_store_id: ID of the pre-existing OpenAI vector store.
@@ -654,9 +734,14 @@ def upload_with_retry(
         max_retries: Maximum number of retry attempts (0 = no retry).
         retry_sleep_seconds: Base sleep duration in seconds; multiplied by the
             attempt index for linear back-off.
+        poll_timeout_seconds: Maximum seconds to spend in the supplemental
+            polling loop if ``upload_and_poll`` returns a non-terminal status.
+            Default ``70.0``.  If the deadline elapses, a ``WARNING`` is
+            logged and the last-seen (possibly non-terminal) status is returned.
 
     Returns:
-        The batch status string (e.g. ``"completed"``).
+        The batch status string (e.g. ``"completed"``).  Will be terminal
+        unless ``poll_timeout_seconds`` elapsed without the batch completing.
 
     Raises:
         Any exception raised by ``upload_and_poll`` after all retries are
@@ -669,10 +754,13 @@ def upload_with_retry(
     Postconditions:
         - All file streams opened during each attempt are closed before the
           function returns (or raises).
+        - Returned status is in ``{"completed", "failed", "cancelled"}`` unless
+          the supplemental poll timed out.
 
     Complexity:
         Θ(B) per attempt where B is the total upload byte volume; at most
-        (max_retries + 1) attempts.
+        (max_retries + 1) attempts, plus O(log(poll_timeout_seconds)) extra
+        retrieve calls in the supplemental poll path.
     """
     for attempt in range(max_retries + 1):
         streams = [fp.open("rb") for fp in file_paths]
@@ -681,6 +769,13 @@ def upload_with_retry(
                 vector_store_id=vector_store_id,
                 files=streams,
             )
+            if str(getattr(batch, "status", "")) not in _TERMINAL_BATCH_STATUSES:
+                batch = _poll_batch_until_terminal(
+                    client,
+                    batch_id=batch.id,
+                    vector_store_id=vector_store_id,
+                    timeout_seconds=poll_timeout_seconds,
+                )
             return str(getattr(batch, "status", "unknown"))
         except Exception:
             if attempt >= max_retries:

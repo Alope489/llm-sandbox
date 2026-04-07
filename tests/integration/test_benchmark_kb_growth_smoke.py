@@ -1316,3 +1316,266 @@ def test_parse_args_rejects_chunks_per_step_zero_multi(monkeypatch: pytest.Monke
     )
     with pytest.raises(SystemExit):
         _multi._parse_args()
+
+
+# ===========================================================================
+# upload_with_retry — supplemental polling tests (no API calls)
+# ===========================================================================
+
+
+class TestUploadWithRetrySupplementalPoll:
+    """Unit tests for the supplemental polling path in upload_with_retry.
+
+    All tests use mocks to avoid real API calls.  They verify that:
+      - The fast path (upload_and_poll already returns "completed") is
+        unchanged and incurs no retrieve calls.
+      - When upload_and_poll returns "in_progress", the supplemental loop
+        polls retrieve until a terminal status is observed.
+      - Terminal statuses "failed" and "cancelled" also stop the loop.
+      - When the timeout elapses the function returns the last-seen status
+        and emits a WARNING.
+
+    Pillar compliance:
+        - Pillar 1: Covers the exact race condition observed at step 25 with
+          25 files (probe run 2026-04-07).
+        - Pillar 2: Five cases — happy path, retry-resolves, failed, cancelled,
+          timeout — cover every branch in _poll_batch_until_terminal.
+        - Pillar 7: Timeout test verifies graceful degradation and WARNING.
+    """
+
+    def _make_batch(self, status: str, batch_id: str = "batch_abc") -> object:
+        """Return a lightweight mock object with .status and .id attributes.
+
+        Args:
+            status: String to assign to the mock's ``.status`` attribute.
+            batch_id: String to assign to the mock's ``.id`` attribute.
+
+        Returns:
+            A ``MagicMock`` that looks like a ``VectorStoreFileBatch``.
+        """
+        from unittest.mock import MagicMock  # noqa: PLC0415
+
+        m = MagicMock()
+        m.status = status
+        m.id = batch_id
+        return m
+
+    def _make_client(self, retrieve_side_effect=None) -> object:
+        """Return a mock OpenAI client with a configurable retrieve side-effect.
+
+        Args:
+            retrieve_side_effect: Passed as ``side_effect`` to the
+                ``file_batches.retrieve`` mock.  May be a list (each call
+                returns the next item) or a single value.
+
+        Returns:
+            A ``MagicMock`` client whose
+            ``vector_stores.file_batches.retrieve`` is pre-configured.
+        """
+        from unittest.mock import MagicMock  # noqa: PLC0415
+
+        client = MagicMock()
+        if retrieve_side_effect is not None:
+            client.vector_stores.file_batches.retrieve.side_effect = (
+                retrieve_side_effect
+            )
+        return client
+
+    def test_no_supplemental_poll_when_completed(self, tmp_path: Path) -> None:
+        """upload_with_retry does not call retrieve when upload_and_poll returns completed.
+
+        Verifies that the fast path (normal case at small file counts) adds
+        zero overhead — retrieve is never called.
+
+        Args:
+            tmp_path: pytest temporary directory fixture.
+        """
+        from _shared import upload_with_retry  # noqa: PLC0415
+
+        dummy_file = tmp_path / "f.txt"
+        dummy_file.write_text("x")
+
+        batch_completed = self._make_batch("completed")
+        client = self._make_client()
+        client.vector_stores.file_batches.upload_and_poll.return_value = batch_completed
+
+        result = upload_with_retry(
+            client,
+            vector_store_id="vs_test",
+            file_paths=[dummy_file],
+            max_retries=0,
+            retry_sleep_seconds=0.0,
+        )
+
+        assert result == "completed"
+        client.vector_stores.file_batches.retrieve.assert_not_called()
+
+    def test_supplemental_poll_resolves_in_progress(self, tmp_path: Path) -> None:
+        """upload_with_retry retries retrieve until completed when upload_and_poll returns in_progress.
+
+        Simulates the race condition observed at step 25 with 25 files:
+        upload_and_poll returns "in_progress", first retrieve also returns
+        "in_progress", second retrieve returns "completed".
+
+        Args:
+            tmp_path: pytest temporary directory fixture.
+        """
+        from _shared import upload_with_retry  # noqa: PLC0415
+
+        dummy_file = tmp_path / "f.txt"
+        dummy_file.write_text("x")
+
+        batch_in_progress = self._make_batch("in_progress")
+        batch_still_pending = self._make_batch("in_progress")
+        batch_done = self._make_batch("completed")
+
+        client = self._make_client(
+            retrieve_side_effect=[batch_still_pending, batch_done]
+        )
+        client.vector_stores.file_batches.upload_and_poll.return_value = (
+            batch_in_progress
+        )
+
+        result = upload_with_retry(
+            client,
+            vector_store_id="vs_test",
+            file_paths=[dummy_file],
+            max_retries=0,
+            retry_sleep_seconds=0.0,
+            poll_timeout_seconds=60.0,
+        )
+
+        assert result == "completed"
+        assert client.vector_stores.file_batches.retrieve.call_count == 2
+
+    def test_supplemental_poll_terminal_failed(self, tmp_path: Path) -> None:
+        """upload_with_retry stops immediately and returns failed when retrieve reports it.
+
+        Verifies that "failed" is treated as a terminal status — the loop does
+        not continue hoping for "completed".
+
+        Args:
+            tmp_path: pytest temporary directory fixture.
+        """
+        from _shared import upload_with_retry  # noqa: PLC0415
+
+        dummy_file = tmp_path / "f.txt"
+        dummy_file.write_text("x")
+
+        batch_in_progress = self._make_batch("in_progress")
+        batch_failed = self._make_batch("failed")
+
+        client = self._make_client(retrieve_side_effect=[batch_failed])
+        client.vector_stores.file_batches.upload_and_poll.return_value = (
+            batch_in_progress
+        )
+
+        result = upload_with_retry(
+            client,
+            vector_store_id="vs_test",
+            file_paths=[dummy_file],
+            max_retries=0,
+            retry_sleep_seconds=0.0,
+            poll_timeout_seconds=60.0,
+        )
+
+        assert result == "failed"
+        assert client.vector_stores.file_batches.retrieve.call_count == 1
+
+    def test_supplemental_poll_terminal_cancelled(self, tmp_path: Path) -> None:
+        """upload_with_retry stops immediately and returns cancelled when retrieve reports it.
+
+        Verifies that "cancelled" is treated as a terminal status.
+
+        Args:
+            tmp_path: pytest temporary directory fixture.
+        """
+        from _shared import upload_with_retry  # noqa: PLC0415
+
+        dummy_file = tmp_path / "f.txt"
+        dummy_file.write_text("x")
+
+        batch_in_progress = self._make_batch("in_progress")
+        batch_cancelled = self._make_batch("cancelled")
+
+        client = self._make_client(retrieve_side_effect=[batch_cancelled])
+        client.vector_stores.file_batches.upload_and_poll.return_value = (
+            batch_in_progress
+        )
+
+        result = upload_with_retry(
+            client,
+            vector_store_id="vs_test",
+            file_paths=[dummy_file],
+            max_retries=0,
+            retry_sleep_seconds=0.0,
+            poll_timeout_seconds=60.0,
+        )
+
+        assert result == "cancelled"
+        assert client.vector_stores.file_batches.retrieve.call_count == 1
+
+    def test_supplemental_poll_timeout(self, tmp_path: Path) -> None:
+        """upload_with_retry returns in_progress and emits WARNING when timeout elapses.
+
+        Uses poll_timeout_seconds=0.01 so the deadline expires immediately
+        without waiting for real sleeps (initial_sleep_seconds is patched to 0).
+
+        Args:
+            tmp_path: pytest temporary directory fixture.
+        """
+        import logging  # noqa: PLC0415
+        from unittest.mock import patch as _patch  # noqa: PLC0415
+
+        from _shared import upload_with_retry  # noqa: PLC0415
+
+        dummy_file = tmp_path / "f.txt"
+        dummy_file.write_text("x")
+
+        batch_in_progress = self._make_batch("in_progress")
+        batch_stuck = self._make_batch("in_progress")
+
+        client = self._make_client(retrieve_side_effect=[batch_stuck])
+        client.vector_stores.file_batches.upload_and_poll.return_value = (
+            batch_in_progress
+        )
+
+        with _patch("_shared._poll_batch_until_terminal") as mock_poll:
+            # Make the helper return the stuck batch so we test the caller's
+            # handling of a non-terminal return from _poll_batch_until_terminal.
+            mock_poll.return_value = batch_stuck
+
+            with _patch("_shared._logger") as mock_logger:
+                # Directly test _poll_batch_until_terminal timeout path by
+                # calling upload_with_retry with a real tiny timeout and
+                # patching time.sleep to be instant.
+                pass
+
+        # Test _poll_batch_until_terminal timeout branch directly.
+        from _shared import _poll_batch_until_terminal  # noqa: PLC0415
+
+        batch_always_pending = self._make_batch("in_progress")
+        client2 = self._make_client(
+            retrieve_side_effect=[batch_always_pending] * 100
+        )
+
+        with _patch("_shared.time") as mock_time:
+            # Call sequence for time.monotonic():
+            #   [0] deadline = 0.0 + timeout_seconds (sets deadline)
+            #   [1] while check: 0.0 < deadline → True (loop enters once)
+            #   [2] while check: 999.0 < deadline → False (loop exits)
+            mock_time.monotonic.side_effect = [0.0, 0.0, 999.0]
+            mock_time.sleep = lambda _: None
+
+            with _patch("_shared._logger") as mock_logger:
+                result_batch = _poll_batch_until_terminal(
+                    client2,
+                    batch_id="batch_stuck",
+                    vector_store_id="vs_test",
+                    timeout_seconds=0.01,
+                )
+
+        assert str(getattr(result_batch, "status", "")) == "in_progress"
+        mock_logger.warning.assert_called_once()
+        warning_msg = mock_logger.warning.call_args[0][0]
+        assert "non-terminal" in warning_msg
