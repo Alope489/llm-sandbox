@@ -380,9 +380,10 @@ def test_compute_step_metrics_server_latency_always_present() -> None:
 
 
 def test_compute_step_metrics_server_latency_all_absent() -> None:
-    """With all provider_server_latency_ms=None: missing_count=6, mean=None, throughput>0.
+    """With all provider_server_latency_ms=None: missing_count=6, mean=None, aggregate=None.
 
-    Proves throughput is non-null via client-elapsed fallback.
+    Proves aggregate throughput is None (no clean queries); per-query mean is
+    still computable from ``throughput_output_tokens_per_sec``.
 
     Returns:
         None
@@ -395,15 +396,20 @@ def test_compute_step_metrics_server_latency_all_absent() -> None:
     assert m["server_latency_missing_count"] == 6
     assert m["ask_provider_server_latency_ms_mean"] is None
     assert m["ask_throughput_tokens_per_sec_mean"] > 0
-    assert m["ask_aggregate_throughput_tokens_per_sec"] > 0
+    assert m["ask_aggregate_throughput_tokens_per_sec"] is None
 
 
 def test_compute_step_metrics_server_latency_partial() -> None:
-    """With 4 of 6 server latencies absent: missing_count=4, throughput>0.
+    """With 4 of 6 server latencies absent: missing_count=4, aggregate uses only 2 clean queries.
+
+    The aggregate is computed exclusively from the 2 queries that have
+    ``provider_server_latency_ms=300``: (2 × 20 tokens) / (2 × 300 ms / 1000) ≈ 66.667 tok/s.
 
     Returns:
         None
     """
+    import pytest as _pytest
+
     results = (
         [_make_query_result(output_tokens=20, provider_server_latency_ms=None) for _ in range(4)]
         + [_make_query_result(output_tokens=20, provider_server_latency_ms=300) for _ in range(2)]
@@ -411,6 +417,8 @@ def test_compute_step_metrics_server_latency_partial() -> None:
     m = compute_step_metrics(results)
     assert m["server_latency_missing_count"] == 4
     assert m["ask_throughput_tokens_per_sec_mean"] > 0
+    expected_agg = (2 * 20) / (2 * 300 / 1000.0)  # ≈ 66.667
+    assert m["ask_aggregate_throughput_tokens_per_sec"] == _pytest.approx(expected_agg, rel=1e-3)
 
 
 # ===========================================================================
@@ -1007,6 +1015,43 @@ def test_compute_citation_hit_metrics_aggregate_throughput_correct() -> None:
 
     multi_result_b = multi_compute_hit(rows_b)
     assert multi_result_b[0]["agg_throughput_mean"] == pytest.approx(40.0, abs=0.01)
+
+
+def test_compute_citation_hit_metrics_excludes_missing_server_latency() -> None:
+    """agg_throughput_mean uses only queries with non-None provider_server_latency_ms.
+
+    Two citation-hit queries in run 1 step 1:
+      - query 1: output_tokens=100, provider_server_latency_ms=900  → clean
+      - query 2: output_tokens=200, provider_server_latency_ms=None → excluded
+
+    Only the first query contributes to the per-run aggregate:
+      agg = 100 / (900 / 1000.0) ≈ 111.111 tok/s
+
+    Returns:
+        None
+    """
+    row_clean = _make_per_query_row(
+        run=1, step=1, query_idx=1,
+        output_tokens=100, elapsed_ms=1000.0,
+        provider_server_latency_ms=900.0,
+    )
+    row_missing = _make_per_query_row(
+        run=1, step=1, query_idx=2,
+        output_tokens=200, elapsed_ms=2000.0,
+        provider_server_latency_ms=900.0,  # placeholder — overridden below
+    )
+    row_missing["provider_server_latency_ms"] = None  # force absence after construction
+
+    rows = [row_clean, row_missing]
+    result = single_compute_hit(rows)
+    assert len(result) == 1
+    expected = 100 / (900.0 / 1000.0)
+    assert result[0]["agg_throughput_mean"] == pytest.approx(expected, rel=1e-3)
+
+    # Same logic applies to the multi-file variant.
+    multi_result = multi_compute_hit(rows)
+    assert len(multi_result) == 1
+    assert multi_result[0]["agg_throughput_mean"] == pytest.approx(expected, rel=1e-3)
 
 
 # ===========================================================================

@@ -323,8 +323,10 @@ def compute_step_metrics(query_results: list[dict]) -> dict:
       ``throughput_output_tokens_per_sec`` values (always non-null; uses
       ``client_elapsed_ms`` fallback per ``log_llm_call`` logic).
     * ``ask_aggregate_throughput_tokens_per_sec``: ``output_tokens_total /
-      (sum_latency_ms / 1000)`` where each per-query latency uses
-      ``provider_server_latency_ms`` when available, else ``elapsed_ms``.
+      (sum_server_latency_ms / 1000)`` computed only from queries where
+      ``provider_server_latency_ms`` is non-null.  Queries missing the header
+      are excluded entirely; the result is ``None`` when all queries lack
+      server latency.  Never uses ``elapsed_ms`` as a fallback denominator.
       Not distorted by short queries; use this column for KB-growth trend
       analysis.
 
@@ -354,7 +356,9 @@ def compute_step_metrics(query_results: list[dict]) -> dict:
     Postconditions:
         - ``ask_throughput_tokens_per_sec_mean > 0`` whenever any output tokens
           were produced (non-null by construction).
-        - ``ask_aggregate_throughput_tokens_per_sec >= 0.0`` always.
+        - ``ask_aggregate_throughput_tokens_per_sec >= 0.0`` when at least one
+          query has ``provider_server_latency_ms`` non-null; ``None`` when all
+          queries lack server latency.
         - ``ask_provider_server_latency_ms_mean`` is ``None`` iff all queries
           had ``provider_server_latency_ms=None``.
 
@@ -372,15 +376,23 @@ def compute_step_metrics(query_results: list[dict]) -> dict:
     has_citations = [r.get("has_citation", False) for r in query_results]
 
     n = len(query_results)
+    total_output = sum(output_tokens)
     server_latency_missing_count = sum(1 for sl in server_latencies if sl is None)
 
-    # Aggregate throughput: use server latency where available, else client elapsed.
-    sum_latency_ms = sum(
-        float(sl) if sl is not None else r["elapsed_ms"]
+    # Aggregate throughput: server-latency queries only; None if all missing.
+    clean_pairs = [
+        (r["output_tokens"], float(sl))
         for r, sl in zip(query_results, server_latencies)
-    )
-    total_output = sum(output_tokens)
-    agg_throughput = (total_output / (sum_latency_ms / 1000.0)) if sum_latency_ms > 0 else 0.0
+        if sl is not None
+    ]
+    if clean_pairs:
+        clean_output = sum(p[0] for p in clean_pairs)
+        clean_lat_ms = sum(p[1] for p in clean_pairs)
+        agg_throughput: Optional[float] = (
+            round(clean_output / (clean_lat_ms / 1000.0), 3) if clean_lat_ms > 0 else 0.0
+        )
+    else:
+        agg_throughput = None
 
     # Provider server latency mean (nullable).
     valid_server_lats = [float(sl) for sl in server_latencies if sl is not None]
@@ -399,7 +411,7 @@ def compute_step_metrics(query_results: list[dict]) -> dict:
         "ask_output_tokens_mean": round(sum(output_tokens) / n, 3),
         "ask_output_tokens_total": total_output,
         "ask_throughput_tokens_per_sec_mean": round(sum(throughputs) / n, 3),
-        "ask_aggregate_throughput_tokens_per_sec": round(agg_throughput, 3),
+        "ask_aggregate_throughput_tokens_per_sec": agg_throughput,
         "ask_provider_server_latency_ms_mean": (
             round(provider_latency_mean, 3) if provider_latency_mean is not None else None
         ),
@@ -419,8 +431,9 @@ def average_rows(rows: list[dict]) -> list[dict]:
       ``ask_throughput_tokens_per_sec_mean``, and
       ``ask_aggregate_throughput_tokens_per_sec``.
     * ``server_latency_missing_count`` **summed** (not averaged) across runs.
-    * ``ask_provider_server_latency_ms_mean`` averaged over non-``None`` values;
-      remains ``None`` when all runs returned ``None``.
+    * ``ask_provider_server_latency_ms_mean`` and
+      ``ask_aggregate_throughput_tokens_per_sec`` averaged over non-``None``
+      values; remain ``None`` when all runs returned ``None``.
     * String columns (``model``, ``preload_status``) taken from the first row.
 
     Args:
@@ -472,7 +485,8 @@ def average_rows(rows: list[dict]) -> list[dict]:
                 avg_row[key] = vals[0]
             elif key in _SUM_COLUMNS:
                 avg_row[key] = sum(int(v) for v in vals)
-            elif key == "ask_provider_server_latency_ms_mean":
+            elif key in ("ask_provider_server_latency_ms_mean",
+                         "ask_aggregate_throughput_tokens_per_sec"):
                 non_null = [v for v in vals if v is not None]
                 avg_row[key] = round(sum(non_null) / len(non_null), 3) if non_null else None
             elif all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in vals):

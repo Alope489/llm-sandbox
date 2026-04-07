@@ -39,6 +39,7 @@ import csv
 import math
 from collections import defaultdict
 from pathlib import Path
+from typing import Optional
 
 import matplotlib.pyplot as plt
 
@@ -144,10 +145,10 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
     * Stage 1 — group by ``(step, run)``: for each run at each step, keep
       only rows where ``has_citation == "True"`` and compute their mean
       ``elapsed_ms``, mean ``throughput_output_tokens_per_sec``, and per-run
-      aggregate throughput from ``output_tokens`` and the best available
-      latency denominator (``provider_server_latency_ms`` when present,
-      ``elapsed_ms`` otherwise).  This yields at most one value per
-      (step, run).
+      aggregate throughput from ``output_tokens`` and
+      ``provider_server_latency_ms`` (queries missing this field are excluded
+      from the aggregate; ``elapsed_ms`` is never used as a fallback).
+      This yields at most one value per (step, run).
     * Stage 2 — group by ``step``: compute the overall mean and population
       std across the per-run means / aggregates from Stage 1.
 
@@ -161,8 +162,9 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
             ``elapsed_ms`` (float), ``throughput_output_tokens_per_sec``
             (float), ``output_tokens`` (float), and ``has_citation``
             (str ``"True"`` / ``"False"``).  Optionally contains
-            ``provider_server_latency_ms`` (float); falls back to
-            ``elapsed_ms`` when absent or ``None``.
+            ``provider_server_latency_ms`` (float); queries where this field
+            is absent or ``None`` are excluded from the aggregate throughput
+            calculation (never falls back to ``elapsed_ms``).
 
     Returns:
         List of dicts sorted by ``step`` ascending.  Each dict contains:
@@ -174,7 +176,9 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
         * ``throughput_mean`` (float) — arithmetic mean of per-run mean throughputs
         * ``throughput_std`` (float)
         * ``agg_throughput_mean`` (float) — mean of per-run aggregate throughputs
-          (total_output_tokens / total_latency_sec), weighted by token count
+          (total_output_tokens / total_server_latency_sec), using only queries
+          with non-null ``provider_server_latency_ms``; omitted when no run
+          contributes any clean queries at this step
         * ``agg_throughput_std`` (float) — population std across per-run aggregates
         * ``hit_run_count`` (int) — number of runs with ≥1 citation hit
 
@@ -188,8 +192,8 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
         raise ValueError("per_query_rows must be non-empty")
 
     # Stage 1: per-(step, run) means of citation-hit queries.
-    # key: (step, run) → list of (elapsed_ms, throughput, output_tokens, best_lat_ms)
-    stage1: dict[tuple, list[tuple[float, float, float, float]]] = defaultdict(list)
+    # key: (step, run) → list of (elapsed_ms, throughput, output_tokens, server_lat_ms_or_None)
+    stage1: dict[tuple, list[tuple[float, float, float, Optional[float]]]] = defaultdict(list)
     kb_by_step: dict[int, float] = {}
     for row in per_query_rows:
         if row.get("has_citation") != "True":
@@ -197,16 +201,13 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
         step = int(row["step"])
         run = int(row["run"])
         kb_by_step[step] = float(row["kb_size_bytes"])
-        best_lat = (
-            float(row["provider_server_latency_ms"])
-            if row.get("provider_server_latency_ms") is not None
-            else float(row["elapsed_ms"])
-        )
+        server_lat_raw = row.get("provider_server_latency_ms")
+        server_lat: Optional[float] = float(server_lat_raw) if server_lat_raw is not None else None
         stage1[(step, run)].append((
             float(row["elapsed_ms"]),
             float(row["throughput_output_tokens_per_sec"]),
             float(row["output_tokens"]),
-            best_lat,
+            server_lat,
         ))
 
     # Stage 2: collapse per-run means into per-step mean + population std.
@@ -218,10 +219,13 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
         n = len(vals)
         stage2_lat[step].append(sum(v[0] for v in vals) / n)
         stage2_thr[step].append(sum(v[1] for v in vals) / n)
-        total_out = sum(v[2] for v in vals)
-        total_lat_ms = sum(v[3] for v in vals)
-        per_run_agg = (total_out / (total_lat_ms / 1000.0)) if total_lat_ms > 0 else 0.0
-        stage2_agg[step].append(per_run_agg)
+        # Aggregate throughput: exclude queries missing provider_server_latency_ms.
+        clean = [(v[2], v[3]) for v in vals if v[3] is not None]
+        if clean:
+            total_out = sum(p[0] for p in clean)
+            total_lat_ms = sum(p[1] for p in clean)
+            per_run_agg = (total_out / (total_lat_ms / 1000.0)) if total_lat_ms > 0 else 0.0
+            stage2_agg[step].append(per_run_agg)
 
     def _pop_std(values: list[float]) -> float:
         n = len(values)
@@ -242,8 +246,10 @@ def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
             "latency_std_ms": round(_pop_std(lat_vals), 3),
             "throughput_mean": round(sum(thr_vals) / len(thr_vals), 3),
             "throughput_std": round(_pop_std(thr_vals), 3),
-            "agg_throughput_mean": round(sum(agg_vals) / len(agg_vals), 3),
-            "agg_throughput_std": round(_pop_std(agg_vals), 3),
+            "agg_throughput_mean": (
+                round(sum(agg_vals) / len(agg_vals), 3) if agg_vals else None
+            ),
+            "agg_throughput_std": round(_pop_std(agg_vals), 3) if agg_vals else None,
             "hit_run_count": len(lat_vals),
         })
     return result
@@ -508,12 +514,16 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
         for r in rows
     ]
     input_tokens_mean = [float(r["ask_input_tokens_mean"]) for r in rows]
-    throughput_mean = [float(r["ask_aggregate_throughput_tokens_per_sec"]) for r in rows]
+    throughput_rows = [
+        r for r in rows if r.get("ask_aggregate_throughput_tokens_per_sec") is not None
+    ]
+    kb_sizes_thr = [float(r["kb_size_bytes"]) for r in throughput_rows]
+    throughput_mean = [float(r["ask_aggregate_throughput_tokens_per_sec"]) for r in throughput_rows]
     throughput_std = [
         float(r["ask_aggregate_throughput_tokens_per_sec_std"])
         if r.get("ask_aggregate_throughput_tokens_per_sec_std") is not None
         else 0.0
-        for r in rows
+        for r in throughput_rows
     ]
 
     latency_vs_kb = results_dir / "latency_vs_kb_size.png"
@@ -541,7 +551,7 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
     throughput_vs_kb = results_dir / "throughput_vs_kb_size.png"
     _plot_with_errorbars(
         throughput_vs_kb,
-        x=kb_sizes,
+        x=kb_sizes_thr,
         y=throughput_mean,
         y_err=throughput_std,
         xlabel="KB size (bytes)",
@@ -597,17 +607,19 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
             )
             filtered_artifacts["latency_vs_step_citation_hits_only"] = lat_step_filt
 
-            thr_kb_filt = results_dir / "throughput_vs_kb_size_citation_hits_only.png"
-            _plot_with_errorbars(
-                thr_kb_filt,
-                x=fkb,
-                y=fthr_mean,
-                y_err=fthr_std,
-                xlabel="KB size (bytes)",
-                ylabel="Aggregate throughput — citation hits (tokens/sec)",
-                title=f"Aggregate throughput vs KB size — {_TEST_LABEL} — Citation Hits Only",
-            )
-            filtered_artifacts["throughput_vs_kb_size_citation_hits_only"] = thr_kb_filt
+            clean_hit = [m for m in hit_metrics if m.get("agg_throughput_mean") is not None]
+            if clean_hit:
+                thr_kb_filt = results_dir / "throughput_vs_kb_size_citation_hits_only.png"
+                _plot_with_errorbars(
+                    thr_kb_filt,
+                    x=[m["kb_size_bytes"] for m in clean_hit],
+                    y=[m["agg_throughput_mean"] for m in clean_hit],
+                    y_err=[m["agg_throughput_std"] for m in clean_hit],
+                    xlabel="KB size (bytes)",
+                    ylabel="Aggregate throughput — citation hits (tokens/sec)",
+                    title=f"Aggregate throughput vs KB size — {_TEST_LABEL} — Citation Hits Only",
+                )
+                filtered_artifacts["throughput_vs_kb_size_citation_hits_only"] = thr_kb_filt
 
     report = _write_report(results_dir, rows, _TEST_LABEL, per_query_rows=per_query_rows)
 
