@@ -1,12 +1,16 @@
 """Benchmark Test 1 — Single-file growth regime.
 
-At each step N, a single file containing the concatenated bytes of the first N
-5 KB chunks is uploaded to a fresh OpenAI vector store.  All 6 benchmark
-queries are then issued against that store.  The variable under test is KB
-size; the file structure is always one file.
+At each logical step N, a single file containing the concatenated bytes of the
+first ``N × chunks_per_step`` raw source chunks is uploaded to a fresh OpenAI
+vector store.  All 6 benchmark queries are then issued against that store.
+The variable under test is KB size; the file structure is always one file.
+
+``--max-files`` controls the number of logical growth steps; total raw chunks
+loaded = ``max_files × chunks_per_step``.  The default ``chunks_per_step=2``
+produces ~10 KB steps (2 raw ~5 KB chunks per step).
 
 Compare against ``benchmark_multi_file_growth.py`` (Test 2) where the same
-total KB bytes are spread across N separate files.
+total KB bytes are spread across N separate logical files per step.
 
 Usage::
 
@@ -60,18 +64,22 @@ _VS_NAME_PREFIX = "kb-bench-single"
 
 def make_get_files_for_step(
     chunks: list[Path],
+    chunks_per_step: int = 2,
 ) -> Callable[[int, Path], list[Path]]:
     """Return the file-step callable for the single-file growth regime.
 
-    At each step N the returned callable concatenates the first N source
-    chunks into one growing file inside ``tmp_dir`` and returns it as a
-    single-element list.  The temp file is created by ``build_growing_file``
-    and lives in ``tmp_dir`` so that ``run_benchmark`` can identify and clean
-    it up in the ``finally`` block.
+    At each logical step N the returned callable concatenates the first
+    ``N * chunks_per_step`` raw source chunks into one growing file inside
+    ``tmp_dir`` and returns it as a single-element list.  The temp file is
+    created by ``build_growing_file`` and lives in ``tmp_dir`` so that
+    ``run_benchmark`` can identify and clean it up in the ``finally`` block.
 
     Args:
         chunks: Ordered list of source chunk paths (e.g. from
-            ``collect_chunk_paths``).
+            ``collect_chunk_paths``).  Must have at least
+            ``max_files * chunks_per_step`` entries.
+        chunks_per_step: Number of raw ~5 KB source chunks consumed per
+            logical step.  Default ``2`` produces ~10 KB logical files.
 
     Returns:
         Callable ``(step: int, tmp_dir: Path) -> list[Path]`` whose single
@@ -79,16 +87,16 @@ def make_get_files_for_step(
         for temp-file cleanup inside ``run_benchmark``.
 
     Examples:
-        >>> get_files = make_get_files_for_step(chunks)
+        >>> get_files = make_get_files_for_step(chunks, chunks_per_step=2)
         >>> file_paths = get_files(3, tmp_dir)
         >>> len(file_paths)
         1
 
     Complexity:
-        O(step) per call — dominated by binary concatenation of step chunks.
+        O(step × chunks_per_step) per call — dominated by binary concatenation.
     """
     def _get_files(step: int, tmp_dir: Path) -> list[Path]:
-        return [build_growing_file(chunks, step, tmp_dir)]
+        return [build_growing_file(chunks, step * chunks_per_step, tmp_dir)]
 
     return _get_files
 
@@ -103,7 +111,18 @@ def _parse_args() -> argparse.Namespace:
         description="KB growth benchmark — single-file growth regime (Test 1).",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--max-files", type=int, default=50, help="Number of 5 KB steps.")
+    parser.add_argument(
+        "--max-files",
+        type=int,
+        default=50,
+        help="Number of logical growth steps. Total raw chunks loaded = max_files × chunks_per_step.",
+    )
+    parser.add_argument(
+        "--chunks-per-step",
+        type=int,
+        default=2,
+        help="Raw ~5 KB chunks consumed per logical step (default 2 → ~10 KB steps).",
+    )
     parser.add_argument("--runs", type=int, default=5, help="Number of independent repeat runs.")
     parser.add_argument(
         "--queries-file",
@@ -154,14 +173,17 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip pre-flight cost confirmation prompt.",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.chunks_per_step < 1:
+        parser.error("--chunks-per-step must be >= 1")
+    return args
 
 
 def main() -> None:
     """Entry point for Test 1 benchmark runner.
 
     Validates environment, confirms cost estimate, then delegates to
-    ``run_benchmark`` in ``_shared.py`` with a single-file lambda.
+    ``run_benchmark`` in ``_shared.py`` with the single-file factory.
 
     Returns:
         None
@@ -179,10 +201,13 @@ def main() -> None:
 
     client = get_openai_client()
     queries = load_queries(args.queries_file)
-    chunks = collect_chunk_paths(args.kb_dir, args.max_files)
+    chunks = collect_chunk_paths(args.kb_dir, args.max_files * args.chunks_per_step)
 
     if not args.yes:
-        avg_kb_bytes = chunks[0].stat().st_size if chunks else 5120
+        avg_kb_bytes = (
+            sum(c.stat().st_size for c in chunks[:args.chunks_per_step])
+            if chunks else 5120 * args.chunks_per_step
+        )
         estimates = estimate_cost(
             runs=args.runs,
             max_files=args.max_files,
@@ -192,7 +217,7 @@ def main() -> None:
         confirm_run(estimates)
 
     run_dir = run_benchmark(
-        make_get_files_for_step(chunks),
+        make_get_files_for_step(chunks, args.chunks_per_step),
         runs=args.runs,
         max_files=args.max_files,
         queries=queries,
@@ -204,6 +229,7 @@ def main() -> None:
         max_retries=args.max_retries,
         retry_sleep_seconds=args.retry_sleep_seconds,
         vs_name_prefix=_VS_NAME_PREFIX,
+        chunks_per_step=args.chunks_per_step,
     )
     print(f"Results written to {run_dir}")
 

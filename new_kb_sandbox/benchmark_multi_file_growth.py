@@ -1,9 +1,15 @@
 """Benchmark Test 2 — Multi-file growth regime.
 
-At each step N, N separate 5 KB chunk files are uploaded to a fresh OpenAI
-vector store.  All 6 benchmark queries are then issued against that store.
-The only variable between Test 1 and Test 2 is file structure: identical
-total KB bytes at each step, different file granularity.
+At each logical step N, N separate logical files are uploaded to a fresh
+OpenAI vector store, where each logical file is the binary concatenation of
+``chunks_per_step`` raw source chunks.  All 6 benchmark queries are then
+issued against that store.  The only variable between Test 1 and Test 2 is
+file structure: identical total KB bytes at each step, different file
+granularity.
+
+``--max-files`` controls the number of logical growth steps; total raw chunks
+loaded = ``max_files × chunks_per_step``.  The default ``chunks_per_step=2``
+produces ~10 KB logical files (2 raw ~5 KB chunks each).
 
 Compare against ``benchmark_single_file_growth.py`` (Test 1) where the same
 total bytes are merged into a single growing file.
@@ -38,6 +44,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from _shared import (  # noqa: E402
+    build_combined_chunk_file,
     collect_chunk_paths,
     confirm_run,
     estimate_cost,
@@ -59,33 +66,48 @@ _VS_NAME_PREFIX = "kb-bench-multi"
 
 def make_get_files_for_step(
     chunks: list[Path],
+    chunks_per_step: int = 2,
 ) -> Callable[[int, Path], list[Path]]:
     """Return the file-step callable for the multi-file growth regime.
 
-    At each step N the returned callable returns the first N source chunk
-    paths directly, with no concatenation or temp file creation.  Because
-    the returned paths are not under ``tmp_dir``, ``run_benchmark`` will not
-    attempt to delete them during cleanup.
+    At each logical step N the returned callable produces N logical files:
+
+    * When ``chunks_per_step == 1``: the first N raw source chunk paths are
+      returned directly with no concatenation or temp file creation.
+    * When ``chunks_per_step > 1``: N combined temp files are created in
+      ``tmp_dir``, each being the binary concat of ``chunks_per_step`` raw
+      chunks.  Temp files are cleaned up by ``run_benchmark``'s ``finally``
+      block (paths live under ``tmp_dir``).
 
     Args:
         chunks: Ordered list of source chunk paths (e.g. from
-            ``collect_chunk_paths``).
+            ``collect_chunk_paths``).  Must have at least
+            ``max_files * chunks_per_step`` entries.
+        chunks_per_step: Number of raw ~5 KB source chunks combined into each
+            logical file.  Default ``2`` produces ~10 KB logical files.
 
     Returns:
-        Callable ``(step: int, _tmp_dir: Path) -> list[Path]`` returning
-        ``chunks[:step]``; none of the returned paths are under ``tmp_dir``.
+        Callable ``(step: int, tmp_dir: Path) -> list[Path]`` returning a
+        list of exactly ``step`` paths.
 
     Examples:
-        >>> get_files = make_get_files_for_step(chunks)
+        >>> get_files = make_get_files_for_step(chunks, chunks_per_step=2)
         >>> file_paths = get_files(3, tmp_dir)
         >>> len(file_paths)
         3
 
     Complexity:
-        O(step) per call — list slice of length step.
+        O(step) per call when ``chunks_per_step == 1`` (list slice).
+        O(step × chunks_per_step) per call when ``chunks_per_step > 1``
+        (temp file I/O).
     """
-    def _get_files(step: int, _tmp_dir: Path) -> list[Path]:
-        return chunks[:step]
+    def _get_files(step: int, tmp_dir: Path) -> list[Path]:
+        if chunks_per_step == 1:
+            return chunks[:step]
+        return [
+            build_combined_chunk_file(chunks, i, chunks_per_step, step, tmp_dir)
+            for i in range(step)
+        ]
 
     return _get_files
 
@@ -100,7 +122,18 @@ def _parse_args() -> argparse.Namespace:
         description="KB growth benchmark — multi-file growth regime (Test 2).",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    parser.add_argument("--max-files", type=int, default=50, help="Number of 5 KB steps.")
+    parser.add_argument(
+        "--max-files",
+        type=int,
+        default=50,
+        help="Number of logical growth steps. Total raw chunks loaded = max_files × chunks_per_step.",
+    )
+    parser.add_argument(
+        "--chunks-per-step",
+        type=int,
+        default=2,
+        help="Raw ~5 KB chunks combined into each logical file per step (default 2 → ~10 KB files).",
+    )
     parser.add_argument("--runs", type=int, default=5, help="Number of independent repeat runs.")
     parser.add_argument(
         "--queries-file",
@@ -151,14 +184,17 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip pre-flight cost confirmation prompt.",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.chunks_per_step < 1:
+        parser.error("--chunks-per-step must be >= 1")
+    return args
 
 
 def main() -> None:
     """Entry point for Test 2 benchmark runner.
 
     Validates environment, confirms cost estimate, then delegates to
-    ``run_benchmark`` in ``_shared.py`` with a multi-file lambda.
+    ``run_benchmark`` in ``_shared.py`` with the multi-file factory.
 
     Returns:
         None
@@ -176,10 +212,13 @@ def main() -> None:
 
     client = get_openai_client()
     queries = load_queries(args.queries_file)
-    chunks = collect_chunk_paths(args.kb_dir, args.max_files)
+    chunks = collect_chunk_paths(args.kb_dir, args.max_files * args.chunks_per_step)
 
     if not args.yes:
-        avg_kb_bytes = chunks[0].stat().st_size if chunks else 5120
+        avg_kb_bytes = (
+            sum(c.stat().st_size for c in chunks[:args.chunks_per_step])
+            if chunks else 5120 * args.chunks_per_step
+        )
         estimates = estimate_cost(
             runs=args.runs,
             max_files=args.max_files,
@@ -189,7 +228,7 @@ def main() -> None:
         confirm_run(estimates)
 
     run_dir = run_benchmark(
-        make_get_files_for_step(chunks),
+        make_get_files_for_step(chunks, args.chunks_per_step),
         runs=args.runs,
         max_files=args.max_files,
         queries=queries,
@@ -201,6 +240,7 @@ def main() -> None:
         max_retries=args.max_retries,
         retry_sleep_seconds=args.retry_sleep_seconds,
         vs_name_prefix=_VS_NAME_PREFIX,
+        chunks_per_step=args.chunks_per_step,
     )
     print(f"Results written to {run_dir}")
 

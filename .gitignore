@@ -9,3 +9,7 @@ venv/
 pyproject.toml
 uv.lock
 ruff.toml
+
+# Benchmark result plots and reports
+new_kb_sandbox/results/**/*.png
+new_kb_sandbox/results/**/*.md

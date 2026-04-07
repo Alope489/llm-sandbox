@@ -157,6 +157,63 @@ def build_growing_file(chunks: list[Path], step: int, tmp_dir: Path) -> Path:
     return out_path
 
 
+def build_combined_chunk_file(
+    chunks: list[Path],
+    file_idx: int,
+    chunks_per_step: int,
+    step: int,
+    tmp_dir: Path,
+) -> Path:
+    """Concatenate one group of *chunks_per_step* raw chunks into a single temp file.
+
+    Used by the multi-file regime when ``chunks_per_step > 1`` to produce
+    logical files of size ``chunks_per_step × raw_chunk_size``.  Each file is
+    named ``combined_{step:04d}_{file_idx:04d}.txt`` so that names are unique
+    within a step.
+
+    Args:
+        chunks: Full ordered list of source chunk paths.
+        file_idx: 0-based index of this logical file within the current step.
+            Determines which raw chunks are consumed:
+            ``chunks[file_idx * chunks_per_step : (file_idx + 1) * chunks_per_step]``.
+        chunks_per_step: Number of raw chunks to concatenate per logical file.
+        step: Current benchmark step (1-indexed).  Used only for the output
+            filename to ensure uniqueness across steps.
+        tmp_dir: Directory in which to write the output file.
+
+    Returns:
+        Path to the newly created concatenated file inside ``tmp_dir``.
+
+    Raises:
+        IndexError: If ``file_idx * chunks_per_step`` exceeds ``len(chunks)``.
+        OSError: If a source chunk cannot be read or the output cannot be written.
+
+    Examples:
+        >>> # file 0 at step 2 with chunks_per_step=2: concat chunks[0]+chunks[1]
+        >>> out = build_combined_chunk_file(chunks, 0, 2, 2, tmp_dir)
+        >>> out.stat().st_size == chunks[0].stat().st_size + chunks[1].stat().st_size
+        True
+
+    Preconditions:
+        - ``tmp_dir`` must exist and be writable.
+        - ``file_idx * chunks_per_step + chunks_per_step <= len(chunks)``.
+
+    Postconditions:
+        - The returned path exists inside ``tmp_dir``.
+        - File content equals the binary concatenation of the assigned source
+          chunks with no separator.
+
+    Complexity:
+        Θ(B) where B = sum of byte sizes of the assigned source chunks.
+    """
+    start = file_idx * chunks_per_step
+    out_path = tmp_dir / f"combined_{step:04d}_{file_idx:04d}.txt"
+    with out_path.open("wb") as fh:
+        for chunk in chunks[start : start + chunks_per_step]:
+            fh.write(chunk.read_bytes())
+    return out_path
+
+
 def collect_chunk_paths(kb_dir: Path, max_files: int) -> list[Path]:
     """Return the first *max_files* ``kb_chunk_*.txt`` paths from *kb_dir*, sorted.
 
@@ -785,6 +842,7 @@ def run_benchmark(
     max_retries: int,
     retry_sleep_seconds: float,
     vs_name_prefix: str,
+    chunks_per_step: int = 1,
 ) -> Path:
     """Run the full KB-growth benchmark and write results to a timestamped directory.
 
@@ -793,10 +851,13 @@ def run_benchmark(
     all completed rows to ``metrics_per_run.csv`` as a partial result and
     re-raises; the averaged CSV is not written for partial runs.
 
-    Growth regime is injected via *get_files_for_step*:
+    Growth regime is injected via *get_files_for_step* (produced by the
+    factory in each runner module):
 
-    * Test 1 (single-file): ``lambda step, tmp: [build_growing_file(chunks, step, tmp)]``
-    * Test 2 (multi-file):  ``lambda step, _: chunks[:step]``
+    * Test 1 (single-file): one growing file = concat of all
+      ``step * chunks_per_step`` raw chunks.
+    * Test 2 (multi-file): ``step`` separate logical files, each being the
+      binary concat of ``chunks_per_step`` raw chunks.
 
     The benchmark loop is instrumented with nested ``tqdm`` progress bars:
     an outer run bar and a per-run step bar (``leave=False``).
@@ -820,6 +881,9 @@ def run_benchmark(
         retry_sleep_seconds: Base sleep between retries in seconds.
         vs_name_prefix: Prefix for vector store names (e.g.
             ``"kb-bench-single"``).
+        chunks_per_step: Number of raw ~5 KB source chunks consumed per
+            logical step.  Default ``1`` preserves the original 5 KB-step
+            behaviour; ``2`` produces ~10 KB steps.  Must be >= 1.
 
     Returns:
         Path to the timestamped run directory that contains the CSV files.
@@ -831,8 +895,9 @@ def run_benchmark(
 
     Preconditions:
         - ``runs >= 1``, ``max_files >= 1``, ``len(queries) >= 1``.
-        - ``len(chunks) >= max_files``.
-        - All chunk files in ``chunks[:max_files]`` must be readable.
+        - ``chunks_per_step >= 1``.
+        - ``len(chunks) >= max_files * chunks_per_step``.
+        - All chunk files in ``chunks[:max_files * chunks_per_step]`` must be readable.
         - ``OPENAI_API_KEY`` must be set in the environment.
 
     Postconditions:
@@ -847,7 +912,9 @@ def run_benchmark(
         - VS creations: Θ(R × S)
         - Upload bytes: Θ(R × S²) — quadratic due to growing KB each step.
         - Memory:       Θ(R × S) row dicts ≈ 40 KB at defaults; negligible.
-        - Temp files:   at most one file on disk at a time (Test 1 only).
+        - Temp files:   1 file at a time for single-file regime; up to
+          ``max_files`` files simultaneously for multi-file regime when
+          ``chunks_per_step > 1``.
     """
     from tqdm import tqdm  # imported here so _shared.py is usable without tqdm in unit tests
 
@@ -871,7 +938,7 @@ def run_benchmark(
                     tmp_files = [p for p in file_paths if p.parent == tmp_dir]
 
                     kb_size_bytes = sum(f.stat().st_size for f in file_paths)
-                    expected_kb_size = sum(c.stat().st_size for c in chunks[:step])
+                    expected_kb_size = sum(c.stat().st_size for c in chunks[:step * chunks_per_step])
                     assert kb_size_bytes == expected_kb_size, (
                         f"kb_size_bytes mismatch at run={run} step={step}: "
                         f"{kb_size_bytes} != {expected_kb_size}"

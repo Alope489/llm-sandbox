@@ -46,6 +46,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from _shared import (  # noqa: E402
+    build_combined_chunk_file,
     build_growing_file,
     collect_chunk_paths,
     load_queries,
@@ -81,6 +82,7 @@ def _run_regime_step(
     queries: list[str],
     max_retries: int,
     retry_sleep_seconds: float,
+    chunks_per_step: int = 2,
 ) -> dict:
     """Run one step of either the single-file or multi-file benchmark regime.
 
@@ -95,16 +97,18 @@ def _run_regime_step(
 
     Args:
         regime: Either ``"single"`` (one growing concatenated file) or
-            ``"multi"`` (N separate chunk files).
-        chunks: Full ordered list of source chunk paths; only the first *step*
-            entries are used.
-        step: 1-indexed step number.  Determines how many chunks are included.
+            ``"multi"`` (N separate logical files).
+        chunks: Full ordered list of source chunk paths; only the first
+            ``step * chunks_per_step`` entries are used.
+        step: 1-indexed logical step number.
         client: Authenticated ``openai.OpenAI`` instance.
         model: OpenAI model identifier (e.g. ``"gpt-4o-mini"``).
         queries: List of query strings to issue against the vector store.
         max_retries: Per-operation retry count passed to ``upload_with_retry``
             and ``query_with_retry``.
         retry_sleep_seconds: Base sleep between retries (linear back-off).
+        chunks_per_step: Number of raw ~5 KB chunks per logical step/file.
+            Default ``2`` → ~10 KB per logical unit.
 
     Returns:
         A dict with keys:
@@ -124,7 +128,8 @@ def _run_regime_step(
         after all retries are exhausted.
 
     Preconditions:
-        - ``1 <= step <= len(chunks)``.
+        - ``1 <= step <= len(chunks) // chunks_per_step``.
+        - ``chunks_per_step >= 1``.
         - ``client`` is authenticated and ``OPENAI_API_KEY`` is set.
 
     Postconditions:
@@ -132,7 +137,8 @@ def _run_regime_step(
         - Any temp file created for the single-file regime is deleted.
 
     Complexity:
-        Θ(B) for upload where B = cumulative byte size of chunks[:step].
+        Θ(B) for upload where B = cumulative byte size of
+        ``chunks[:step * chunks_per_step]``.
         Θ(Q) API calls where Q = len(queries).
     """
     from src.llm_pipeline_telemetry import CallContext  # noqa: PLC0415
@@ -141,12 +147,13 @@ def _run_regime_step(
     hex4 = uuid.uuid4().hex[:4]
     vs_name = f"kb-bench-probe-{regime}-step{step:04d}-{ms_ts}-{hex4}"
 
-    kb_size_bytes = sum(c.stat().st_size for c in chunks[:step])
+    kb_size_bytes = sum(c.stat().st_size for c in chunks[:step * chunks_per_step])
     t_step_start = time.perf_counter()
 
     ctx = CallContext(pipeline="kb_growth_probe")
     vs_id: Optional[str] = None
-    tmp_file: Optional[Path] = None
+    tmp_files: list[Path] = []
+    tmp_dir_path: Optional[Path] = None
 
     try:
         # -- VS create --------------------------------------------------------
@@ -157,11 +164,19 @@ def _run_regime_step(
 
         # -- File preparation -------------------------------------------------
         if regime == "single":
-            tmp_dir = Path(tempfile.mkdtemp(prefix="kb_probe_"))
-            tmp_file = build_growing_file(chunks, step, tmp_dir)
-            file_paths = [tmp_file]
-        else:
+            tmp_dir_path = Path(tempfile.mkdtemp(prefix="kb_probe_"))
+            f = build_growing_file(chunks, step * chunks_per_step, tmp_dir_path)
+            file_paths = [f]
+            tmp_files = [f]
+        elif chunks_per_step == 1:
             file_paths = chunks[:step]
+        else:
+            tmp_dir_path = Path(tempfile.mkdtemp(prefix="kb_probe_"))
+            file_paths = [
+                build_combined_chunk_file(chunks, i, chunks_per_step, step, tmp_dir_path)
+                for i in range(step)
+            ]
+            tmp_files = list(file_paths)
 
         file_count = len(file_paths)
 
@@ -221,10 +236,11 @@ def _run_regime_step(
                 _logger.warning(
                     "probe_step_timing: failed to delete VS %s during cleanup", vs_id
                 )
-        if tmp_file is not None and tmp_file.exists():
-            tmp_file.unlink(missing_ok=True)
+        for f in tmp_files:
+            f.unlink(missing_ok=True)
+        if tmp_dir_path is not None:
             try:
-                tmp_file.parent.rmdir()
+                tmp_dir_path.rmdir()
             except OSError:
                 pass
 
@@ -511,7 +527,16 @@ def _parse_args() -> argparse.Namespace:
         "--max-files",
         type=int,
         default=50,
-        help="Total steps in the real benchmark (used for projection only).",
+        help=(
+            "Total logical steps for projection. "
+            "Total raw chunks loaded = max_files × chunks_per_step."
+        ),
+    )
+    parser.add_argument(
+        "--chunks-per-step",
+        type=int,
+        default=2,
+        help="Raw ~5 KB chunks per logical step/file (default 2 → ~10 KB steps).",
     )
     parser.add_argument(
         "--runs",
@@ -558,6 +583,8 @@ def _parse_args() -> argparse.Namespace:
 
     if args.step < 1:
         parser.error("--step must be >= 1")
+    if args.chunks_per_step < 1:
+        parser.error("--chunks-per-step must be >= 1")
     if args.step > args.max_files:
         parser.error(
             f"--step ({args.step}) must be <= --max-files ({args.max_files})"
@@ -592,10 +619,10 @@ def main() -> None:
     from src.llm_pipeline_telemetry import get_openai_client  # noqa: PLC0415
 
     client = get_openai_client()
-    chunks = collect_chunk_paths(args.kb_dir, args.max_files)
+    chunks = collect_chunk_paths(args.kb_dir, args.max_files * args.chunks_per_step)
     queries = load_queries(args.queries_file)
     query_count = len(queries)
-    step_kb = sum(c.stat().st_size for c in chunks[: args.step]) / 1024
+    step_kb = sum(c.stat().st_size for c in chunks[: args.step * args.chunks_per_step]) / 1024
 
     print(f"\n{'='*66}")
     print(
@@ -631,6 +658,7 @@ def main() -> None:
         queries=queries,
         max_retries=args.max_retries,
         retry_sleep_seconds=args.retry_sleep_seconds,
+        chunks_per_step=args.chunks_per_step,
     )
 
     print(f"\nRunning single-file regime probe (step {args.step})…")

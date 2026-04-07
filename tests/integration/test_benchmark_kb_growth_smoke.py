@@ -5,9 +5,11 @@ API calls or external resources.
 
 Integration smoke tests exercise the full benchmark loop end-to-end against
 the real OpenAI API.  They are skipped when ``OPENAI_API_KEY`` is absent.
-Each smoke test runs ``runs=1, max_files=2`` (2 steps × 6 queries = 12 API
-calls per test, ~18 000 input tokens each) to verify correctness without
-burning significant API budget.
+Each smoke test runs ``runs=1, max_files=2, chunks_per_step=2``
+(2 logical steps × 4 raw chunks × 6 queries = 12 API calls per test) to
+verify correctness without burning significant API budget.  The number of
+API calls is unchanged from the previous ``chunks_per_step=1`` configuration;
+only local disk I/O doubles (4 raw chunks loaded instead of 2).
 
 Dependencies:
     pytest, pathlib (stdlib), new_kb_sandbox._shared (namespace package import).
@@ -38,6 +40,7 @@ if str(_NKS_DIR) not in sys.path:
 
 from _shared import (  # noqa: E402
     average_rows,
+    build_combined_chunk_file,
     build_growing_file,
     collect_chunk_paths,
     compute_step_metrics,
@@ -224,22 +227,28 @@ def test_build_growing_file_step1_same_bytes_as_multi_file_step1(tmp_path: Path)
 def test_kb_size_bytes_equal_across_tests_steps_1_to_3(tmp_path: Path) -> None:
     """kb_size_bytes for Test 1 and Test 2 are identical at steps 1, 2, and 3.
 
-    Confirms the benchmark assertion logic: at each step the total bytes
-    uploaded are the same regardless of whether files are merged or separate.
+    Confirms the benchmark assertion logic with ``chunks_per_step=2``: at each
+    logical step the total bytes uploaded are the same regardless of whether
+    files are merged (Test 1) or separate (Test 2).
+
+    8 synthetic chunks of 200 bytes each are created so that up to step 3
+    (= 3 × 2 = 6 raw chunks = 1 200 bytes) is covered.
 
     Args:
         tmp_path: pytest temporary directory fixture.
     """
+    chunks_per_step = 2
     size = 200
-    chunks = _make_synthetic_chunks(tmp_path / "src", 5, size)
+    chunks = _make_synthetic_chunks(tmp_path / "src", 8, size)
     tmp_dir = tmp_path / "tmp"
     tmp_dir.mkdir()
     for step in (1, 2, 3):
-        # Test 1: one growing file
-        t1_file = build_growing_file(chunks, step, tmp_dir)
+        raw_count = step * chunks_per_step
+        # Test 1: one growing file containing all raw_count raw chunks
+        t1_file = build_growing_file(chunks, raw_count, tmp_dir)
         t1_bytes = t1_file.stat().st_size
-        # Test 2: N separate files
-        t2_bytes = sum(c.stat().st_size for c in chunks[:step])
+        # Test 2: step logical files, each containing chunks_per_step raw chunks
+        t2_bytes = sum(c.stat().st_size for c in chunks[:raw_count])
         assert t1_bytes == t2_bytes, f"Mismatch at step {step}: {t1_bytes} != {t2_bytes}"
         t1_file.unlink()
 
@@ -550,8 +559,9 @@ def test_confirm_run_passes_on_y() -> None:
 def test_single_file_growth_smoke(tmp_path: Path) -> None:
     """End-to-end smoke test for Test 1 (single-file growth regime).
 
-    Runs 1 repetition × 2 steps × 6 queries = 12 API calls.  Asserts the
-    shape and validity of both CSV files.
+    Runs 1 repetition × 2 logical steps (4 raw chunks, chunks_per_step=2)
+    × 6 queries = 12 API calls.  Asserts the shape and validity of both CSV
+    files.
 
     Args:
         tmp_path: pytest temporary directory fixture.
@@ -560,10 +570,10 @@ def test_single_file_growth_smoke(tmp_path: Path) -> None:
 
     client = get_openai_client()
     queries = load_queries(_QUERIES_FILE)
-    chunks = collect_chunk_paths(_KB_DIR, max_files=2)
+    chunks = collect_chunk_paths(_KB_DIR, max_files=4)
 
     run_dir = run_benchmark(
-        single_get_files(chunks),
+        single_get_files(chunks, chunks_per_step=2),
         runs=1,
         max_files=2,
         queries=queries,
@@ -575,6 +585,7 @@ def test_single_file_growth_smoke(tmp_path: Path) -> None:
         max_retries=3,
         retry_sleep_seconds=2.0,
         vs_name_prefix="kb-bench-smoke-single",
+        chunks_per_step=2,
     )
 
     per_run_csv = run_dir / "metrics_per_run.csv"
@@ -602,9 +613,9 @@ def test_single_file_growth_smoke(tmp_path: Path) -> None:
 def test_multi_file_growth_smoke(tmp_path: Path) -> None:
     """End-to-end smoke test for Test 2 (multi-file growth regime).
 
-    Runs 1 repetition × 2 steps × 6 queries = 12 API calls.  Asserts the
-    shape and validity of both CSV files, including that file_count matches
-    step on each row.
+    Runs 1 repetition × 2 logical steps (4 raw chunks, chunks_per_step=2)
+    × 6 queries = 12 API calls.  Asserts the shape and validity of both CSV
+    files, including that file_count matches step on each row.
 
     Args:
         tmp_path: pytest temporary directory fixture.
@@ -613,10 +624,10 @@ def test_multi_file_growth_smoke(tmp_path: Path) -> None:
 
     client = get_openai_client()
     queries = load_queries(_QUERIES_FILE)
-    chunks = collect_chunk_paths(_KB_DIR, max_files=2)
+    chunks = collect_chunk_paths(_KB_DIR, max_files=4)
 
     run_dir = run_benchmark(
-        multi_get_files(chunks),
+        multi_get_files(chunks, chunks_per_step=2),
         runs=1,
         max_files=2,
         queries=queries,
@@ -628,6 +639,7 @@ def test_multi_file_growth_smoke(tmp_path: Path) -> None:
         max_retries=3,
         retry_sleep_seconds=2.0,
         vs_name_prefix="kb-bench-smoke-multi",
+        chunks_per_step=2,
     )
 
     per_run_csv = run_dir / "metrics_per_run.csv"
@@ -653,3 +665,170 @@ def test_multi_file_growth_smoke(tmp_path: Path) -> None:
     with averaged_csv.open(encoding="utf-8") as fh:
         avg_rows = list(_csv.DictReader(fh))
     assert len(avg_rows) == 2, f"Expected 2 averaged rows, got {len(avg_rows)}"
+
+
+# ===========================================================================
+# build_combined_chunk_file
+# ===========================================================================
+
+
+def test_build_combined_chunk_file_byte_length(tmp_path: Path) -> None:
+    """Output file byte length equals the sum of the assigned raw chunks.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    chunks = _make_synthetic_chunks(tmp_path / "src", 6, 100)
+    tmp_dir = tmp_path / "tmp"
+    tmp_dir.mkdir()
+    out = build_combined_chunk_file(chunks, 0, 2, 1, tmp_dir)
+    expected = chunks[0].stat().st_size + chunks[1].stat().st_size
+    assert out.stat().st_size == expected
+
+
+def test_build_combined_chunk_file_concatenates_correctly(tmp_path: Path) -> None:
+    """Output bytes are the exact binary concatenation of the assigned chunks.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    src = tmp_path / "src"
+    src.mkdir()
+    (src / "kb_chunk_0000.txt").write_bytes(b"AAAA")
+    (src / "kb_chunk_0001.txt").write_bytes(b"BBBB")
+    (src / "kb_chunk_0002.txt").write_bytes(b"CCCC")
+    (src / "kb_chunk_0003.txt").write_bytes(b"DDDD")
+    chunks = sorted(src.glob("kb_chunk_*.txt"))
+
+    tmp_dir = tmp_path / "tmp"
+    tmp_dir.mkdir()
+    # file_idx=1, chunks_per_step=2 → combines chunks[2]+chunks[3]
+    out = build_combined_chunk_file(chunks, 1, 2, 3, tmp_dir)
+    assert out.read_bytes() == b"CCCCDDDD"
+
+
+def test_build_combined_chunk_file_unique_names_within_step(tmp_path: Path) -> None:
+    """Two files created for the same step have distinct names.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    chunks = _make_synthetic_chunks(tmp_path / "src", 6, 50)
+    tmp_dir = tmp_path / "tmp"
+    tmp_dir.mkdir()
+    out0 = build_combined_chunk_file(chunks, 0, 2, 2, tmp_dir)
+    out1 = build_combined_chunk_file(chunks, 1, 2, 2, tmp_dir)
+    assert out0 != out1
+    assert out0.name != out1.name
+
+
+# ===========================================================================
+# Updated make_get_files_for_step factories (chunks_per_step=2)
+# ===========================================================================
+
+
+def test_single_factory_chunks_per_step_2_step3_byte_length(tmp_path: Path) -> None:
+    """Single-file factory at step 3 with chunks_per_step=2 produces a file of 6 × chunk_size bytes.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    chunk_size = 80
+    chunks = _make_synthetic_chunks(tmp_path / "src", 8, chunk_size)
+    tmp_dir = tmp_path / "tmp"
+    tmp_dir.mkdir()
+    get_files = single_get_files(chunks, chunks_per_step=2)
+    paths = get_files(3, tmp_dir)
+    assert len(paths) == 1
+    assert paths[0].stat().st_size == 6 * chunk_size
+
+
+def test_multi_factory_chunks_per_step_2_creates_n_temp_files(tmp_path: Path) -> None:
+    """Multi-file factory at step 3 with chunks_per_step=2 returns 3 paths in tmp_dir.
+
+    Each path should be 2 × chunk_size bytes.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    chunk_size = 90
+    chunks = _make_synthetic_chunks(tmp_path / "src", 8, chunk_size)
+    tmp_dir = tmp_path / "tmp"
+    tmp_dir.mkdir()
+    get_files = multi_get_files(chunks, chunks_per_step=2)
+    paths = get_files(3, tmp_dir)
+    assert len(paths) == 3
+    for p in paths:
+        assert p.parent == tmp_dir, f"Expected path under tmp_dir, got {p}"
+        assert p.stat().st_size == 2 * chunk_size
+
+
+def test_multi_factory_chunks_per_step_1_returns_source_paths(tmp_path: Path) -> None:
+    """Multi-file factory with chunks_per_step=1 returns source chunk paths without temp files.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    chunks = _make_synthetic_chunks(tmp_path / "src", 5, 50)
+    tmp_dir = tmp_path / "tmp"
+    tmp_dir.mkdir()
+    get_files = multi_get_files(chunks, chunks_per_step=1)
+    paths = get_files(3, tmp_dir)
+    assert paths == chunks[:3]
+    assert all(p.parent != tmp_dir for p in paths)
+
+
+# ===========================================================================
+# collect_chunk_paths — chunks_per_step=2 validation
+# ===========================================================================
+
+
+def test_collect_chunk_paths_raises_for_chunks_per_step_2(tmp_path: Path) -> None:
+    """collect_chunk_paths raises ValueError when fewer files exist than max_files * 2.
+
+    Creates 3 raw chunk files, then requests 4 raw chunks (simulating
+    max_files=2, chunks_per_step=2), which requires 4 files.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    _make_synthetic_chunks(tmp_path, 3)
+    with pytest.raises(ValueError, match="need at least 4"):
+        collect_chunk_paths(tmp_path, 4)
+
+
+# ===========================================================================
+# CLI validation — chunks_per_step guard
+# ===========================================================================
+
+
+def test_parse_args_rejects_chunks_per_step_zero_single(monkeypatch: pytest.MonkeyPatch) -> None:
+    """benchmark_single_file_growth._parse_args raises SystemExit for --chunks-per-step 0.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture.
+    """
+    import benchmark_single_file_growth as _single  # noqa: PLC0415
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["benchmark_single_file_growth.py", "--chunks-per-step", "0", "--yes"],
+    )
+    with pytest.raises(SystemExit):
+        _single._parse_args()
+
+
+def test_parse_args_rejects_chunks_per_step_zero_multi(monkeypatch: pytest.MonkeyPatch) -> None:
+    """benchmark_multi_file_growth._parse_args raises SystemExit for --chunks-per-step 0.
+
+    Args:
+        monkeypatch: pytest monkeypatch fixture.
+    """
+    import benchmark_multi_file_growth as _multi  # noqa: PLC0415
+
+    monkeypatch.setattr(
+        "sys.argv",
+        ["benchmark_multi_file_growth.py", "--chunks-per-step", "0", "--yes"],
+    )
+    with pytest.raises(SystemExit):
+        _multi._parse_args()
