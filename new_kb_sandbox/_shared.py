@@ -846,10 +846,21 @@ def run_benchmark(
 ) -> Path:
     """Run the full KB-growth benchmark and write results to a timestamped directory.
 
-    Creates ``output_dir / <YYYY-MM-DDTHHMMSS> / metrics_per_run.csv`` and
-    ``metrics_averaged.csv`` on success.  On exception during a step, flushes
-    all completed rows to ``metrics_per_run.csv`` as a partial result and
-    re-raises; the averaged CSV is not written for partial runs.
+    Creates three CSV files under ``output_dir / <YYYY-MM-DDTHHMMSS>/`` on
+    success:
+
+    * ``metrics_per_query.csv`` — one row per (run, step, query); includes
+      ``query_idx``, ``query_text``, ``has_citation``, ``elapsed_ms``,
+      ``input_tokens``, ``output_tokens``, ``provider_server_latency_ms``,
+      and ``throughput_output_tokens_per_sec``.  Enables post-hoc filtering
+      by citation status (e.g. exclude citation-miss queries from latency
+      analysis).
+    * ``metrics_per_run.csv`` — one row per (run, step); aggregated metrics.
+    * ``metrics_averaged.csv`` — one row per step; averaged across runs.
+
+    On exception during a step, flushes all completed rows to both
+    ``metrics_per_query.csv`` and ``metrics_per_run.csv`` as partial results
+    and re-raises; the averaged CSV is not written for partial runs.
 
     Growth regime is injected via *get_files_for_step* (produced by the
     factory in each runner module):
@@ -901,10 +912,12 @@ def run_benchmark(
         - ``OPENAI_API_KEY`` must be set in the environment.
 
     Postconditions:
-        - On success: ``run_dir / metrics_per_run.csv`` and
-          ``run_dir / metrics_averaged.csv`` exist.
-        - On partial run (exception): only ``metrics_per_run.csv`` exists with
-          completed rows.
+        - On success: ``run_dir / metrics_per_query.csv``,
+          ``run_dir / metrics_per_run.csv``, and
+          ``run_dir / metrics_averaged.csv`` all exist.
+        - On partial run (exception): ``metrics_per_query.csv`` and
+          ``metrics_per_run.csv`` exist with completed rows only;
+          ``metrics_averaged.csv`` is not written.
         - No previous run directories under ``output_dir`` are modified.
 
     Complexity:
@@ -924,6 +937,7 @@ def run_benchmark(
     tmp_dir.mkdir(exist_ok=True)
 
     per_run_rows: list[dict] = []
+    per_query_rows: list[dict] = []
 
     run_bar = tqdm(range(1, runs + 1), desc="runs", unit="run")
     try:
@@ -983,6 +997,22 @@ def run_benchmark(
                             progress_bar=step_bar,
                         )
                         query_results.append(result)
+                        per_query_rows.append({
+                            "run": run,
+                            "step": step,
+                            "query_idx": q_idx,
+                            "query_text": query,
+                            "kb_size_bytes": kb_size_bytes,
+                            "file_count": len(file_paths),
+                            "model": model,
+                            "vector_store_id": vs.id,
+                            "elapsed_ms": result["elapsed_ms"],
+                            "input_tokens": result["input_tokens"],
+                            "output_tokens": result["output_tokens"],
+                            "provider_server_latency_ms": result["provider_server_latency_ms"],
+                            "throughput_output_tokens_per_sec": result["throughput_output_tokens_per_sec"],
+                            "has_citation": result["has_citation"],
+                        })
 
                     step_metrics = compute_step_metrics(query_results)
                     step_bar.set_postfix(status="deleting VS")
@@ -1015,6 +1045,8 @@ def run_benchmark(
                         type(exc).__name__,
                         exc,
                     )
+                    if per_query_rows:
+                        write_csv(run_dir / "metrics_per_query.csv", per_query_rows)
                     if per_run_rows:
                         write_csv(run_dir / "metrics_per_run.csv", per_run_rows)
                     raise
@@ -1024,6 +1056,7 @@ def run_benchmark(
     finally:
         run_bar.close()
 
+    write_csv(run_dir / "metrics_per_query.csv", per_query_rows)
     write_csv(run_dir / "metrics_per_run.csv", per_run_rows)
     averaged = average_rows(per_run_rows)
     write_csv(run_dir / "metrics_averaged.csv", averaged)

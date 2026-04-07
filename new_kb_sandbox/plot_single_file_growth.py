@@ -1,34 +1,43 @@
 """Generate plots and a report from a single-file-growth benchmark run.
 
-Reads ``metrics_averaged.csv`` from a timestamped run directory produced by
-``benchmark_single_file_growth.py`` and writes four PNGs and ``report.md``
+Reads ``metrics_averaged.csv`` (and optionally ``metrics_per_query.csv``)
+from a timestamped run directory produced by
+``benchmark_single_file_growth.py`` and writes PNGs and ``report.md``
 into the same directory.
 
-Artifacts produced::
+Artifacts always produced::
 
     latency_vs_kb_size.png      — ask_elapsed_ms_mean vs kb_size_bytes
     input_tokens_vs_kb_size.png — ask_input_tokens_mean vs kb_size_bytes
-    throughput_vs_kb_size.png   — ask_throughput_tokens_per_sec_mean vs kb_size_bytes
+    throughput_vs_kb_size.png   — ask_aggregate_throughput_tokens_per_sec vs kb_size_bytes
     latency_vs_step.png         — ask_elapsed_ms_mean vs step
     report.md                   — run config, delta metrics, data quality notes
+
+Additional artifacts produced when ``metrics_per_query.csv`` is present::
+
+    latency_vs_kb_size_citation_hits_only.png   — latency filtered to citation-hit queries
+    latency_vs_step_citation_hits_only.png       — same, vs step axis
+    throughput_vs_kb_size_citation_hits_only.png — throughput filtered to citation-hit queries
 
 Usage::
 
     python new_kb_sandbox/plot_single_file_growth.py --results-dir new_kb_sandbox/results/single_file/2026-04-06T120000
 
 Dependencies:
-    matplotlib, csv, pathlib (stdlib).
+    matplotlib, csv, math, pathlib (stdlib).
 
 Pillar compliance:
     - Pillar 1: Plots only the columns produced by the spec-defined CSV schema.
     - Pillar 3: Google-style docstrings; auto-generated report.md documents run.
     - Pillar 4: Fully independent of runner files; no hardcoded paths.
-    - Pillar 6: O(S) where S = number of steps; entirely local computation.
-    - Pillar 7: Raises on missing CSV; warns on partial server-latency coverage.
+    - Pillar 6: O(S) where S = number of steps; O(R×S×Q) for filtered aggregation.
+    - Pillar 7: Raises on missing averaged CSV; gracefully skips filtered plots
+      when metrics_per_query.csv is absent (backward-compatible with old runs).
 """
 import argparse
 import csv
 import math
+from collections import defaultdict
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -75,6 +84,169 @@ def _load_averaged_rows(results_dir: Path) -> list[dict]:
     if not rows:
         raise ValueError(f"metrics_averaged.csv in {results_dir} is empty")
     return sorted(rows, key=lambda r: int(r["step"]))
+
+
+def _load_per_query_rows(results_dir: Path) -> list[dict]:
+    """Read and parse ``metrics_per_query.csv`` from *results_dir*.
+
+    Returns an empty list without raising if the file is absent, enabling
+    backward compatibility with run directories produced before the per-query
+    CSV was introduced.
+
+    Args:
+        results_dir: Timestamped benchmark run directory that may contain
+            ``metrics_per_query.csv``.
+
+    Returns:
+        List of row dicts with numeric columns cast to their native types and
+        ``has_citation`` kept as a string (``"True"`` or ``"False"`` as
+        written by the csv module).  Returns ``[]`` if the file does not
+        exist.
+
+    Raises:
+        ValueError: If the file exists but is empty.
+
+    Complexity:
+        Θ(R × S × Q) where R = runs, S = steps, Q = queries per step.
+    """
+    csv_path = results_dir / "metrics_per_query.csv"
+    if not csv_path.exists():
+        return []
+
+    rows: list[dict] = []
+    with csv_path.open("r", encoding="utf-8", newline="") as fh:
+        for raw in csv.DictReader(fh):
+            row: dict = {}
+            for key, val in raw.items():
+                if key in ("has_citation", "query_text", "model", "preload_status",
+                           "vector_store_id"):
+                    row[key] = val
+                elif val == "" or val is None:
+                    row[key] = None
+                else:
+                    try:
+                        row[key] = int(val) if "." not in val else float(val)
+                    except (ValueError, TypeError):
+                        row[key] = val
+            rows.append(row)
+
+    if not rows:
+        raise ValueError(f"metrics_per_query.csv in {results_dir} is empty")
+    return rows
+
+
+def _compute_citation_hit_metrics(per_query_rows: list[dict]) -> list[dict]:
+    """Aggregate per-query rows into per-step citation-hit metrics with std.
+
+    Uses a two-stage grouping that matches the methodology of
+    ``average_rows`` in ``_shared.py``:
+
+    * Stage 1 — group by ``(step, run)``: for each run at each step, keep
+      only rows where ``has_citation == "True"`` and compute their mean
+      ``elapsed_ms``, mean ``throughput_output_tokens_per_sec``, and per-run
+      aggregate throughput from ``output_tokens`` and the best available
+      latency denominator (``provider_server_latency_ms`` when present,
+      ``elapsed_ms`` otherwise).  This yields at most one value per
+      (step, run).
+    * Stage 2 — group by ``step``: compute the overall mean and population
+      std across the per-run means / aggregates from Stage 1.
+
+    Steps where no run has a single citation hit are omitted from the
+    result entirely.
+
+    Args:
+        per_query_rows: List of row dicts as loaded by
+            ``_load_per_query_rows``.  Each dict must contain ``step``
+            (numeric), ``run`` (numeric), ``kb_size_bytes`` (numeric),
+            ``elapsed_ms`` (float), ``throughput_output_tokens_per_sec``
+            (float), ``output_tokens`` (float), and ``has_citation``
+            (str ``"True"`` / ``"False"``).  Optionally contains
+            ``provider_server_latency_ms`` (float); falls back to
+            ``elapsed_ms`` when absent or ``None``.
+
+    Returns:
+        List of dicts sorted by ``step`` ascending.  Each dict contains:
+
+        * ``step`` (int)
+        * ``kb_size_bytes`` (float)
+        * ``latency_mean_ms`` (float) — mean of per-run citation-hit means
+        * ``latency_std_ms`` (float) — population std across per-run means
+        * ``throughput_mean`` (float) — arithmetic mean of per-run mean throughputs
+        * ``throughput_std`` (float)
+        * ``agg_throughput_mean`` (float) — mean of per-run aggregate throughputs
+          (total_output_tokens / total_latency_sec), weighted by token count
+        * ``agg_throughput_std`` (float) — population std across per-run aggregates
+        * ``hit_run_count`` (int) — number of runs with ≥1 citation hit
+
+    Raises:
+        ValueError: If ``per_query_rows`` is empty.
+
+    Complexity:
+        Θ(R × S × Q) for the grouping pass; Θ(R × S) for the aggregation.
+    """
+    if not per_query_rows:
+        raise ValueError("per_query_rows must be non-empty")
+
+    # Stage 1: per-(step, run) means of citation-hit queries.
+    # key: (step, run) → list of (elapsed_ms, throughput, output_tokens, best_lat_ms)
+    stage1: dict[tuple, list[tuple[float, float, float, float]]] = defaultdict(list)
+    kb_by_step: dict[int, float] = {}
+    for row in per_query_rows:
+        if row.get("has_citation") != "True":
+            continue
+        step = int(row["step"])
+        run = int(row["run"])
+        kb_by_step[step] = float(row["kb_size_bytes"])
+        best_lat = (
+            float(row["provider_server_latency_ms"])
+            if row.get("provider_server_latency_ms") is not None
+            else float(row["elapsed_ms"])
+        )
+        stage1[(step, run)].append((
+            float(row["elapsed_ms"]),
+            float(row["throughput_output_tokens_per_sec"]),
+            float(row["output_tokens"]),
+            best_lat,
+        ))
+
+    # Stage 2: collapse per-run means into per-step mean + population std.
+    # key: step → list of per-run means / aggregates
+    stage2_lat: dict[int, list[float]] = defaultdict(list)
+    stage2_thr: dict[int, list[float]] = defaultdict(list)
+    stage2_agg: dict[int, list[float]] = defaultdict(list)
+    for (step, _run), vals in stage1.items():
+        n = len(vals)
+        stage2_lat[step].append(sum(v[0] for v in vals) / n)
+        stage2_thr[step].append(sum(v[1] for v in vals) / n)
+        total_out = sum(v[2] for v in vals)
+        total_lat_ms = sum(v[3] for v in vals)
+        per_run_agg = (total_out / (total_lat_ms / 1000.0)) if total_lat_ms > 0 else 0.0
+        stage2_agg[step].append(per_run_agg)
+
+    def _pop_std(values: list[float]) -> float:
+        n = len(values)
+        if n < 2:
+            return 0.0
+        mean = sum(values) / n
+        return math.sqrt(sum((v - mean) ** 2 for v in values) / n)
+
+    result: list[dict] = []
+    for step in sorted(stage2_lat.keys()):
+        lat_vals = stage2_lat[step]
+        thr_vals = stage2_thr[step]
+        agg_vals = stage2_agg[step]
+        result.append({
+            "step": step,
+            "kb_size_bytes": kb_by_step[step],
+            "latency_mean_ms": round(sum(lat_vals) / len(lat_vals), 3),
+            "latency_std_ms": round(_pop_std(lat_vals), 3),
+            "throughput_mean": round(sum(thr_vals) / len(thr_vals), 3),
+            "throughput_std": round(_pop_std(thr_vals), 3),
+            "agg_throughput_mean": round(sum(agg_vals) / len(agg_vals), 3),
+            "agg_throughput_std": round(_pop_std(agg_vals), 3),
+            "hit_run_count": len(lat_vals),
+        })
+    return result
 
 
 def _plot_with_errorbars(
@@ -128,23 +300,31 @@ def _write_report(
     results_dir: Path,
     rows: list[dict],
     test_label: str,
+    *,
+    per_query_rows: list[dict] | None = None,
 ) -> Path:
     """Write a ``report.md`` summarising the benchmark run.
 
     Includes run config, step range, first-vs-last delta metrics, citation
     miss notes, a data quality warning section for steps with missing server
-    latency, and a methods note on standard deviation columns.
+    latency, a methods note on standard deviation columns, and — when
+    *per_query_rows* is provided — a citation-filtered artifacts section
+    noting which steps were omitted due to zero citation hits.
 
     Args:
         results_dir: Directory in which to write ``report.md``.
         rows: Averaged rows list (sorted by step).
         test_label: Human-readable label for this test regime.
+        per_query_rows: Optional list of per-query row dicts loaded from
+            ``metrics_per_query.csv``.  When provided, the report includes
+            a citation-filtered artifacts section.  Pass ``None`` or ``[]``
+            to omit that section.
 
     Returns:
         Path to the written ``report.md``.
 
     Complexity:
-        O(S) where S = len(rows).
+        O(S) where S = len(rows); O(R × S × Q) when per_query_rows provided.
     """
     first = rows[0]
     last = rows[-1]
@@ -196,10 +376,48 @@ def _write_report(
     lines += [
         "## Citation miss count",
         "",
-        f"- Total across all steps: `{total_citation_miss}` (not excluded from metrics; "
-        "responses without file_citation are flagged only).",
+        f"- Total across all steps: `{total_citation_miss}` (not excluded from the "
+        "unfiltered metrics above; responses without file_citation are flagged only).",
+        "- Per-query citation data is available in `metrics_per_query.csv` for "
+        "post-hoc filtering.",
         "",
     ]
+
+    # Citation-filtered artifacts section (only when per_query_rows provided).
+    if per_query_rows:
+        hit_metrics = _compute_citation_hit_metrics(per_query_rows)
+        hit_steps = {m["step"] for m in hit_metrics}
+        all_steps = {int(r["step"]) for r in rows}
+        zero_hit_steps = sorted(all_steps - hit_steps)
+
+        lines += [
+            "## Citation-filtered artifacts",
+            "",
+            "The following filtered plots include only queries that returned a "
+            "file citation (`has_citation = True`).  Latency and throughput are "
+            "re-aggregated using a two-stage mean (per-run mean → cross-run mean) "
+            "with population std error bars, matching the methodology of the "
+            "unfiltered plots.",
+            "",
+        ]
+        if zero_hit_steps:
+            lines += [
+                f"- Steps omitted (zero citation hits across all runs): "
+                f"{zero_hit_steps}",
+                "",
+            ]
+        else:
+            lines += [
+                "- All steps had at least one citation hit across runs.",
+                "",
+            ]
+        lines += [
+            "Artifacts:",
+            "- `latency_vs_kb_size_citation_hits_only.png`",
+            "- `latency_vs_step_citation_hits_only.png`",
+            "- `throughput_vs_kb_size_citation_hits_only.png`",
+            "",
+        ]
 
     # Data quality warning.
     affected_steps = [
@@ -237,12 +455,20 @@ def _write_report(
         "",
         "## Artifacts",
         "",
+        "- `metrics_per_query.csv` — one row per (run, step, query); "
+        "includes `query_idx`, `query_text`, `has_citation`",
         "- `metrics_per_run.csv` — one row per (run, step)",
         "- `metrics_averaged.csv` — one row per step, averaged across runs",
         "- `latency_vs_kb_size.png`",
         "- `input_tokens_vs_kb_size.png`",
         "- `throughput_vs_kb_size.png`",
         "- `latency_vs_step.png`",
+        "- `latency_vs_kb_size_citation_hits_only.png` "
+        "(when `metrics_per_query.csv` present)",
+        "- `latency_vs_step_citation_hits_only.png` "
+        "(when `metrics_per_query.csv` present)",
+        "- `throughput_vs_kb_size_citation_hits_only.png` "
+        "(when `metrics_per_query.csv` present)",
     ]
 
     report_path = results_dir / "report.md"
@@ -251,25 +477,31 @@ def _write_report(
 
 
 def generate_artifacts(results_dir: Path) -> dict[str, Path]:
-    """Load ``metrics_averaged.csv`` and produce all benchmark artifacts.
+    """Load CSVs and produce all benchmark artifacts for a single-file run.
 
-    Writes four PNG plots and ``report.md`` into *results_dir*.
+    Always writes four PNG plots and ``report.md`` from
+    ``metrics_averaged.csv``.  When ``metrics_per_query.csv`` is also
+    present, additionally writes three citation-hits-only filtered PNGs.
 
     Args:
         results_dir: Timestamped benchmark run directory (e.g.
             ``new_kb_sandbox/results/single_file/2026-04-06T120000``).
 
     Returns:
-        A dict mapping artifact names to their ``Path`` objects:
-        ``latency_vs_kb_size``, ``input_tokens_vs_kb_size``,
+        A dict mapping artifact names to their ``Path`` objects.  Always
+        contains: ``latency_vs_kb_size``, ``input_tokens_vs_kb_size``,
         ``throughput_vs_kb_size``, ``latency_vs_step``, ``report``.
+        Contains additionally when filtered plots are generated:
+        ``latency_vs_kb_size_citation_hits_only``,
+        ``latency_vs_step_citation_hits_only``,
+        ``throughput_vs_kb_size_citation_hits_only``.
 
     Raises:
         FileNotFoundError: If ``metrics_averaged.csv`` is absent.
-        ValueError: If the CSV is empty.
+        ValueError: If ``metrics_averaged.csv`` is empty.
 
     Complexity:
-        O(S) where S = number of steps.
+        O(S) for unfiltered plots; O(R × S × Q) for filtered aggregation.
     """
     rows = _load_averaged_rows(results_dir)
     results_dir.mkdir(parents=True, exist_ok=True)
@@ -282,10 +514,10 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
         for r in rows
     ]
     input_tokens_mean = [float(r["ask_input_tokens_mean"]) for r in rows]
-    throughput_mean = [float(r["ask_throughput_tokens_per_sec_mean"]) for r in rows]
+    throughput_mean = [float(r["ask_aggregate_throughput_tokens_per_sec"]) for r in rows]
     throughput_std = [
-        float(r["ask_throughput_tokens_per_sec_std"])
-        if r.get("ask_throughput_tokens_per_sec_std") is not None
+        float(r["ask_aggregate_throughput_tokens_per_sec_std"])
+        if r.get("ask_aggregate_throughput_tokens_per_sec_std") is not None
         else 0.0
         for r in rows
     ]
@@ -319,8 +551,8 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
         y=throughput_mean,
         y_err=throughput_std,
         xlabel="KB size (bytes)",
-        ylabel="Mean throughput (tokens/sec)",
-        title=f"Throughput vs KB size — {_TEST_LABEL}",
+        ylabel="Aggregate throughput (tokens/sec)",
+        title=f"Aggregate throughput vs KB size — {_TEST_LABEL}",
     )
 
     latency_vs_step = results_dir / "latency_vs_step.png"
@@ -334,7 +566,56 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
         title=f"Ask latency vs step — {_TEST_LABEL}",
     )
 
-    report = _write_report(results_dir, rows, _TEST_LABEL)
+    # --- Optional citation-hits-only filtered plots ---
+    per_query_rows = _load_per_query_rows(results_dir)
+    filtered_artifacts: dict[str, Path] = {}
+    if per_query_rows:
+        hit_metrics = _compute_citation_hit_metrics(per_query_rows)
+        if hit_metrics:
+            fkb = [m["kb_size_bytes"] for m in hit_metrics]
+            fstep = [m["step"] for m in hit_metrics]
+            flat_mean = [m["latency_mean_ms"] for m in hit_metrics]
+            flat_std = [m["latency_std_ms"] for m in hit_metrics]
+            fthr_mean = [m["agg_throughput_mean"] for m in hit_metrics]
+            fthr_std = [m["agg_throughput_std"] for m in hit_metrics]
+
+            lat_kb_filt = results_dir / "latency_vs_kb_size_citation_hits_only.png"
+            _plot_with_errorbars(
+                lat_kb_filt,
+                x=fkb,
+                y=flat_mean,
+                y_err=flat_std,
+                xlabel="KB size (bytes)",
+                ylabel="Mean ask latency — citation hits (ms)",
+                title=f"Ask latency vs KB size — {_TEST_LABEL} — Citation Hits Only",
+            )
+            filtered_artifacts["latency_vs_kb_size_citation_hits_only"] = lat_kb_filt
+
+            lat_step_filt = results_dir / "latency_vs_step_citation_hits_only.png"
+            _plot_with_errorbars(
+                lat_step_filt,
+                x=fstep,
+                y=flat_mean,
+                y_err=flat_std,
+                xlabel="Step (file count equivalent)",
+                ylabel="Mean ask latency — citation hits (ms)",
+                title=f"Ask latency vs step — {_TEST_LABEL} — Citation Hits Only",
+            )
+            filtered_artifacts["latency_vs_step_citation_hits_only"] = lat_step_filt
+
+            thr_kb_filt = results_dir / "throughput_vs_kb_size_citation_hits_only.png"
+            _plot_with_errorbars(
+                thr_kb_filt,
+                x=fkb,
+                y=fthr_mean,
+                y_err=fthr_std,
+                xlabel="KB size (bytes)",
+                ylabel="Aggregate throughput — citation hits (tokens/sec)",
+                title=f"Aggregate throughput vs KB size — {_TEST_LABEL} — Citation Hits Only",
+            )
+            filtered_artifacts["throughput_vs_kb_size_citation_hits_only"] = thr_kb_filt
+
+    report = _write_report(results_dir, rows, _TEST_LABEL, per_query_rows=per_query_rows)
 
     return {
         "latency_vs_kb_size": latency_vs_kb,
@@ -342,6 +623,7 @@ def generate_artifacts(results_dir: Path) -> dict[str, Path]:
         "throughput_vs_kb_size": throughput_vs_kb,
         "latency_vs_step": latency_vs_step,
         "report": report,
+        **filtered_artifacts,
     }
 
 

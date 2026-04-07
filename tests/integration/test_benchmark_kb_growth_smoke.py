@@ -57,6 +57,14 @@ from benchmark_single_file_growth import (  # noqa: E402
 from benchmark_multi_file_growth import (  # noqa: E402
     make_get_files_for_step as multi_get_files,
 )
+from plot_single_file_growth import (  # noqa: E402
+    _compute_citation_hit_metrics as single_compute_hit,
+    _load_per_query_rows as single_load_per_query,
+)
+from plot_multi_file_growth import (  # noqa: E402
+    _compute_citation_hit_metrics as multi_compute_hit,
+    _load_per_query_rows as multi_load_per_query,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -588,13 +596,24 @@ def test_single_file_growth_smoke(tmp_path: Path) -> None:
         chunks_per_step=2,
     )
 
+    per_query_csv = run_dir / "metrics_per_query.csv"
     per_run_csv = run_dir / "metrics_per_run.csv"
     averaged_csv = run_dir / "metrics_averaged.csv"
 
+    assert per_query_csv.exists(), "metrics_per_query.csv not created"
     assert per_run_csv.exists(), "metrics_per_run.csv not created"
     assert averaged_csv.exists(), "metrics_averaged.csv not created"
 
     import csv as _csv  # noqa: PLC0415
+
+    with per_query_csv.open(encoding="utf-8") as fh:
+        pq_rows = list(_csv.DictReader(fh))
+    # runs=1, max_files=2, 6 queries → 12 rows
+    assert len(pq_rows) == 12, f"Expected 12 per-query rows, got {len(pq_rows)}"
+    assert all(r["has_citation"] in ("True", "False") for r in pq_rows), (
+        "has_citation contains unexpected values"
+    )
+    assert "query_text" in pq_rows[0], "query_text column missing from metrics_per_query.csv"
 
     with per_run_csv.open(encoding="utf-8") as fh:
         per_rows = list(_csv.DictReader(fh))
@@ -642,13 +661,24 @@ def test_multi_file_growth_smoke(tmp_path: Path) -> None:
         chunks_per_step=2,
     )
 
+    per_query_csv = run_dir / "metrics_per_query.csv"
     per_run_csv = run_dir / "metrics_per_run.csv"
     averaged_csv = run_dir / "metrics_averaged.csv"
 
+    assert per_query_csv.exists(), "metrics_per_query.csv not created"
     assert per_run_csv.exists(), "metrics_per_run.csv not created"
     assert averaged_csv.exists(), "metrics_averaged.csv not created"
 
     import csv as _csv  # noqa: PLC0415
+
+    with per_query_csv.open(encoding="utf-8") as fh:
+        pq_rows = list(_csv.DictReader(fh))
+    # runs=1, max_files=2, 6 queries → 12 rows
+    assert len(pq_rows) == 12, f"Expected 12 per-query rows, got {len(pq_rows)}"
+    assert all(r["has_citation"] in ("True", "False") for r in pq_rows), (
+        "has_citation contains unexpected values"
+    )
+    assert "query_text" in pq_rows[0], "query_text column missing from metrics_per_query.csv"
 
     with per_run_csv.open(encoding="utf-8") as fh:
         per_rows = list(_csv.DictReader(fh))
@@ -665,6 +695,415 @@ def test_multi_file_growth_smoke(tmp_path: Path) -> None:
     with averaged_csv.open(encoding="utf-8") as fh:
         avg_rows = list(_csv.DictReader(fh))
     assert len(avg_rows) == 2, f"Expected 2 averaged rows, got {len(avg_rows)}"
+
+
+# ===========================================================================
+# _load_per_query_rows
+# ===========================================================================
+
+
+def test_load_per_query_rows_missing_file_returns_empty(tmp_path: Path) -> None:
+    """_load_per_query_rows returns [] when metrics_per_query.csv is absent.
+
+    Verifies backward compatibility: old run directories without the new CSV
+    do not cause an error.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    result = single_load_per_query(tmp_path)
+    assert result == []
+    result2 = multi_load_per_query(tmp_path)
+    assert result2 == []
+
+
+def test_load_per_query_rows_parses_numeric_and_string_columns(tmp_path: Path) -> None:
+    """Numeric columns are cast; has_citation and query_text kept as strings.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    import csv as _csv  # noqa: PLC0415
+
+    csv_path = tmp_path / "metrics_per_query.csv"
+    fieldnames = [
+        "run", "step", "query_idx", "query_text", "kb_size_bytes", "file_count",
+        "model", "vector_store_id", "elapsed_ms", "input_tokens", "output_tokens",
+        "provider_server_latency_ms", "throughput_output_tokens_per_sec", "has_citation",
+    ]
+    with csv_path.open("w", newline="", encoding="utf-8") as fh:
+        writer = _csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({
+            "run": 1, "step": 1, "query_idx": 1,
+            "query_text": "What is alumina?", "kb_size_bytes": 10205,
+            "file_count": 1, "model": "gpt-4o-mini",
+            "vector_store_id": "vs_abc", "elapsed_ms": 15000.5,
+            "input_tokens": 4800, "output_tokens": 550,
+            "provider_server_latency_ms": 14900, "throughput_output_tokens_per_sec": 36.9,
+            "has_citation": "True",
+        })
+
+    rows = single_load_per_query(tmp_path)
+    assert len(rows) == 1
+    row = rows[0]
+    assert isinstance(row["elapsed_ms"], float)
+    assert isinstance(row["input_tokens"], int)
+    assert row["has_citation"] == "True"
+    assert row["query_text"] == "What is alumina?"
+
+
+# ===========================================================================
+# _compute_citation_hit_metrics
+# ===========================================================================
+
+
+def _make_per_query_row(
+    *,
+    run: int,
+    step: int,
+    query_idx: int = 1,
+    query_text: str = "test query",
+    kb_size_bytes: float = 10000.0,
+    elapsed_ms: float = 10000.0,
+    throughput: float = 30.0,
+    has_citation: str = "True",
+    output_tokens: int = 550,
+    provider_server_latency_ms: float | None = None,
+) -> dict:
+    """Build a synthetic per-query row dict for use in unit tests.
+
+    Args:
+        run: Run index.
+        step: Step index.
+        query_idx: Query index within the step.
+        query_text: Query string.
+        kb_size_bytes: KB size at this step.
+        elapsed_ms: Per-query latency in milliseconds.
+        throughput: Per-query throughput in tokens/sec.
+        has_citation: ``"True"`` or ``"False"``.
+        output_tokens: Number of output tokens generated.  Defaults to 550
+            to preserve backward compatibility with existing callers.
+        provider_server_latency_ms: Server-side latency reported by the
+            provider.  Defaults to ``elapsed_ms * 0.99`` when ``None``.
+
+    Returns:
+        Dict matching the schema written to ``metrics_per_query.csv``.
+    """
+    return {
+        "run": run,
+        "step": step,
+        "query_idx": query_idx,
+        "query_text": query_text,
+        "kb_size_bytes": kb_size_bytes,
+        "file_count": step,
+        "model": "gpt-4o-mini",
+        "vector_store_id": f"vs_{run}_{step}",
+        "elapsed_ms": elapsed_ms,
+        "input_tokens": 4800,
+        "output_tokens": output_tokens,
+        "provider_server_latency_ms": (
+            elapsed_ms * 0.99 if provider_server_latency_ms is None
+            else provider_server_latency_ms
+        ),
+        "throughput_output_tokens_per_sec": throughput,
+        "has_citation": has_citation,
+    }
+
+
+def test_compute_citation_hit_metrics_filters_correctly() -> None:
+    """Only has_citation='True' rows contribute to latency_mean_ms.
+
+    Two rows at step 1 run 1: one hit (elapsed=10000), one miss (elapsed=99999).
+    The mean must equal 10000.
+
+    Returns:
+        None
+    """
+    rows = [
+        _make_per_query_row(run=1, step=1, query_idx=1, elapsed_ms=10000.0, has_citation="True"),
+        _make_per_query_row(run=1, step=1, query_idx=2, elapsed_ms=99999.0, has_citation="False"),
+    ]
+    result = single_compute_hit(rows)
+    assert len(result) == 1
+    assert result[0]["step"] == 1
+    assert result[0]["latency_mean_ms"] == pytest.approx(10000.0, abs=0.01)
+
+
+def test_compute_citation_hit_metrics_mean_is_arithmetically_correct() -> None:
+    """latency_mean_ms is the mean of per-run means, not raw query mean.
+
+    Run 1 at step 1 has two hit queries: 10000 and 20000 → per-run mean = 15000.
+    Run 2 at step 1 has one hit query: 9000 → per-run mean = 9000.
+    Cross-run mean = (15000 + 9000) / 2 = 12000.
+
+    Returns:
+        None
+    """
+    rows = [
+        _make_per_query_row(run=1, step=1, query_idx=1, elapsed_ms=10000.0),
+        _make_per_query_row(run=1, step=1, query_idx=2, elapsed_ms=20000.0),
+        _make_per_query_row(run=2, step=1, query_idx=1, elapsed_ms=9000.0),
+    ]
+    result = single_compute_hit(rows)
+    assert len(result) == 1
+    assert result[0]["latency_mean_ms"] == pytest.approx(12000.0, abs=0.01)
+
+
+def test_compute_citation_hit_metrics_std_across_runs() -> None:
+    """latency_std_ms is the population std of the per-run means.
+
+    Per-run means: 15000 and 9000.
+    Population std = sqrt(((15000-12000)^2 + (9000-12000)^2) / 2) = 3000.
+
+    Returns:
+        None
+    """
+    import math as _math  # noqa: PLC0415
+
+    rows = [
+        _make_per_query_row(run=1, step=1, query_idx=1, elapsed_ms=10000.0),
+        _make_per_query_row(run=1, step=1, query_idx=2, elapsed_ms=20000.0),
+        _make_per_query_row(run=2, step=1, query_idx=1, elapsed_ms=9000.0),
+    ]
+    result = single_compute_hit(rows)
+    expected_std = _math.sqrt(((15000 - 12000) ** 2 + (9000 - 12000) ** 2) / 2)
+    assert result[0]["latency_std_ms"] == pytest.approx(expected_std, abs=0.01)
+
+
+def test_compute_citation_hit_metrics_step_with_zero_hits_omitted() -> None:
+    """A step where all has_citation='False' across all runs is not in the result.
+
+    Returns:
+        None
+    """
+    rows = [
+        _make_per_query_row(run=1, step=1, has_citation="True", elapsed_ms=10000.0),
+        _make_per_query_row(run=1, step=2, has_citation="False", elapsed_ms=20000.0),
+        _make_per_query_row(run=2, step=2, has_citation="False", elapsed_ms=22000.0),
+    ]
+    result = single_compute_hit(rows)
+    steps_present = [m["step"] for m in result]
+    assert 1 in steps_present
+    assert 2 not in steps_present
+
+
+def test_compute_citation_hit_metrics_hit_run_count() -> None:
+    """hit_run_count reflects the number of runs with at least one citation hit.
+
+    Step 1: run 1 has a hit, run 2 has no hit → hit_run_count = 1.
+    Step 2: both runs have hits → hit_run_count = 2.
+
+    Returns:
+        None
+    """
+    rows = [
+        _make_per_query_row(run=1, step=1, has_citation="True", elapsed_ms=10000.0),
+        _make_per_query_row(run=2, step=1, has_citation="False", elapsed_ms=10000.0),
+        _make_per_query_row(run=1, step=2, has_citation="True", elapsed_ms=15000.0),
+        _make_per_query_row(run=2, step=2, has_citation="True", elapsed_ms=17000.0),
+    ]
+    result = single_compute_hit(rows)
+    by_step = {m["step"]: m for m in result}
+    assert by_step[1]["hit_run_count"] == 1
+    assert by_step[2]["hit_run_count"] == 2
+
+
+def test_compute_citation_hit_metrics_multi_matches_single() -> None:
+    """multi_compute_hit and single_compute_hit produce identical results for the same input.
+
+    Both plotting scripts must implement identical aggregation logic.
+
+    Returns:
+        None
+    """
+    rows = [
+        _make_per_query_row(run=1, step=1, elapsed_ms=10000.0, throughput=40.0),
+        _make_per_query_row(run=2, step=1, elapsed_ms=12000.0, throughput=35.0),
+    ]
+    single_result = single_compute_hit(rows)
+    multi_result = multi_compute_hit(rows)
+    assert single_result == multi_result
+
+
+def test_compute_citation_hit_metrics_empty_raises() -> None:
+    """_compute_citation_hit_metrics raises ValueError on an empty list.
+
+    Returns:
+        None
+    """
+    with pytest.raises(ValueError, match="non-empty"):
+        single_compute_hit([])
+
+
+def test_compute_citation_hit_metrics_sorted_by_step() -> None:
+    """Result list is sorted ascending by step regardless of input order.
+
+    Returns:
+        None
+    """
+    rows = [
+        _make_per_query_row(run=1, step=3, elapsed_ms=30000.0),
+        _make_per_query_row(run=1, step=1, elapsed_ms=10000.0),
+        _make_per_query_row(run=1, step=2, elapsed_ms=20000.0),
+    ]
+    result = single_compute_hit(rows)
+    assert [m["step"] for m in result] == [1, 2, 3]
+
+
+def test_compute_citation_hit_metrics_aggregate_throughput_correct() -> None:
+    """agg_throughput_mean is total_output_tokens / total_latency_sec, not mean of per-query throughputs.
+
+    Case A — coincidental equality (both formulae give 50 tok/s):
+        row 1: output_tokens=100, provider_server_latency_ms=2000 → 100/2.0 = 50
+        row 2: output_tokens=200, provider_server_latency_ms=4000 → 200/4.0 = 50
+        Per-run aggregate = (100+200) / ((2000+4000)/1000) = 300/6.0 = 50 tok/s
+        Per-run arithmetic mean of per-query throughputs = (50+50)/2 = 50 tok/s (same)
+
+    Case B — values chosen so the two formulae diverge:
+        row 1: output_tokens=100, provider_server_latency_ms=1000 → 100/1.0 = 100
+        row 2: output_tokens=100, provider_server_latency_ms=4000 → 100/4.0 = 25
+        Per-run aggregate   = (100+100) / ((1000+4000)/1000) = 200/5.0 = 40 tok/s
+        Arithmetic mean of per-query throughputs = (100+25)/2 = 62.5 tok/s  ≠ 40
+
+    The test asserts Case B's agg_throughput_mean == 40, not 62.5, proving the
+    formula is the weighted aggregate rather than the arithmetic mean.
+
+    Returns:
+        None
+    """
+    rows_a = [
+        _make_per_query_row(
+            run=1, step=1, query_idx=1,
+            output_tokens=100, provider_server_latency_ms=2000.0,
+            elapsed_ms=2000.0, throughput=50.0,
+        ),
+        _make_per_query_row(
+            run=1, step=1, query_idx=2,
+            output_tokens=200, provider_server_latency_ms=4000.0,
+            elapsed_ms=4000.0, throughput=50.0,
+        ),
+    ]
+    result_a = single_compute_hit(rows_a)
+    assert len(result_a) == 1
+    assert result_a[0]["agg_throughput_mean"] == pytest.approx(50.0, abs=0.01)
+
+    rows_b = [
+        _make_per_query_row(
+            run=1, step=1, query_idx=1,
+            output_tokens=100, provider_server_latency_ms=1000.0,
+            elapsed_ms=1000.0, throughput=100.0,
+        ),
+        _make_per_query_row(
+            run=1, step=1, query_idx=2,
+            output_tokens=100, provider_server_latency_ms=4000.0,
+            elapsed_ms=4000.0, throughput=25.0,
+        ),
+    ]
+    result_b = single_compute_hit(rows_b)
+    assert len(result_b) == 1
+    assert result_b[0]["agg_throughput_mean"] == pytest.approx(40.0, abs=0.01)
+    assert result_b[0]["throughput_mean"] == pytest.approx(62.5, abs=0.01)
+
+    multi_result_b = multi_compute_hit(rows_b)
+    assert multi_result_b[0]["agg_throughput_mean"] == pytest.approx(40.0, abs=0.01)
+
+
+# ===========================================================================
+# metrics_per_query.csv — run_benchmark integration (no API)
+# ===========================================================================
+
+
+def test_per_query_csv_written_with_correct_shape(tmp_path: Path) -> None:
+    """run_benchmark writes metrics_per_query.csv with R×S×Q rows.
+
+    Uses mocked upload_with_retry and query_with_retry to avoid API calls.
+    Verifies schema, row count, has_citation column, and query_idx range.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    from unittest.mock import MagicMock, patch  # noqa: PLC0415
+    import csv as _csv  # noqa: PLC0415
+
+    queries = ["query A", "query B", "query C"]
+    chunks = _make_synthetic_chunks(tmp_path / "src", 4, 100)
+
+    mock_client = MagicMock()
+    mock_client.vector_stores.create.return_value = MagicMock(id="vs_mock")
+    mock_client.vector_stores.delete.return_value = None
+
+    call_counter = {"n": 0}
+
+    def fake_query_result(*args, **kwargs):
+        call_counter["n"] += 1
+        return {
+            "elapsed_ms": 1000.0,
+            "input_tokens": 100,
+            "output_tokens": 20,
+            "provider_server_latency_ms": 900,
+            "throughput_output_tokens_per_sec": 22.2,
+            "has_citation": call_counter["n"] % 2 == 0,
+        }
+
+    with (
+        patch("_shared.upload_with_retry", return_value="completed"),
+        patch("_shared.query_with_retry", side_effect=fake_query_result),
+    ):
+        run_dir = run_benchmark(
+            single_get_files(chunks, chunks_per_step=2),
+            runs=2,
+            max_files=2,
+            queries=queries,
+            chunks=chunks,
+            client=mock_client,
+            model="gpt-4o-mini",
+            output_dir=tmp_path / "out",
+            keep_vector_stores=False,
+            max_retries=1,
+            retry_sleep_seconds=0.0,
+            vs_name_prefix="test",
+            chunks_per_step=2,
+        )
+
+    per_query_csv = run_dir / "metrics_per_query.csv"
+    assert per_query_csv.exists(), "metrics_per_query.csv was not created"
+
+    with per_query_csv.open(encoding="utf-8") as fh:
+        pq_rows = list(_csv.DictReader(fh))
+
+    # R=2 runs × S=2 steps × Q=3 queries = 12 rows
+    assert len(pq_rows) == 12, f"Expected 12 rows, got {len(pq_rows)}"
+
+    expected_columns = {
+        "run", "step", "query_idx", "query_text", "kb_size_bytes", "file_count",
+        "model", "vector_store_id", "elapsed_ms", "input_tokens", "output_tokens",
+        "provider_server_latency_ms", "throughput_output_tokens_per_sec", "has_citation",
+    }
+    assert expected_columns.issubset(set(pq_rows[0].keys())), (
+        f"Missing columns: {expected_columns - set(pq_rows[0].keys())}"
+    )
+
+    # has_citation must be only "True" or "False"
+    assert all(r["has_citation"] in ("True", "False") for r in pq_rows), (
+        "has_citation contains unexpected values"
+    )
+
+    # query_idx must run 1..Q for each (run, step)
+    for run_val in ("1", "2"):
+        for step_val in ("1", "2"):
+            subset = [
+                int(r["query_idx"])
+                for r in pq_rows
+                if r["run"] == run_val and r["step"] == step_val
+            ]
+            assert sorted(subset) == [1, 2, 3], (
+                f"query_idx values wrong for run={run_val} step={step_val}: {subset}"
+            )
+
+    # query_text must match the actual query strings
+    for row in pq_rows:
+        assert row["query_text"] in queries
 
 
 # ===========================================================================
