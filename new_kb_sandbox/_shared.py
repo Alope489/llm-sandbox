@@ -5,8 +5,8 @@ without any API calls.  The stateful benchmark loop ``run_benchmark`` is the
 only function that creates network connections.
 
 Dependencies:
-    Standard library: csv, dataclasses, logging, math, time, uuid, collections,
-    datetime, pathlib, typing.
+    Standard library: contextlib, csv, dataclasses, logging, math, threading,
+    time, uuid, collections, datetime, pathlib, typing.
     Third-party: openai, tqdm, python-dotenv.
     Internal: src.llm_pipeline_telemetry.
 
@@ -23,13 +23,28 @@ Pillar compliance:
       Θ(R×S×Q) API calls, Θ(R×S²) upload bytes, Θ(R×S) row dicts.
     - Pillar 7: Retry on upload and query; partial-result flush before re-raise;
       temp-file cleanup in finally; structured logging via llm.telemetry.
+
+Logging note (caller responsibility):
+    ``_shared.py`` itself does not alter the ``llm.telemetry`` log level.
+    Each benchmark runner script (``benchmark_single_file_growth.py``,
+    ``benchmark_multi_file_growth.py``) forces the level to ``WARNING`` in its
+    ``main()`` function before making any API calls.  This suppresses the
+    ``INFO``-level per-call JSON records that ``log_llm_call`` normally emits,
+    preventing them from flooding the terminal or interleaving with ``tqdm``
+    progress bars during long runs (e.g. 1 500+ calls).  In-process telemetry
+    (``CallContext.records``) is never affected by log-level changes; all
+    per-call data remains accessible to callers of ``run_benchmark``.
+    Scripts or tests that import from ``_shared`` directly inherit whatever
+    log level the root logger has at that point.
 """
 from __future__ import annotations
 
+import contextlib
 import csv
 import dataclasses
 import logging
 import math
+import threading
 import time
 import uuid
 from collections import defaultdict
@@ -937,6 +952,48 @@ def query_with_retry(
     raise RuntimeError("unreachable")  # pragma: no cover
 
 
+@contextlib.contextmanager
+def _auto_refresh(bar: object, interval_seconds: float = 3.0):
+    """Refresh a tqdm bar from a background daemon thread at a fixed interval.
+
+    Ensures the elapsed-time counter visibly increments even during long
+    blocking operations (uploads, HTTP calls) where no ``set_postfix()`` call
+    is made.  Uses a daemon thread so it dies automatically if the process is
+    killed without reaching the ``finally`` block.
+
+    Args:
+        bar: Any tqdm bar instance (must expose a ``refresh()`` method).
+        interval_seconds: Redraw cadence in seconds.  Default ``3.0``.
+
+    Yields:
+        The *bar* argument unchanged.
+
+    Preconditions:
+        - ``bar`` must be an open (not yet closed) tqdm instance.
+        - ``interval_seconds > 0``.
+
+    Postconditions:
+        - The background thread is joined before the context exits, ensuring
+          no stray refreshes after the bar has been closed.
+
+    Complexity:
+        O(1) overhead — one sleeping daemon thread per bar.
+    """
+    stop = threading.Event()
+
+    def _worker() -> None:
+        while not stop.wait(timeout=interval_seconds):
+            bar.refresh()  # type: ignore[attr-defined]
+
+    t = threading.Thread(target=_worker, daemon=True)
+    t.start()
+    try:
+        yield bar
+    finally:
+        stop.set()
+        t.join(timeout=interval_seconds + 1.0)
+
+
 def run_benchmark(
     get_files_for_step: Callable[[int, Path], list[Path]],
     *,
@@ -1048,122 +1105,129 @@ def run_benchmark(
     per_run_rows: list[dict] = []
     per_query_rows: list[dict] = []
 
-    run_bar = tqdm(range(1, runs + 1), desc="runs", unit="run")
-    try:
-        for run in run_bar:
-            step_bar = tqdm(range(1, max_files + 1), desc="steps", unit="step", leave=False)
-            for step in step_bar:
-                tmp_files: list[Path] = []
-                ctx = CallContext(pipeline="kb_growth_benchmark")
-                try:
-                    file_paths = get_files_for_step(step, tmp_dir)
-                    # Collect only temp files for guaranteed cleanup.
-                    tmp_files = [p for p in file_paths if p.parent == tmp_dir]
+    run_bar = tqdm(range(1, runs + 1), desc="runs", unit="run", leave=True)
+    with _auto_refresh(run_bar):
+        try:
+            for run in run_bar:
+                step_bar = tqdm(
+                    range(1, max_files + 1),
+                    desc=f"run {run}/{runs} steps",
+                    unit="step",
+                    leave=True,
+                )
+                with _auto_refresh(step_bar):
+                    for step in step_bar:
+                        tmp_files: list[Path] = []
+                        ctx = CallContext(pipeline="kb_growth_benchmark")
+                        try:
+                            file_paths = get_files_for_step(step, tmp_dir)
+                            # Collect only temp files for guaranteed cleanup.
+                            tmp_files = [p for p in file_paths if p.parent == tmp_dir]
 
-                    kb_size_bytes = sum(f.stat().st_size for f in file_paths)
-                    expected_kb_size = sum(c.stat().st_size for c in chunks[:step * chunks_per_step])
-                    assert kb_size_bytes == expected_kb_size, (
-                        f"kb_size_bytes mismatch at run={run} step={step}: "
-                        f"{kb_size_bytes} != {expected_kb_size}"
-                    )
-                    _logger.debug(
-                        "run=%d step=%d kb_size_bytes=%d", run, step, kb_size_bytes
-                    )
+                            kb_size_bytes = sum(f.stat().st_size for f in file_paths)
+                            expected_kb_size = sum(c.stat().st_size for c in chunks[:step * chunks_per_step])
+                            assert kb_size_bytes == expected_kb_size, (
+                                f"kb_size_bytes mismatch at run={run} step={step}: "
+                                f"{kb_size_bytes} != {expected_kb_size}"
+                            )
+                            _logger.debug(
+                                "run=%d step=%d kb_size_bytes=%d", run, step, kb_size_bytes
+                            )
 
-                    ms_ts = int(time.time() * 1000)
-                    uuid4_hex4 = uuid.uuid4().hex[:4]
-                    vs_name = f"{vs_name_prefix}-{run}-{step}-{ms_ts}-{uuid4_hex4}"
-                    vs = client.vector_stores.create(name=vs_name)
+                            ms_ts = int(time.time() * 1000)
+                            uuid4_hex4 = uuid.uuid4().hex[:4]
+                            vs_name = f"{vs_name_prefix}-{run}-{step}-{ms_ts}-{uuid4_hex4}"
+                            vs = client.vector_stores.create(name=vs_name)
 
-                    step_bar.set_postfix(
-                        status="uploading", kb=f"{kb_size_bytes // 1024}KB"
-                    )
-                    t_upload_start = time.perf_counter()
-                    preload_status = upload_with_retry(
-                        client,
-                        vector_store_id=vs.id,
-                        file_paths=file_paths,
-                        max_retries=max_retries,
-                        retry_sleep_seconds=retry_sleep_seconds,
-                    )
-                    preload_elapsed_ms = round(
-                        (time.perf_counter() - t_upload_start) * 1000.0, 3
-                    )
+                            step_bar.set_postfix(
+                                status="uploading", kb=f"{kb_size_bytes // 1024}KB"
+                            )
+                            t_upload_start = time.perf_counter()
+                            preload_status = upload_with_retry(
+                                client,
+                                vector_store_id=vs.id,
+                                file_paths=file_paths,
+                                max_retries=max_retries,
+                                retry_sleep_seconds=retry_sleep_seconds,
+                            )
+                            preload_elapsed_ms = round(
+                                (time.perf_counter() - t_upload_start) * 1000.0, 3
+                            )
 
-                    query_results: list[dict] = []
-                    for q_idx, query in enumerate(queries, start=1):
-                        step_bar.set_postfix(
-                            status=f"querying {q_idx}/{len(queries)}"
-                        )
-                        result = query_with_retry(
-                            client,
-                            model=model,
-                            vector_store_id=vs.id,
-                            query=query,
-                            ctx=ctx,
-                            max_retries=max_retries,
-                            retry_sleep_seconds=retry_sleep_seconds,
-                            progress_bar=step_bar,
-                        )
-                        query_results.append(result)
-                        per_query_rows.append({
-                            "run": run,
-                            "step": step,
-                            "query_idx": q_idx,
-                            "query_text": query,
-                            "kb_size_bytes": kb_size_bytes,
-                            "file_count": len(file_paths),
-                            "model": model,
-                            "vector_store_id": vs.id,
-                            "elapsed_ms": result["elapsed_ms"],
-                            "input_tokens": result["input_tokens"],
-                            "output_tokens": result["output_tokens"],
-                            "provider_server_latency_ms": result["provider_server_latency_ms"],
-                            "throughput_output_tokens_per_sec": result["throughput_output_tokens_per_sec"],
-                            "has_citation": result["has_citation"],
-                        })
+                            query_results: list[dict] = []
+                            for q_idx, query in enumerate(queries, start=1):
+                                step_bar.set_postfix(
+                                    status=f"querying {q_idx}/{len(queries)}"
+                                )
+                                result = query_with_retry(
+                                    client,
+                                    model=model,
+                                    vector_store_id=vs.id,
+                                    query=query,
+                                    ctx=ctx,
+                                    max_retries=max_retries,
+                                    retry_sleep_seconds=retry_sleep_seconds,
+                                    progress_bar=step_bar,
+                                )
+                                query_results.append(result)
+                                per_query_rows.append({
+                                    "run": run,
+                                    "step": step,
+                                    "query_idx": q_idx,
+                                    "query_text": query,
+                                    "kb_size_bytes": kb_size_bytes,
+                                    "file_count": len(file_paths),
+                                    "model": model,
+                                    "vector_store_id": vs.id,
+                                    "elapsed_ms": result["elapsed_ms"],
+                                    "input_tokens": result["input_tokens"],
+                                    "output_tokens": result["output_tokens"],
+                                    "provider_server_latency_ms": result["provider_server_latency_ms"],
+                                    "throughput_output_tokens_per_sec": result["throughput_output_tokens_per_sec"],
+                                    "has_citation": result["has_citation"],
+                                })
 
-                    step_metrics = compute_step_metrics(query_results)
-                    step_bar.set_postfix(status="deleting VS")
-                    if not keep_vector_stores:
-                        client.vector_stores.delete(vs.id)
+                            step_metrics = compute_step_metrics(query_results)
+                            step_bar.set_postfix(status="deleting VS")
+                            if not keep_vector_stores:
+                                client.vector_stores.delete(vs.id)
 
-                    row = {
-                        "run": run,
-                        "step": step,
-                        "kb_size_bytes": kb_size_bytes,
-                        "file_count": len(file_paths),
-                        "model": model,
-                        "vector_store_id": vs.id,
-                        "preload_elapsed_ms": preload_elapsed_ms,
-                        "preload_status": preload_status,
-                        **step_metrics,
-                    }
-                    per_run_rows.append(row)
-                    step_bar.set_postfix(
-                        status="done",
-                        latency_ms=round(step_metrics["ask_elapsed_ms_mean"], 0),
-                        input_tok=step_metrics["ask_input_tokens_total"],
-                    )
+                            row = {
+                                "run": run,
+                                "step": step,
+                                "kb_size_bytes": kb_size_bytes,
+                                "file_count": len(file_paths),
+                                "model": model,
+                                "vector_store_id": vs.id,
+                                "preload_elapsed_ms": preload_elapsed_ms,
+                                "preload_status": preload_status,
+                                **step_metrics,
+                            }
+                            per_run_rows.append(row)
+                            step_bar.set_postfix(
+                                status="done",
+                                latency_ms=round(step_metrics["ask_elapsed_ms_mean"], 0),
+                                input_tok=step_metrics["ask_input_tokens_total"],
+                            )
 
-                except Exception as exc:
-                    _logger.warning(
-                        "Benchmark interrupted at run=%d step=%d: %s: %s",
-                        run,
-                        step,
-                        type(exc).__name__,
-                        exc,
-                    )
-                    if per_query_rows:
-                        write_csv(run_dir / "metrics_per_query.csv", per_query_rows)
-                    if per_run_rows:
-                        write_csv(run_dir / "metrics_per_run.csv", per_run_rows)
-                    raise
-                finally:
-                    for f in tmp_files:
-                        f.unlink(missing_ok=True)
-    finally:
-        run_bar.close()
+                        except Exception as exc:
+                            _logger.warning(
+                                "Benchmark interrupted at run=%d step=%d: %s: %s",
+                                run,
+                                step,
+                                type(exc).__name__,
+                                exc,
+                            )
+                            if per_query_rows:
+                                write_csv(run_dir / "metrics_per_query.csv", per_query_rows)
+                            if per_run_rows:
+                                write_csv(run_dir / "metrics_per_run.csv", per_run_rows)
+                            raise
+                        finally:
+                            for f in tmp_files:
+                                f.unlink(missing_ok=True)
+        finally:
+            run_bar.close()
 
     write_csv(run_dir / "metrics_per_query.csv", per_query_rows)
     write_csv(run_dir / "metrics_per_run.csv", per_run_rows)

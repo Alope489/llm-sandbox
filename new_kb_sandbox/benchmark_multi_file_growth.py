@@ -23,6 +23,20 @@ See ``--help`` for full option list.
 Dependencies:
     openai, tqdm, python-dotenv, new_kb_sandbox._shared, src.llm_pipeline_telemetry.
 
+Logging behaviour (changed from default):
+    The ``llm.telemetry`` logger is forced to ``WARNING`` level inside
+    ``main()`` before any API calls are made.  This suppresses the per-call
+    ``INFO``/``DEBUG`` JSON records that ``log_llm_call`` normally emits.
+    Rationale: a full benchmark (e.g. 5 runs × 50 steps × 6 queries = 1 500
+    calls) would otherwise produce 1 500+ structured log lines that obscure the
+    ``tqdm`` progress bars and add no actionable signal during a run.
+    All telemetry data is still captured in-process via ``CallContext.records``
+    and is available to callers of ``run_benchmark`` after the run completes;
+    only the side-channel log emission is suppressed.
+    If you need ``DEBUG``/``INFO`` telemetry during development, pass
+    ``--log-level DEBUG`` or raise the level explicitly before invoking
+    ``main()``.
+
 Pillar compliance:
     - Pillar 1: Fresh VS per step; multi-file regime isolates file-count effect.
     - Pillar 4: All config via CLI args / env vars; no hardcoding.
@@ -31,6 +45,7 @@ Pillar compliance:
     - Pillar 7: Mandatory pre-flight cost confirmation; retry on upload/query.
 """
 import argparse
+import logging
 import os
 import sys
 from collections.abc import Callable
@@ -196,6 +211,13 @@ def main() -> None:
     Validates environment, confirms cost estimate, then delegates to
     ``run_benchmark`` in ``_shared.py`` with the multi-file factory.
 
+    Logging override: immediately forces ``logging.getLogger("llm.telemetry")``
+    to ``WARNING`` before any API calls.  This deliberately silences the
+    ``INFO``-level per-call telemetry records that ``log_llm_call`` emits on
+    each successful query, preventing them from interleaving with ``tqdm``
+    progress output during long benchmark runs.  In-process telemetry data
+    (``CallContext.records``) is unaffected.
+
     Returns:
         None
 
@@ -204,6 +226,7 @@ def main() -> None:
             cost confirmation.
     """
     args = _parse_args()
+    logging.getLogger("llm.telemetry").setLevel(logging.WARNING)
 
     if not os.environ.get("OPENAI_API_KEY"):
         raise SystemExit("OPENAI_API_KEY is required.  Set it in .env or the environment.")
