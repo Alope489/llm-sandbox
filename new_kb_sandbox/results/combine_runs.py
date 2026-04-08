@@ -1,11 +1,17 @@
-"""Combine per-run CSVs from multiple benchmark invocations into a single averaged CSV.
+"""Combine per-run CSVs from multiple benchmark invocations into combined output CSVs.
 
 When benchmark runs are executed individually (``--runs 1`` per invocation) to
 avoid long-running terminal sessions, each invocation writes its own timestamped
-result directory containing ``metrics_per_run.csv``.  This script collects those
-files from a folder of timestamped subdirectories, re-numbers the ``run`` column
-sequentially, and produces a combined ``metrics_averaged.csv`` in that folder
-using the same ``average_rows`` helper used by the benchmark itself.
+result directory containing ``metrics_per_run.csv`` and (when available)
+``metrics_per_query.csv``.  This script collects those files from a folder of
+timestamped subdirectories, re-numbers the ``run`` column sequentially (in
+timestamp order), and produces three combined CSVs in that folder:
+
+* ``metrics_per_run.csv``   — concatenation of all per-run rows, re-numbered.
+* ``metrics_per_query.csv`` — concatenation of all per-query rows, re-numbered
+  (written only when at least one run directory contains the file).
+* ``metrics_averaged.csv``  — one row per step, averaged across all runs, using
+  the same ``average_rows`` helper used by the benchmark itself.
 
 Usage::
 
@@ -22,13 +28,15 @@ Dependencies:
 
 Pillar compliance:
     - Pillar 1: Reuses average_rows/write_csv from _shared.py — identical
-      averaging logic to the benchmark itself; no re-implementation.
+      averaging logic to the benchmark itself; no re-implementation.  Combined
+      outputs are equivalent to a single multi-run invocation.
     - Pillar 2: Validates inputs; warns on missing/skipped directories; exits
       non-zero on fatal errors.
     - Pillar 3: Google-style docstrings on all public functions; file-level header.
     - Pillar 4: Single-responsibility; no hardcoding; all config via CLI.
-    - Pillar 6: Θ(R × S) — trivial for any realistic run count.
-    - Pillar 7: Structured warnings; graceful SystemExit on fatal errors.
+    - Pillar 6: Θ(R × S × Q) for per-query loading; Θ(R × S) for averaging.
+    - Pillar 7: Structured warnings; graceful SystemExit on fatal errors;
+      graceful skip when per-query CSV is absent from a run directory.
 """
 from __future__ import annotations
 
@@ -47,6 +55,7 @@ logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
 _logger = logging.getLogger(__name__)
 
 _PER_RUN_FILENAME = "metrics_per_run.csv"
+_PER_QUERY_FILENAME = "metrics_per_query.csv"
 _OUTPUT_FILENAME = "metrics_averaged.csv"
 
 
@@ -137,7 +146,9 @@ def _discover_run_dirs(folder: Path) -> list[Path]:
 
 
 def _load_rows(csv_path: Path) -> list[dict]:
-    """Read all rows from a ``metrics_per_run.csv`` file with type coercion.
+    """Read all rows from a benchmark CSV file with type coercion.
+
+    Suitable for both ``metrics_per_run.csv`` and ``metrics_per_query.csv``.
 
     Args:
         csv_path: Path to the CSV file.
@@ -161,12 +172,23 @@ def _load_rows(csv_path: Path) -> list[dict]:
 
 
 def combine(folder: Path) -> Path:
-    """Discover run directories, combine per-run rows, and write metrics_averaged.csv.
+    """Discover run directories, combine per-run/per-query rows, and write output CSVs.
 
-    Reads ``metrics_per_run.csv`` from each qualifying subdirectory of *folder*,
-    re-numbers the ``run`` column sequentially (1, 2, 3, …), concatenates all
-    rows, and writes a combined ``metrics_averaged.csv`` to *folder* using
-    ``average_rows`` and ``write_csv`` from ``_shared.py``.
+    Reads ``metrics_per_run.csv`` (and optionally ``metrics_per_query.csv``)
+    from each qualifying subdirectory of *folder*, re-numbers the ``run``
+    column sequentially (1, 2, 3, … in timestamp order), concatenates all
+    rows, and writes three combined CSVs to *folder*:
+
+    * ``metrics_per_run.csv``   — all per-run rows with re-numbered ``run``.
+    * ``metrics_per_query.csv`` — all per-query rows with re-numbered ``run``
+      (written only when at least one run directory contains the file; run
+      directories that lack it are skipped with a warning).
+    * ``metrics_averaged.csv``  — one averaged row per step, produced by
+      ``average_rows`` from ``_shared.py``.
+
+    The combined outputs are equivalent to having executed all runs in a single
+    benchmark invocation: the ``run`` column reflects timestamp-sorted order,
+    and all per-query/per-run measurements are preserved verbatim.
 
     Args:
         folder: Directory containing timestamped run subdirectories.
@@ -183,11 +205,14 @@ def combine(folder: Path) -> Path:
         - At least one immediate subdirectory must contain ``metrics_per_run.csv``.
 
     Postconditions:
-        - ``folder / metrics_averaged.csv`` exists and contains one averaged
-          row per unique step across all loaded runs.
+        - ``folder / metrics_per_run.csv`` exists with all rows re-numbered.
+        - ``folder / metrics_averaged.csv`` exists with one averaged row per step.
+        - ``folder / metrics_per_query.csv`` exists iff at least one run directory
+          contained a non-empty ``metrics_per_query.csv``.
 
     Complexity:
-        Θ(R × S) where R = total rows across all CSVs, S = number of steps.
+        Θ(R × S × Q) for per-query loading; Θ(R × S) for per-run loading and
+        averaging; where R = run count, S = steps, Q = queries per step.
     """
     run_dirs = _discover_run_dirs(folder)
 
@@ -203,6 +228,7 @@ def combine(folder: Path) -> Path:
     print(f"Found {len(run_dirs)} run director{'y' if len(run_dirs) == 1 else 'ies'}.")
 
     all_rows: list[dict] = []
+    all_query_rows: list[dict] = []
     step_counts: list[int] = []
 
     for run_number, run_dir in enumerate(run_dirs, start=1):
@@ -214,6 +240,19 @@ def combine(folder: Path) -> Path:
             row["run"] = run_number
         all_rows.extend(rows)
         step_counts.append(len(rows))
+
+        pq_path = run_dir / _PER_QUERY_FILENAME
+        if pq_path.is_file():
+            pq_rows = _load_rows(pq_path)
+            for row in pq_rows:
+                row["run"] = run_number
+            all_query_rows.extend(pq_rows)
+        else:
+            _logger.warning(
+                "Skipping per-query rows for '%s' — no %s found.",
+                run_dir.name,
+                _PER_QUERY_FILENAME,
+            )
 
     if not all_rows:
         raise SystemExit("ERROR: all CSVs were empty — nothing to combine.")
@@ -231,10 +270,27 @@ def combine(folder: Path) -> Path:
         f"({steps_per_run} steps × {len(step_counts)} runs)."
     )
 
+    per_run_out = folder / _PER_RUN_FILENAME
+    if per_run_out.exists():
+        _logger.warning("Overwriting existing %s.", per_run_out)
+    write_csv(per_run_out, all_rows)
+    print(f"Written: {per_run_out}")
+
+    if all_query_rows:
+        per_query_out = folder / _PER_QUERY_FILENAME
+        if per_query_out.exists():
+            _logger.warning("Overwriting existing %s.", per_query_out)
+        write_csv(per_query_out, all_query_rows)
+        print(f"Written: {per_query_out}")
+    else:
+        _logger.warning(
+            "No per-query rows found across any run directory — skipping %s.",
+            _PER_QUERY_FILENAME,
+        )
+
     output_path = folder / _OUTPUT_FILENAME
     if output_path.exists():
         _logger.warning("Overwriting existing %s.", output_path)
-
     averaged = average_rows(all_rows)
     write_csv(output_path, averaged)
     print(f"Written: {output_path}")

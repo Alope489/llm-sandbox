@@ -1319,6 +1319,342 @@ def test_parse_args_rejects_chunks_per_step_zero_multi(monkeypatch: pytest.Monke
 
 
 # ===========================================================================
+# combine_runs — unit tests (no API calls)
+# ===========================================================================
+
+_RESULTS_DIR = _NKS_DIR / "results"
+sys.path.insert(0, str(_RESULTS_DIR))
+
+from combine_runs import _coerce, _discover_run_dirs, combine  # noqa: E402
+
+
+def _write_per_run_csv(path: Path, rows: list[dict]) -> None:
+    """Write a minimal metrics_per_run.csv at *path*.
+
+    Args:
+        path: Destination file path.
+        rows: List of row dicts; must share the same key set.
+    """
+    import csv as _csv
+
+    fieldnames = list(rows[0].keys())
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        writer = _csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+
+
+def _write_per_query_csv(path: Path, rows: list[dict]) -> None:
+    """Write a minimal metrics_per_query.csv at *path*.
+
+    Args:
+        path: Destination file path.
+        rows: List of row dicts; must share the same key set.
+    """
+    import csv as _csv
+
+    fieldnames = list(rows[0].keys())
+    with path.open("w", newline="", encoding="utf-8") as fh:
+        writer = _csv.DictWriter(fh, fieldnames=fieldnames)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
+
+
+def _make_per_run_row_csv(run: int, step: int) -> dict:
+    """Return a minimal per-run CSV row dict (all strings, as from DictReader).
+
+    Args:
+        run: Run index.
+        step: Step index.
+
+    Returns:
+        Dict with string values matching the metrics_per_run.csv schema.
+    """
+    return {
+        "run": str(run),
+        "step": str(step),
+        "kb_size_bytes": str(step * 1000),
+        "file_count": str(step),
+        "model": "gpt-4o-mini",
+        "vector_store_id": f"vs_{run}_{step}",
+        "preload_elapsed_ms": "500.0",
+        "preload_status": "completed",
+        "ask_elapsed_ms_mean": "1000.0",
+        "ask_elapsed_ms_p50": "950.0",
+        "ask_elapsed_ms_p95": "1200.0",
+        "ask_elapsed_ms_min": "800.0",
+        "ask_elapsed_ms_max": "1300.0",
+        "ask_input_tokens_mean": "100.0",
+        "ask_input_tokens_total": "600",
+        "ask_output_tokens_mean": "20.0",
+        "ask_output_tokens_total": "120",
+        "ask_throughput_tokens_per_sec_mean": "22.2",
+        "ask_aggregate_throughput_tokens_per_sec": "21.0",
+        "ask_provider_server_latency_ms_mean": "950.0",
+        "server_latency_missing_count": "0",
+        "citation_miss_count": "1",
+    }
+
+
+def _make_per_query_row_csv(run: int, step: int, query_idx: int) -> dict:
+    """Return a minimal per-query CSV row dict (all strings, as from DictReader).
+
+    Args:
+        run: Run index.
+        step: Step index.
+        query_idx: Query index within the step.
+
+    Returns:
+        Dict with string values matching the metrics_per_query.csv schema.
+    """
+    return {
+        "run": str(run),
+        "step": str(step),
+        "query_idx": str(query_idx),
+        "query_text": f"query {query_idx}",
+        "kb_size_bytes": str(step * 1000),
+        "file_count": str(step),
+        "model": "gpt-4o-mini",
+        "vector_store_id": f"vs_{run}_{step}",
+        "elapsed_ms": "1000.0",
+        "input_tokens": "100",
+        "output_tokens": "20",
+        "provider_server_latency_ms": "950",
+        "throughput_output_tokens_per_sec": "21.1",
+        "has_citation": "True",
+    }
+
+
+def test_coerce_int() -> None:
+    """_coerce converts a whole-number string to int.
+
+    Returns:
+        None
+    """
+    assert _coerce("42") == 42
+    assert isinstance(_coerce("42"), int)
+
+
+def test_coerce_float() -> None:
+    """_coerce converts a decimal string to float.
+
+    Returns:
+        None
+    """
+    assert _coerce("3.14") == pytest.approx(3.14)
+    assert isinstance(_coerce("3.14"), float)
+
+
+def test_coerce_empty_returns_none() -> None:
+    """_coerce returns None for an empty string.
+
+    Returns:
+        None
+    """
+    assert _coerce("") is None
+
+
+def test_coerce_string_passthrough() -> None:
+    """_coerce returns the original string when neither int nor float conversion succeeds.
+
+    Returns:
+        None
+    """
+    assert _coerce("gpt-4o-mini") == "gpt-4o-mini"
+
+
+def test_discover_run_dirs_sorted_and_filtered(tmp_path: Path) -> None:
+    """_discover_run_dirs returns only dirs that contain metrics_per_run.csv, sorted.
+
+    Creates three timestamp-named subdirs: two with the CSV (expected in output),
+    one without (expected to be skipped with a warning).
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    dir_a = tmp_path / "2026-04-07T010000"
+    dir_b = tmp_path / "2026-04-07T020000"
+    dir_c = tmp_path / "2026-04-07T030000"
+    for d in (dir_a, dir_b, dir_c):
+        d.mkdir()
+    (dir_a / "metrics_per_run.csv").write_text("run,step\n1,1\n", encoding="utf-8")
+    (dir_c / "metrics_per_run.csv").write_text("run,step\n1,1\n", encoding="utf-8")
+    # dir_b has no CSV — should be skipped.
+
+    result = _discover_run_dirs(tmp_path)
+    assert result == [dir_a, dir_c]
+
+
+def test_combine_normal_case_writes_all_three_csvs(tmp_path: Path) -> None:
+    """combine() writes metrics_per_run.csv, metrics_per_query.csv, and metrics_averaged.csv.
+
+    Two run directories each containing one step.  Verifies row counts and
+    that ``run`` values in the combined outputs are 1 and 2 respectively.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    import csv as _csv
+
+    dir1 = tmp_path / "2026-04-07T010000"
+    dir2 = tmp_path / "2026-04-07T020000"
+    dir1.mkdir()
+    dir2.mkdir()
+
+    _write_per_run_csv(dir1 / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+    _write_per_run_csv(dir2 / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+    _write_per_query_csv(
+        dir1 / "metrics_per_query.csv",
+        [_make_per_query_row_csv(1, 1, q) for q in (1, 2, 3)],
+    )
+    _write_per_query_csv(
+        dir2 / "metrics_per_query.csv",
+        [_make_per_query_row_csv(1, 1, q) for q in (1, 2, 3)],
+    )
+
+    combine(tmp_path)
+
+    # --- metrics_per_run.csv ---
+    per_run_out = tmp_path / "metrics_per_run.csv"
+    assert per_run_out.exists(), "metrics_per_run.csv was not written"
+    with per_run_out.open(encoding="utf-8") as fh:
+        pr_rows = list(_csv.DictReader(fh))
+    assert len(pr_rows) == 2, f"Expected 2 per-run rows, got {len(pr_rows)}"
+    assert pr_rows[0]["run"] == "1"
+    assert pr_rows[1]["run"] == "2"
+
+    # --- metrics_per_query.csv ---
+    per_query_out = tmp_path / "metrics_per_query.csv"
+    assert per_query_out.exists(), "metrics_per_query.csv was not written"
+    with per_query_out.open(encoding="utf-8") as fh:
+        pq_rows = list(_csv.DictReader(fh))
+    assert len(pq_rows) == 6, f"Expected 6 per-query rows, got {len(pq_rows)}"
+    run_values = [r["run"] for r in pq_rows]
+    assert run_values[:3] == ["1", "1", "1"]
+    assert run_values[3:] == ["2", "2", "2"]
+
+    # --- metrics_averaged.csv ---
+    averaged_out = tmp_path / "metrics_averaged.csv"
+    assert averaged_out.exists(), "metrics_averaged.csv was not written"
+    with averaged_out.open(encoding="utf-8") as fh:
+        avg_rows = list(_csv.DictReader(fh))
+    assert len(avg_rows) == 1, f"Expected 1 averaged row, got {len(avg_rows)}"
+
+
+def test_combine_run_renumbering_follows_timestamp_order(tmp_path: Path) -> None:
+    """combine() assigns run numbers in alphabetical (timestamp) order.
+
+    Three directories: timestamps 010000, 030000, 020000.  The alphabetically
+    first (010000) gets run=1, the next (020000) gets run=2, and (030000) gets
+    run=3 — regardless of creation order on disk.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    import csv as _csv
+
+    for ts in ("2026-04-07T010000", "2026-04-07T030000", "2026-04-07T020000"):
+        d = tmp_path / ts
+        d.mkdir()
+        _write_per_run_csv(d / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+
+    combine(tmp_path)
+
+    with (tmp_path / "metrics_per_run.csv").open(encoding="utf-8") as fh:
+        rows = list(_csv.DictReader(fh))
+
+    assert [r["run"] for r in rows] == ["1", "2", "3"]
+
+
+def test_combine_missing_per_query_in_one_dir_partial_output(tmp_path: Path) -> None:
+    """combine() still writes metrics_per_query.csv when only some dirs have the file.
+
+    Dir 1 has per-query CSV (3 rows); dir 2 does not.  The output per-query CSV
+    should contain only the 3 rows from dir 1, with run=1.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    import csv as _csv
+
+    dir1 = tmp_path / "2026-04-07T010000"
+    dir2 = tmp_path / "2026-04-07T020000"
+    dir1.mkdir()
+    dir2.mkdir()
+
+    _write_per_run_csv(dir1 / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+    _write_per_run_csv(dir2 / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+    _write_per_query_csv(
+        dir1 / "metrics_per_query.csv",
+        [_make_per_query_row_csv(1, 1, q) for q in (1, 2, 3)],
+    )
+    # dir2 intentionally has no metrics_per_query.csv.
+
+    combine(tmp_path)
+
+    per_query_out = tmp_path / "metrics_per_query.csv"
+    assert per_query_out.exists(), "metrics_per_query.csv should be written even when partial"
+    with per_query_out.open(encoding="utf-8") as fh:
+        pq_rows = list(_csv.DictReader(fh))
+    assert len(pq_rows) == 3, f"Expected 3 per-query rows from dir1 only, got {len(pq_rows)}"
+    assert all(r["run"] == "1" for r in pq_rows)
+
+
+def test_combine_no_per_query_anywhere_skips_file(tmp_path: Path) -> None:
+    """combine() does not write metrics_per_query.csv when no run dir has the file.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+    """
+    for ts in ("2026-04-07T010000", "2026-04-07T020000"):
+        d = tmp_path / ts
+        d.mkdir()
+        _write_per_run_csv(d / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+
+    combine(tmp_path)
+
+    assert not (tmp_path / "metrics_per_query.csv").exists(), (
+        "metrics_per_query.csv should NOT be created when no run dirs have the file"
+    )
+
+
+def test_combine_overwrites_existing_outputs_with_warning(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    """combine() overwrites pre-existing output CSVs and emits a WARNING for each.
+
+    Args:
+        tmp_path: pytest temporary directory fixture.
+        caplog: pytest log capture fixture.
+    """
+    import logging
+
+    dir1 = tmp_path / "2026-04-07T010000"
+    dir1.mkdir()
+    _write_per_run_csv(dir1 / "metrics_per_run.csv", [_make_per_run_row_csv(1, 1)])
+    _write_per_query_csv(
+        dir1 / "metrics_per_query.csv",
+        [_make_per_query_row_csv(1, 1, 1)],
+    )
+
+    # Pre-create all three output files to trigger overwrite warnings.
+    (tmp_path / "metrics_per_run.csv").write_text("stale", encoding="utf-8")
+    (tmp_path / "metrics_per_query.csv").write_text("stale", encoding="utf-8")
+    (tmp_path / "metrics_averaged.csv").write_text("stale", encoding="utf-8")
+
+    with caplog.at_level(logging.WARNING):
+        combine(tmp_path)
+
+    overwrite_warnings = [r for r in caplog.records if "Overwriting" in r.message]
+    assert len(overwrite_warnings) == 3, (
+        f"Expected 3 overwrite warnings, got {len(overwrite_warnings)}: "
+        f"{[r.message for r in overwrite_warnings]}"
+    )
+
+
+# ===========================================================================
 # upload_with_retry — supplemental polling tests (no API calls)
 # ===========================================================================
 
