@@ -3,15 +3,15 @@
 ## Scope
 
 - agents: `extractor, kb, processor, simulation`
-- replication_factors: `1, 2, 4`
+- replication_factors: `1, 2, 4, 6, 8`
 - repetitions_per_point: `1`
 
 ## Ranking by replication benefit
 
-- `1. processor` mean_speedup_factor_gt1=`2.241778` max_speedup_factor_gt1=`2.245868`
-- `2. kb` mean_speedup_factor_gt1=`1.818539` max_speedup_factor_gt1=`2.318712`
-- `3. extractor` mean_speedup_factor_gt1=`1.307749` max_speedup_factor_gt1=`1.50764`
-- `4. simulation` mean_speedup_factor_gt1=`1.298435` max_speedup_factor_gt1=`1.323973`
+- `1. processor` mean_speedup_factor_gt1=`1.916214` max_speedup_factor_gt1=`2.332807`
+- `2. kb` mean_speedup_factor_gt1=`1.735555` max_speedup_factor_gt1=`2.711134`
+- `3. extractor` mean_speedup_factor_gt1=`1.566124` max_speedup_factor_gt1=`1.695112`
+- `4. simulation` mean_speedup_factor_gt1=`1.497021` max_speedup_factor_gt1=`1.81583`
 
 ## Artifacts
 
